@@ -1,0 +1,66 @@
+
+[bhl]
+
+	[bhl.bhl]
+		"§abhl" = false
+		"§ainner_bhl" = true
+		"§bouter_bhl" = false
+		"§binner_bhl_custom_color" = "255,255,255,255"
+		"§bthickness" = 1
+		"§dbhl_max_distance" = 0
+		"§bbhl_block_to_search_for" = "glass"
+		"§bbhl_custom_color" = "255,255,255,255"
+		"§binner_opacity" = 15
+		"§dbhl_min_distance" = 0
+
+[struc_check]
+
+	[struc_check.struc_check]
+		"§bnot_implemented_l" = 3
+
+[gui]
+
+	[gui.edit]
+		coin_tracker_color = "255,255,255,255"
+		toggle_coin_tracker = true
+		auto_hide_coin_tracker = false
+
+	[gui.gui]
+		"§bcoin_tracker_color" = "255,255,0,0"
+		debug = false
+
+	[gui.coin_tracker]
+		coin_tracker_color = "255,224,75,255"
+		"§bcoin_tracker_color" = "255,255,255,255"
+		force_npc = true
+		"use_sell_offer?" = true
+		gemstone_type = 1
+		auto_hide_coin_tracker = false
+
+[waypoints]
+
+	[waypoints.waypoints]
+		"§bordered_next_color" = "255,0,0,0"
+		"§bthickness" = 3
+		"§bi_love_cactus" = false
+		"§btext_size" = 3
+		"§bwaypoints_inner_color" = "255,255,255,255"
+		"§bwaypoint_outline" = true
+		"§bordered_color" = "255,255,255,255"
+		"§binner_ocupacity" = 3
+		"§dshow_all_veins" = true
+		"§dshow_line_between_veins" = true
+		"§btext_color" = "255,255,255,255"
+		"§bordered_previous_color" = "255,0,0,0"
+		"§bwaypoints_outline_color" = "255,255,175,175"
+		"§bwaypoints_inner" = true
+
+[mining_skills]
+
+	[mining_skills.m]
+		volume = 32
+		delay = 250
+		sound = "dig.stone"
+		"§aping_glide_sounds" = true
+		speed = true
+

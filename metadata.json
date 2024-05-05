@@ -1,0 +1,8 @@
+{
+  "name": "blingblingaddons",
+  "description": "the BEST mod",
+  "creator": "blingbling, sombergiraffe98",
+  "version": "0.01",
+  "entry": "index.js",
+  "requires": ["Vigilance", "RenderLib","Draggable", "PogData", "Elementa", "requestV2"]
+}

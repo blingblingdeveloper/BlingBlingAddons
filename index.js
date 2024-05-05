@@ -1,0 +1,8 @@
+import Settings from "./settings.js"
+import "./features/pingGlide.js"
+import "./features/etherwarp.js"
+import "./features/blockhighlight.js"
+import "./features/waypoints.js"
+import "./features/struccheck.js"
+import "./guiManager.js"
+import "./commands/help.js"
