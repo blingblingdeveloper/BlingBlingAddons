@@ -169,9 +169,8 @@ register("renderWorld", () => {
 
     if(missing == 0) { // render route blocks (for setting up struc check)
         route.forEach(waypoint => {
-            if (waypoint.options.vein) {
-                let veinNum = waypoint.options.name;
-                waypoint.options.vein.forEach(block => {
+    if (waypoint.options.vein) {
+        waypoint.options.vein.forEach(block => {
                     let distToPlayer = Math.sqrt((block.x-Player.getRenderX())**2 + (block.y-(Player.getRenderY()+Player.getPlayer()["func_70047_e"]()))**2 + (block.z-Player.getRenderZ())**2);
         
                     if(distToPlayer < 30) {
@@ -185,23 +184,24 @@ register("renderWorld", () => {
                             Settings.blockHighlightColor.getBlue()/255,
                             alpha, false
                         );
-        
+                        
                     }
                 });
-    
-                let distToPlayer = Math.sqrt((waypoint.x-Player.getRenderX())**2 + (waypoint.y-(Player.getRenderY()+Player.getPlayer()["func_70047_e"]()))**2 + (waypoint.z-Player.getRenderZ())**2);
-                let distRender = Math.min(distToPlayer, 50);
-                Tessellator.drawString(
-                    veinNum,
-                    waypoint.x+.5,
-                    waypoint.y+1.5,
-                    waypoint.z+.5,
-                    color,
-                    true,
-                    distRender/200,
-                    false
-                );
             }
+            
+            let veinNum = waypoint.options.name;
+            let distToPlayer = Math.sqrt((waypoint.x-Player.getRenderX())**2 + (waypoint.y-(Player.getRenderY()+Player.getPlayer()["func_70047_e"]()))**2 + (waypoint.z-Player.getRenderZ())**2);
+            let distRender = Math.min(distToPlayer, 50);
+            Tessellator.drawString(
+                veinNum,
+                waypoint.x+.5,
+                waypoint.y+1.5,
+                waypoint.z+.5,
+                color,
+                true,
+                distRender/200,
+                false
+            );
         });
     }
 
