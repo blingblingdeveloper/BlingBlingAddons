@@ -1,69 +1,127 @@
-const searchDistance = 25;
-const searchRadius = 1;
-let veinWaypoints = [];
-let wp = veinWaypoints.length > 0 ? Math.max(...veinWaypoints.map(point => point.veinNum)) : 0;
 import {drawCustomEspBox} from "./util/drawCustomEspBox.js"
 import Settings from "../settings"
 
-register("command", (message) => {
-    if (Player.lookingAt()?.getRegistryName() !== "minecraft:air") {
-        wp = veinWaypoints.length > 0 ? Math.max(...veinWaypoints.map(point => point.veinNum)) : 0;
-        if (isNaN(parseInt(message))) {
-            ChatLib.chat("Invalid input. Please provide a valid number for vein number.");
-            return;
+let blockStatesToFind = [
+    {name: "minecraft:stained_glass", variants: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]},
+    {name: "minecraft:stained_glass_pane", variants: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]},
+]
+
+// TODO: command aliases for adding stuff better
+// TODO: block type filter in command?
+let route = [];
+let missingRoute = [];
+let missing = 0;
+
+register("command", () => {
+    route.forEach(waypoint => {
+        let veinWaypoints = [];
+        let maxSearchSteps = 15;
+        let searchRadius = 1.75;
+        let initialSearchRadius = 3;
+        
+        let waypointBlock = World.getBlockAt(waypoint.x, waypoint.y + 2, waypoint.z);
+        let blocksToSearch = new Map();
+        let searchedBlocks = new Map();
+
+        // Find the vein start
+        filterShape(waypointBlock, genSphere(initialSearchRadius)).forEach(newblock => {
+            if (!blocksToSearch.has(getcoords(newblock))) {
+                blocksToSearch.set(getcoords(newblock), newblock);
+            }
+        });
+
+        // Use a sphere shape to find the vein's blocks
+        let searchShape = genSphere(searchRadius);
+        for(let currentStep = 1; currentStep <= maxSearchSteps; currentStep++) {
+            let newBlocks = new Map();
+
+            blocksToSearch.forEach(block => {
+                let blockType = [
+                    {name: "minecraft:stained_glass", variants: [block.getMetadata()]},
+                    {name: "minecraft:stained_glass_pane", variants: [block.getMetadata()]},
+                ];
+                searchedBlocks.set(getcoords(block), block);
+                filterShape(block, searchShape, blockType).forEach(newblock => {
+                    if (!(newBlocks.has(getcoords(newblock)) || searchedBlocks.has(getcoords(newblock)))) {
+                        newBlocks.set(getcoords(newblock), newblock);
+                    }
+                });
+            });
+            blocksToSearch = newBlocks;
         }
         
-        if (parseInt(message) <= wp + 1) {
-            veinWaypoints.forEach(waypoint => {
-                if (waypoint.veinNum >= parseInt(message)) {
-                    waypoint.veinNum += 1;
-                }
+        // Put all the blocks in the data structure
+        searchedBlocks.forEach(block => {
+            veinWaypoints.push({
+                x: block.getX(),
+                y: block.getY(),
+                z: block.getZ(),
+                blockId: block.getType().getID() // TODO: use other system?
             });
-            let lookingAt = Player.lookingAt();
-            if (lookingAt instanceof Block) {
-                let blocksToSearch = new Map();
-                blocksToSearch.set(getcoords(lookingAt), lookingAt);
-                let searchedBlocks = new Map();
-                for (let distance = 1; distance <= searchDistance; distance++) {
-                    let newblocks = new Map();
-                    blocksToSearch.forEach(block => {
-                        searchedBlocks.set(getcoords(block), block);
-                        searchAdjacent(block).forEach(newblock => {
-                            if (!(newblocks.has(getcoords(newblock)) || searchedBlocks.has(getcoords(newblock)))) {
-                                newblocks.set(getcoords(newblock), newblock);
-                            }
-                        });
-                    });
-                    blocksToSearch = newblocks;
-                }
-                searchedBlocks.forEach(block => {
-                    veinWaypoints.push({
-                        x: block.getX(),
-                        y: block.getY(),
-                        z: block.getZ(),
-                        blockId: block.getType().getID(),
-                        veinNum: parseInt(message)
-                    });
-                });
-            }
-        } else {
-            ChatLib.chat("Cannot insert waypoint with vein number " + message + ". Next allowed vein number is " + (wp + 1));
-        }
-    } else {
-        ChatLib.chat("Cannot insert waypoint. Looking at air.");
-    }
-    ChatLib.chat("Vein size: " + veinWaypoints.length);
-}).setCommandName("sv");
-register("command", (message) => {
-    let veinNum = parseInt(message);
-    veinWaypoints = veinWaypoints.filter(waypoint => waypoint.veinNum !== veinNum);
-    
-    // Subtract 1 from vein numbers greater than veinNum
-    veinWaypoints.forEach(waypoint => {
-        if (waypoint.veinNum > veinNum) {
-            waypoint.veinNum -= 1;
-        }
+        });
+        waypoint.options.vein = veinWaypoints;
+        
     });
+    ChatLib.chat("Loaded vein guesses");
+}).setName('loadrouteguess').setAliases(['lrg']);
+
+// TODO: add vein command
+register("command", (message) => {
+    if (isNaN(parseInt(message)) || parseInt(message) > route.length) {
+        ChatLib.chat("Invalid input. Please provide a valid number for vein number.");
+        return;
+    }
+    let veinWaypoints = [];
+    let maxSearchSteps = 15;
+    let searchRadius = 1.75;
+    
+    if(filterBlock(Player.lookingAt())) {
+        let lookingAt = Player.lookingAt();
+
+        let blocksToSearch = new Map();
+        blocksToSearch.set(getcoords(lookingAt), lookingAt);
+        let searchedBlocks = new Map();
+
+        let searchShape = genSphere(searchRadius);
+
+        // Use a sphere shape to find the vein's blocks
+        for(let currentStep = 1; currentStep <= maxSearchSteps; currentStep++) {
+            let newBlocks = new Map();
+
+            blocksToSearch.forEach(block => {
+                searchedBlocks.set(getcoords(block), block);
+                filterShape(block, searchShape).forEach(newblock => {
+                    if (!(newBlocks.has(getcoords(newblock)) || searchedBlocks.has(getcoords(newblock)))) {
+                        newBlocks.set(getcoords(newblock), newblock);
+                    }
+                });
+            });
+            blocksToSearch = newBlocks;
+        }
+        
+        // Put all the blocks in the data structure
+        searchedBlocks.forEach(block => {
+            veinWaypoints.push({
+                x: block.getX(),
+                y: block.getY(),
+                z: block.getZ(),
+                blockId: block.getType().getID() // TODO: use other system?
+            })
+        });
+    }
+    route[parseInt(message)].options.vein = veinWaypoints;
+
+    ChatLib.chat("Vein size: "+veinWaypoints.length);
+}).setName('setvein').setAliases(['sv']);
+
+register("command", (message) => {
+    if (isNaN(parseInt(message)) || parseInt(message) > route.length || parseInt(message) < 1) {
+        ChatLib.chat("Invalid input. Please provide a valid number for vein number.");
+        return;
+    }
+    let veinNum = parseInt(message);
+    ChatLib.chat("removing vein "+veinNum);
+    route.splice(veinNum - 1, 1);
 }).setName('removevein').setAliases(['rv']);
 
 register('command', () => {
@@ -71,94 +129,177 @@ register('command', () => {
     const DataFlavor = Java.type("java.awt.datatransfer.DataFlavor");
     const clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
     const clipboardData = clipboard.getData(DataFlavor.stringFlavor);
-    veinWaypoints = JSON.parse(clipboardData)
+    route = JSON.parse(clipboardData);
     ChatLib.chat("loaded!")
-}).setName('loadvein').setAliases(['lv']);
+}).setName('loadroute').setAliases(['lr']);
 
-function searchAdjacent(block) {
-    matchingBlocks = [];
+register('command', () => {
+    ChatLib.command(`ct copy ${JSON.stringify(route)}`, true)
+}).setName('exportstruc').setAliases(['se']);
 
-    toSearch = [
-        World.getBlockAt(block.pos.north()),
-        World.getBlockAt(block.pos.east()),
-        World.getBlockAt(block.pos.south()),
-        World.getBlockAt(block.pos.west()),
-        World.getBlockAt(block.pos.up()),
-        World.getBlockAt(block.pos.down())
-    ];
+register('command', () => {
+    missingRoute = JSON.parse(JSON.stringify(route));;
+    ChatLib.chat("checking rn bro");
+
+    missingRoute.forEach(waypoint =>  {
+        missingBlocks = [];
+        waypoint.options.vein.forEach(block => {
+            if (block.blockId != World.getBlockAt(block.x, block.y, block.z).getType().getID()) {
+                missingBlocks.push(block);
+            }
+        });
+        waypoint.options.vein = missingBlocks;
+    });
+
+    if (missingRoute.length == 0){
+        ChatLib.chat("No structure grief!")
+    } else {
+        missing = 0;
+        missingRoute.forEach(waypoint =>  {
+            missing += waypoint.options.vein.length;
+        });
+        ChatLib.chat(`Missing ${missing} blocks`);
+    }
+}).setName('checkstruc').setAliases(['cs']);
+
+register("renderWorld", () => {
+    let color = rgbToColorInt(Settings.textColor.getRed(),Settings.textColor.getGreen(),Settings.textColor.getBlue());
+    let color2 = rgbToColorInt(255,0,0); // TODO: use Settings
+    let alpha = 1; // TODO: use Settings
+
+    if(missing == 0) { // render route blocks (for setting up struc check)
+        route.forEach(waypoint => {
+            if (waypoint.options.vein) {
+                let veinNum = waypoint.options.name;
+                waypoint.options.vein.forEach(block => {
+                    let distToPlayer = Math.sqrt((block.x-Player.getRenderX())**2 + (block.y-(Player.getRenderY()+Player.getPlayer()["func_70047_e"]()))**2 + (block.z-Player.getRenderZ())**2);
+        
+                    if(distToPlayer < 30) {
+                        drawCustomEspBox(
+                            Math.floor(block.x)+.5,
+                            Math.floor(block.y),
+                            Math.floor(block.z)+.5,
+                            Settings.blockHighlightThickness, 1, 1,
+                            Settings.blockHighlightColor.getRed()/255,
+                            Settings.blockHighlightColor.getGreen()/255,
+                            Settings.blockHighlightColor.getBlue()/255,
+                            alpha, false
+                        );
+        
+                    }
+                });
+    
+                let distToPlayer = Math.sqrt((waypoint.x-Player.getRenderX())**2 + (waypoint.y-(Player.getRenderY()+Player.getPlayer()["func_70047_e"]()))**2 + (waypoint.z-Player.getRenderZ())**2);
+                let distRender = Math.min(distToPlayer, 50);
+                Tessellator.drawString(
+                    veinNum,
+                    waypoint.x+.5,
+                    waypoint.y+1.5,
+                    waypoint.z+.5,
+                    color,
+                    true,
+                    distRender/200,
+                    false
+                );
+            }
+        });
+    }
+
+    missingRoute.forEach(waypoint => {
+        if (waypoint.options.vein) {
+            waypoint.options.vein.forEach(block => {
+                let distToPlayer = Math.sqrt((block.x-Player.getRenderX())**2 + (block.y-(Player.getRenderY()+Player.getPlayer()["func_70047_e"]()))**2 + (block.z-Player.getRenderZ())**2);
+    
+                if(distToPlayer < 30) {
+                    drawCustomEspBox(
+                        Math.floor(block.x)+.5,
+                        Math.floor(block.y),
+                        Math.floor(block.z)+.5,
+                        Settings.blockHighlightThickness, 1, 1,
+                        255,
+                        0,
+                        0,
+                        alpha, false
+                    );
+    
+                }
+            });
+
+            if (waypoint.options.vein.length > 0) {                
+                Tessellator.drawString(
+                    `Missing blocks: ${waypoint.options.vein.length}, Vein ${waypoint.options.name}`,
+                    waypoint.x+.5,
+                    waypoint.y+1.5,
+                    waypoint.z+.5,
+                    color2,
+                    true,
+                    Math.min(Math.hypot(waypoint.x-Player.getRenderX(), waypoint.z-Player.getRenderZ()),50)/200, // FIXME: I think this ws wrong
+                    false
+                );
+            }
+        }
+    });
+});
+
+// ==== helper functions ====
+
+function genSphere(radius) {
+    let shape = []
+
+    for(let x = -Math.ceil(radius); x <= Math.ceil(radius); x++)
+    {
+        for(let y = -Math.ceil(radius); y <= Math.ceil(radius); y++)
+        {
+            for(let z = -Math.ceil(radius); z <= Math.ceil(radius); z++)
+            {
+                if(x*x + y*y + z*z <= radius*radius) {
+                    shape.push({"x": x, "y": y, "z": z});
+                }
+            }
+        }
+    }
+
+    return shape;
+}
+
+function filterShape(block, shape, blockType) {
+    let matchingBlocks = [];
+    let toSearch = [];
+
+    shape.forEach(coord => {
+        toSearch.push(World.getBlockAt(block.pos.add(new Vec3i(coord.x, coord.y, coord.z))));
+    });
 
     for(let i = 0; i < toSearch.length; i++) {
-        if(block.type.getRegistryName().includes(toSearch[i].type.getRegistryName())||toSearch[i].type.getRegistryName().includes(block.type.getRegistryName())) {
+        if(filterBlock(toSearch[i], blockType)) {
             matchingBlocks.push(toSearch[i]);
         }
     }
 
     return matchingBlocks;
 }
-let color = rgbToColorInt(Settings.textColor.getRed(),Settings.textColor.getGreen(),Settings.textColor.getBlue());
-let color2 = rgbToColorInt(255,0,0);
-function rgbToColorInt(red, green, blue) {
-    return (255 << 24) | (red << 16) | (green << 8) | blue;
+
+function filterBlock(lookingAt, blockType) {
+    if(lookingAt == undefined || lookingAt?.getRegistryName() == "minecraft:air" || !lookingAt instanceof Block) {
+        ChatLib.chat("Cannot insert waypoint. Looking at air.");
+        return false;
+    }
+    if(blockType == null) {
+        blockType = blockStatesToFind;
+    }
+
+    if(blockType.some(obj => obj.name === lookingAt.type.getRegistryName() && obj.variants.includes(lookingAt.getMetadata()))) {
+        return true;
+    } else {
+        // ChatLib.chat("That block doesn't match the whitelist.");
+        return false;
+    }
 }
-register("renderWorld", () => {
-    
-    for(let i = 0; i < veinWaypoints.length; i++) {
-                    let veinNum = veinWaypoints[i].veinNum;
-        let distToPlayerSq = (veinWaypoints[i].x-Player.getRenderX())**2 + (veinWaypoints[i].y-(Player.getRenderY()+Player.getPlayer()["func_70047_e"]()))**2 + (veinWaypoints[i].z-Player.getRenderZ())**2
-        let distToPlayer=Math.sqrt(distToPlayerSq)
-        let distRender=Math.min(distToPlayer,50)
-        let includeVerticalDistance=false
-        let distanceText = includeVerticalDistance ? Math.hypot(veinWaypoints[i].x-Player.getRenderX(), veinWaypoints[i].y-(Player.getRenderY() +
-        Player.getPlayer()["func_70047_e"]()), veinWaypoints[i].z-Player.getRenderZ()) :
-        Math.hypot(veinWaypoints[i].x-Player.getRenderX(), veinWaypoints[i].z-Player.getRenderZ())
-        if(distToPlayer<30){
-            drawCustomEspBox(Math.floor(veinWaypoints[i].x)+.5, Math.floor(veinWaypoints[i].y), Math.floor(veinWaypoints[i].z)+.5, Settings.blockHighlightThickness, 1, 1, Settings.blockHighlightColor.getRed()/255,Settings.blockHighlightColor.getGreen()/255,Settings.blockHighlightColor.getBlue()/255, 1, false)
-            if(i === 0 || veinNum != veinWaypoints[i-1].veinNum){
-                Tessellator.drawString(veinNum,veinWaypoints[i].x+.5,veinWaypoints[i].y+1.5,veinWaypoints[i].z+.5,color,true,distRender/200,false);
-            
-            }
-        }
-    }
-     
-
-    for(let i = 0; i < strucWaypoints.length; i++) {
-        let missingBlocks = [];
-        drawCustomEspBox(Math.floor(strucWaypoints[i].x)+.5, Math.floor(strucWaypoints[i].y), Math.floor(strucWaypoints[i].z)+.5, Settings.blockHighlightThickness, 1, 1, Settings.blockHighlightColor.getRed()/255,Settings.blockHighlightColor.getGreen()/255,Settings.blockHighlightColor.getBlue()/255, 1, false)
-
-        if(i > 0){
-            if(strucWaypoints[i].veinNum != strucWaypoints[i-1].veinNum){
-                missingBlocks = strucWaypoints.filter(block => block.veinNum === strucWaypoints[i].veinNum)
-            }
-        } else {
-            missingBlocks = strucWaypoints.filter(block => block.veinNum === strucWaypoints[0].veinNum)
-        }
-        if(i === 0 || strucWaypoints[i].veinNum !== strucWaypoints[i-1].veinNum){
-            Tessellator.drawString(`Missing blocks: ${missingBlocks.length}, Vein: ${strucWaypoints[i].veinNum}`,strucWaypoints[i].x+.5,strucWaypoints[i].y+1.5,strucWaypoints[i].z+.5,color2,true,Math.min(Math.hypot(strucWaypoints[i].x-Player.getRenderX(), strucWaypoints[i].z-Player.getRenderZ()),50)/200,false);
-        }
-    }
-})
 
 function getcoords(block) {
     return `${block.getX()},${block.getY()},${block.getZ()}`;
 }
-let strucWaypoints = [];
-    register('command', (message) => {
-        ChatLib.command(`ct copy ${JSON.stringify(veinWaypoints)}`, true)
-      }).setName('exportstruc').setAliases(['se']);
-register('command', () => {
-    strucWaypoints = [];
-    ChatLib.chat("checking rn bro")
-        for (let i = 0; i < veinWaypoints.length; i++) {
-            let block = World.getBlockAt(veinWaypoints[i].x, veinWaypoints[i].y, veinWaypoints[i].z)
-            if (block.getType().getID() != veinWaypoints[i].blockId){
-            strucWaypoints.push(veinWaypoints[i])
-            }
-            // else{
-            //     ChatLib.chat("all good")
-            // }
-        }
-    veinWaypoints = []
-        if (strucWaypoints.length ==0){
-            ChatLib.chat("No structure grief!")
-        }
-}).setName('checkstruc').setAliases(['cs']);
+
+function rgbToColorInt(red, green, blue) {
+    return (255 << 24) | (red << 16) | (green << 8) | blue;
+}
