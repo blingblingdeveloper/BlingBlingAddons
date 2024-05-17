@@ -90,5 +90,4 @@ export const drawCustomEspBox = (x, y, z, lWidth = 2.0, w, h, red, green, blue, 
     }
     
     Tessellator.popMatrix();
-    
-  };
+};

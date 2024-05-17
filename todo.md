@@ -2,6 +2,7 @@
 
 ## Celeite:
 - strucCheck block filter options
+- strucCheck /lv "add" option for multiple on one waypoint
 - Efficiency tracker
   - Mining stats
   - Gemstone ticks
@@ -14,27 +15,22 @@
 - strucCheck from world file
 - Nice block whitelist
 - Suggested mining order (hard)
+- Hash waypoints
 
 
-block order stuffs:
-Raycast player --> next waypoint
-All hit blocks in vein are valid 'exit' blocks
-Block closest to next waypoint is 'path exit'
-	if no blocks found try to find closest angle (cone search?)
-Block the player is currently looking at is 'path start'
+Block order stuffs:
+Block closest to raycast from previous waypoint --> current waypoint is 'path start'
+Block farthest from current waypoint within player reach, but closest to raycast from current waypoint --> next waypoint is 'path exit'
 
-Raycast to all blocks
-Find unobstructed blocks (somehow)
-Smallest angle + largest visible area is next block
+For remaining blocks:
+Score with combination of smallest angle + largest visible area
+Threshold value for "candidate" next blocks
+    if no blocks found, lower threshold
+Select block from candidate
+Use angle to center as new look angle, remove 'used' blocks, recaulculate weights
+Repeat
 
-Alternatively, score all tiles
-Unobstructed = bonus (large)
-Smaller angle = bonus (minor)/smaller distance from current block, idk
-Exit tile = punish (minor)
-Distance from player = punish (moderate)
+Walk several paths, total mouse distance moved for each, minimum distance = best path
 
-HSV hue (0 to 120)
-
-Alternatively (again)
-Walk every path, purge if not possible
-do diagonals if not possible
+Can be precalculated for the entire route
+Each block then gets an "order" tag, lowest value present in the vein = suggested block

@@ -115,7 +115,6 @@ register("renderWorld", () => {
                             Settings.blockHighlightColor.getBlue()/255,
                             alpha, false
                         );
-                        
                     }
                 });
             }
