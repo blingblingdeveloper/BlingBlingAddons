@@ -1,7 +1,6 @@
 # To-Do
 
 ## Celeite:
-- strucCheck add/remove vein changes
 - strucCheck block filter options
 - Efficiency tracker
   - Mining stats
