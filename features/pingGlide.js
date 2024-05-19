@@ -1,6 +1,6 @@
 import Settings from "../settings"
 
-register('command', () => Settings.openGUI() ).setName('b').setAliases(['bling']);
+register('command', () => Settings.openGUI() ).setName('bling').setAliases(['b']);
 let recentTimeout;
 let timeoutId = 0;
 
