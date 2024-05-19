@@ -2,22 +2,23 @@ import request from "../../requestV2";
 import { makeObjectDraggable } from "../../Draggable";
 
 import Settings from "../settings";
-import { registerGui } from "../guiManager";
 import { addCommas, secondsToMessage } from "./util/helperFunctions";
 
-let money = 0;
 let pristine = 18.63; // IDK if/how to get from stats, maybe settings input box, should be toggleable
-let startTime = -1;
-let time = 0;
-let lastMined = -1;
-let moneyPerHour = -1;
-let roughmoneyPerHour = -1;
-let lastPrice = 0;
+
+const gemstoneCosts = {};
 let lastForceNPC = Settings.forceNPC;
 let lastGemstoneType = Settings.gemstoneType;
 let lastGemstone = "n/a";
+
+let startTime = -1;
+let lastMined = -1;
+let lastPrice = 0;
+
+let money;
+let moneyPerHour;
+let roughmoneyPerHour;
 let flawless;
-const gemstoneCosts = {};
 
 register("chat", (gem, amount, event) => {
     if (lastForceNPC != Settings.forceNPC || lastGemstoneType != Settings.gemstoneType)
@@ -52,25 +53,23 @@ register("chat", (gem, amount, event) => {
         request({
             url: "https://api.hypixel.net/skyblock/bazaar",
             json: true
-        })
-            .then(res => {
-                startTime = Date.now();
-                Object.keys(res.products).filter(i => {
-                    if (i.startsWith("FLAWED") || i.startsWith("FINE") || i.startsWith("FLAWLESS") | i.startsWith("PERFECT") || i.startsWith("ROUGH")) return true
-                }).forEach(i => {
-                    let npc = 3 * Math.pow(80, (4 - Settings.gemstoneType));
-                    if (Settings.sellOffer) {
-                        gemstoneCosts[i] = Settings.forceNPC ? npc : Math.max(npc, res.products[i].quick_status.buyPrice);
-                    }
-                    else {
-                        gemstoneCosts[i] = Settings.forceNPC ? npc : Math.max(npc, res.products[i].quick_status.sellPrice);
-                    }
-                });
-            })
-            .catch(err => {
-                if (Settings.debug)
-                    console.log("Coin tracker: " + err);
+        }).then(res => {
+            startTime = Date.now();
+            Object.keys(res.products).filter(i => {
+                if (i.startsWith("FLAWED") || i.startsWith("FINE") || i.startsWith("FLAWLESS") | i.startsWith("PERFECT") || i.startsWith("ROUGH")) return true
+            }).forEach(i => {
+                let npc = 3 * Math.pow(80, (4 - Settings.gemstoneType));
+                if (Settings.sellOffer) {
+                    gemstoneCosts[i] = Settings.forceNPC ? npc : Math.max(npc, res.products[i].quick_status.buyPrice);
+                }
+                else {
+                    gemstoneCosts[i] = Settings.forceNPC ? npc : Math.max(npc, res.products[i].quick_status.sellPrice);
+                }
             });
+        }).catch(err => {
+            if (Settings.debug)
+                console.log("Coin tracker: " + err);
+        });
         return;
     }
 
@@ -78,6 +77,7 @@ register("chat", (gem, amount, event) => {
     lastPrice = parseInt(gemstoneCosts[id]);
     money += (gemstoneCosts[id] / Math.pow(80, (3 - Settings.gemstoneType))) * amount;
     moneyPerHour = Math.floor(money / ((Date.now() - startTime) / (1000 * 60 * 60)));
+    roughmoneyPerHour = Math.floor((1 - (pristine / 100)) / (pristine / 100) * (moneyPerHour / 80));
     flawless = gemstoneCosts["FLAWLESS" + "_" + gem.toUpperCase() + "_GEM"]
 }).setChatCriteria(/&r&d&lPRISTINE! &r&fYou found &r&a. Flawed (.+) Gemstone &r&8x(\d+)&r&f!&r/g);
 
@@ -93,8 +93,9 @@ register("command", () => {
 }).setName("miningtest");
 
 function resetVars() {
-    money = 0;
-    moneyPerHour = -1;
+    money = null;
+    moneyPerHour = null;
+    roughMoneyPerHour = null;
     startTime = -1;
     lastMined = -1;
     if (Settings.hide) //setting that hides display after not mining for a while
@@ -118,9 +119,9 @@ register("renderOverlay", () => {
         if (startTime <= 0 && Settings.hide)
             return;
     let lines = [];
-    lines[0] = `Uptime: ${secondsToMessage((lastMined == -1) ? 0 : (Date.now() - startTime) / 1000)}`;
-    lines[1] = `$/hr: $${addCommas(moneyPerHour)}`;
-    lines[2] = `fl/hr: ${Math.round((moneyPerHour / flawless) * 10) / 10}`;
+    lines[0] = `Uptime: ${(startTime <= 0)?"":secondsToMessage((Date.now() - startTime) / 1000)}`;
+    lines[1] = `$/hr: ${money == null?"":"$"+addCommas(Settings.roughGems?(moneyPerHour+roughmoneyPerHour):moneyPerHour)}`;
+    lines[2] = `fl/hr: ${money == null?"":Math.round((Settings.roughGems?(moneyPerHour+roughmoneyPerHour) / flawless:moneyPerHour / flawless) * 10) / 10}`;
     text.setString(lines.join("\n"));
     text.setColor(rgbToColorInt(Settings.trackerColor.getRed(), Settings.trackerColor.getGreen(), Settings.trackerColor.getBlue()));
     text.draw();

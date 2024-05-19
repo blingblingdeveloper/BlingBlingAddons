@@ -302,11 +302,18 @@ gemstoneType = 2;
 forceNPC = false;
 @SwitchProperty({
     name: 'Use Sell Offer?',
-    description: `uses sell offer for coin tracker`,
+    description: `Uses sell offer for coin tracker.`,
     category: 'Gui',
     subcategory: 'Coin Tracker',
 })
 sellOffer = true;
+@SwitchProperty({
+    name: 'Include Rough Estimate?',
+    description: 'Estimates rough gemstone profit.',
+    category: 'Gui',
+    subcategory: 'Coin Tracker',
+})
+roughGems = true;
 @ButtonProperty({
     name: "Coin Tracker Gui",
     description: "Move the location of the coin tracker gui.",
