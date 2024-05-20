@@ -27,12 +27,49 @@
         // or a positive number if b should be sorted before a.
 
         // In this case, we can put Not general! to be above general.
-        const categories = ["Waypoints", "Mining Skills","bhl","Struc Check","Gui","HELP"];
+        const categories = ["Waypoints", "Mining Skills","bhl","Struc Check","Gui","Mining Stats","HELP"];
 
         return categories.indexOf(a.name) - categories.indexOf(b.name);
     },
 })
 class Settings {
+    //TODO: get from player stats automatically somehow
+    @TextProperty({
+        name: 'Gemstone Mining Speed',
+        description: 'Enter your gemstone mining speed',
+        category: 'Mining Stats',
+        subcategory: 'stats',
+    })
+    gemMiningSpeed = "9576";
+    @TextProperty({
+        name: 'Gemstone Fortune',
+        description: 'Enter your gemstone fortune',
+        category: 'Mining Stats',
+        subcategory: 'stats',
+    })
+    gemFortune = "2497";
+    @TextProperty({
+        name: 'Pristine',
+        description: 'Enter your pristine',
+        category: 'Mining Stats',
+        subcategory: 'stats',
+    })
+    pristine = "18.63";
+    @SwitchProperty({
+        name: 'Precision Miner',
+        description: 'Always use precision miner in calculations',
+        category: 'Mining Stats',
+        subcategory: 'stats',
+    })
+    alwaysPrecisionMiner = false;
+    @SwitchProperty({
+        name: 'Blue Cheese',
+        description: 'Toggle on if you have a Blue Cheese Goblin Omelette',
+        category: 'Mining Stats',
+        subcategory: 'stats',
+    })
+    blueCheese = false;
+
     @SwitchProperty({
         name: '§aPing Glide Sounds',
         description: 'toggles ping glide sounds',
