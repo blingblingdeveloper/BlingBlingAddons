@@ -95,7 +95,6 @@ register('command', () => {
 register("renderWorld", () => {
     let color = rgbToColorInt(Settings.textColor.getRed(),Settings.textColor.getGreen(),Settings.textColor.getBlue());
     let color2 = rgbToColorInt(255,0,0); // TODO: use Settings
-    let alpha = 1; // TODO: use Settings
 
     // render route blocks (for setting up struc check)
     if(missing == 0) {
@@ -113,7 +112,7 @@ register("renderWorld", () => {
                             Settings.blockHighlightColor.getRed()/255,
                             Settings.blockHighlightColor.getGreen()/255,
                             Settings.blockHighlightColor.getBlue()/255,
-                            alpha, false
+                            Settings.blockHighlightColor.getAlpha()/255, false
                         );
                     }
                 });
@@ -149,7 +148,7 @@ register("renderWorld", () => {
                         255,
                         0,
                         0,
-                        alpha, false
+                        1, false
                     );
     
                 }

@@ -309,11 +309,20 @@ forceNPC = false;
 sellOffer = true;
 @SwitchProperty({
     name: 'Include Rough Estimate?',
-    description: 'Estimates rough gemstone profit.',
+    description: 'Add rough gemstone profit estimate into $/hr and fl/hr.',
     category: 'Gui',
     subcategory: 'Coin Tracker',
 })
-roughGems = true;
+roughGems = false;
+@SliderProperty({
+    name: 'Reset delay',
+    description: 'How long to wait before resetting the timer (seconds).',
+    category: 'Gui',
+    subcategory: 'Coin Tracker',
+    min: 5,
+    max: 30
+})
+resetDelay=10;
 @ButtonProperty({
     name: "Coin Tracker Gui",
     description: "Move the location of the coin tracker gui.",

@@ -13,7 +13,6 @@ let lastGemstone = "n/a";
 
 let startTime = -1;
 let lastMined = -1;
-let lastPrice = 0;
 
 let money;
 let moneyPerHour;
@@ -55,6 +54,7 @@ register("chat", (gem, amount, event) => {
             json: true
         }).then(res => {
             startTime = Date.now();
+            lastMined = Date.now();
             Object.keys(res.products).filter(i => {
                 if (i.startsWith("FLAWED") || i.startsWith("FINE") || i.startsWith("FLAWLESS") | i.startsWith("PERFECT") || i.startsWith("ROUGH")) return true
             }).forEach(i => {
@@ -74,7 +74,6 @@ register("chat", (gem, amount, event) => {
     }
 
     lastGemstone = gem;
-    lastPrice = parseInt(gemstoneCosts[id]);
     money += (gemstoneCosts[id] / Math.pow(80, (3 - Settings.gemstoneType))) * amount;
     moneyPerHour = Math.floor(money / ((Date.now() - startTime) / (1000 * 60 * 60)));
     roughmoneyPerHour = Math.floor((1 - (pristine / 100)) / (pristine / 100) * (moneyPerHour / 80));
@@ -82,7 +81,7 @@ register("chat", (gem, amount, event) => {
 }).setChatCriteria(/&r&d&lPRISTINE! &r&fYou found &r&a. Flawed (.+) Gemstone &r&8x(\d+)&r&f!&r/g);
 
 register("step", () => {
-    if (lastMined && Date.now() - lastMined > 2 * 10000) {
+    if (startTime && Date.now() - lastMined > Settings.resetDelay * 1000) {
         resetVars();
     }
 }).setFps(1);
@@ -119,9 +118,9 @@ register("renderOverlay", () => {
         if (startTime <= 0 && Settings.hide)
             return;
     let lines = [];
-    lines[0] = `Uptime: ${(startTime <= 0)?"":secondsToMessage((Date.now() - startTime) / 1000)}`;
-    lines[1] = `$/hr: ${money == null?"":"$"+addCommas(Settings.roughGems?(moneyPerHour+roughmoneyPerHour):moneyPerHour)}`;
-    lines[2] = `fl/hr: ${money == null?"":Math.round((Settings.roughGems?(moneyPerHour+roughmoneyPerHour) / flawless:moneyPerHour / flawless) * 10) / 10}`;
+    lines[0] = `Uptime: ${(startTime <= 0)?"n/a":secondsToMessage((Date.now() - startTime) / 1000)}`;
+    lines[1] = `$/hr: ${money == null?"n/a":"$"+addCommas(Settings.roughGems?(moneyPerHour+roughmoneyPerHour):moneyPerHour)}`;
+    lines[2] = `fl/hr: ${money == null?"n/a":Math.round((Settings.roughGems?(moneyPerHour+roughmoneyPerHour) / flawless:moneyPerHour / flawless) * 10) / 10}`;
     text.setString(lines.join("\n"));
     text.setColor(rgbToColorInt(Settings.trackerColor.getRed(), Settings.trackerColor.getGreen(), Settings.trackerColor.getBlue()));
     text.draw();
