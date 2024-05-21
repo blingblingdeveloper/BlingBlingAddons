@@ -1,7 +1,7 @@
 
 import RenderLib from "RenderLib";
 register("playerInteract", () => {
-if(Player.getHeldItem().getName().includes("Wooden Pickaxe") && Client.getMinecraft().field_71442_b.func_178889_l().func_77145_d()){ //2nd part detects if creative mode
+if(Player.getHeldItem()?.getName().includes("Wooden Pickaxe") && Client.getMinecraft().field_71442_b.func_178889_l().func_77145_d()){ //2nd part detects if creative mode
    castedBlock = rayTrace(57)
   
     // check if valid etherwarp point (not perfect)
