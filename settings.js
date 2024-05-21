@@ -360,8 +360,16 @@ roughGems = false;
     max: 30
 })
 resetDelay=10;
+@SwitchProperty({
+    name: 'Efficiency Tracker',
+    description: 'Add efficiency to the coin tracker?',
+    category: 'Gui',
+    subcategory: 'Coin Tracker',
+})
+showEfficiency = false;
+
 @ButtonProperty({
-    name: "Coin Tracker Gui",
+    name: "Move Coin Tracker Gui",
     description: "Move the location of the coin tracker gui.",
     subcategory: "edit",
     category: "Gui",

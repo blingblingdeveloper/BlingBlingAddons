@@ -3,21 +3,20 @@ import Settings from "../settings";
 let hitBlocks = new Map();
 let timeout = 2000;
 
-//TODO: reset command
 //TODO: gui
 
 //=========== block efficiency garbage
-const tph = 72000;
-let miningSpeed = Settings.alwaysPrecisionMiner ? Settings.gemMiningSpeed + 920 : Settings.gemMiningSpeed;
+let miningSpeed = Settings.alwaysPrecisionMiner ? parseInt(Settings.gemMiningSpeed) + 920 : Settings.gemMiningSpeed;
 
-let currentyMining = false;
+let currentlyMining = false;
+let lastMined = -1;
+
 let msbAvailable = false;
 let msbActive = false;
 let ticks = 0;
 let msbTicks = 0;
 let currentBreakTick = 0;
-let regularBlock = '';
-let msbBlock = '';
+let targetGem = '';
 
 let efficiency = 0;
 
@@ -35,26 +34,57 @@ let blockTicks = {}
 let maxMined = {}
 let mined = {}
 
-Object.keys(blockStrength).forEach((gem) => {
-    blockTicks[gem] = {
-        'regular': Math.round(30 * blockStrength[gem] / miningSpeed),
-        'boost': Math.round(30 * blockStrength[gem] / (miningSpeed * 3)) < 4 ? 4 : Math.round(30 * blockStrength[gem] / (miningSpeed * 3))
-    }
-});
+resetVars();
 
-Object.keys(blockStrength).forEach((gem) => {
-    maxMined[gem] = {
-        'regular': 0,
-        'boost': 0
+register("step", () => {
+    if (currentlyMining && Date.now() - lastMined > Settings.resetDelay * 1000) {
+        resetVars();
     }
-});
+}).setFps(1);
 
-Object.keys(blockStrength).forEach((gem) => {
-    mined[gem] = {
-        'regular': 0,
-        'boost': 0
-    }
-});
+register("command", () => {
+    resetVars()
+    ChatLib.chat("§d[BlingBling Addons] §fReset Tracker!");
+}).setName("efficiencytest");
+
+function resetVars() {
+    miningSpeed = Settings.alwaysPrecisionMiner ? parseInt(Settings.gemMiningSpeed) + 920 : Settings.gemMiningSpeed;
+
+    currentlyMining = false;
+    lastMined = -1;
+
+    ticks = 0;
+    msbTicks = 0;
+    currentBreakTick = 0;
+    targetGem = '';
+
+    efficiency = 0;
+
+    blockTicks = {};
+    mined = {};
+    maxMined = {};
+
+    Object.keys(blockStrength).forEach((gem) => {
+        blockTicks[gem] = {
+            'regular': Math.round(30 * blockStrength[gem] / miningSpeed),
+            'boost': Math.round(30 * blockStrength[gem] / (miningSpeed * 3)) < 4 ? 4 : Math.round(30 * blockStrength[gem] / (miningSpeed * 3))
+        }
+    });
+
+    Object.keys(blockStrength).forEach((gem) => {
+        maxMined[gem] = {
+            'regular': 0,
+            'boost': 0
+        }
+    });
+
+    Object.keys(blockStrength).forEach((gem) => {
+        mined[gem] = {
+            'regular': 0,
+            'boost': 0
+        }
+    });
+}
 //=========== end block efficiency garbage
 
 //=========== block mining registration
@@ -92,11 +122,14 @@ register("packetReceived", (packet, event) => {
     if (distance < 5.6 && blockState == "minecraft:air") {
         if (hitBlocks.has(`${blockPos.getX()},${blockPos.getY()},${blockPos.getZ()}`)) {
             let blockType = hitBlocks.get(`${blockPos.getX()},${blockPos.getY()},${blockPos.getZ()}`)['type'];
-            currentyMining = true; //FIXME: remove this later
             if (getGemType(blockType)) {
-                mined[getGemType(blockType)][msbActive?'boost':'regular']++;
-                setActiveGems(mined);
-                ChatLib.chat(`Broke ${getGemType(blockType)}`);
+                if (!currentlyMining) {
+                    currentlyMining = true;
+                    maxMined[getGemType(blockType)][msbActive ? 'boost' : 'regular']++;
+                }
+                lastMined = Date.now();
+                mined[getGemType(blockType)][msbActive ? 'boost' : 'regular']++;
+                targetGem = getGemType(blockType);
             }
             hitBlocks.delete(`${blockPos.getX()},${blockPos.getY()},${blockPos.getZ()}`);
         }
@@ -114,13 +147,8 @@ function getTotalMined(minedList) {
     return count;
 }
 
-function setActiveGems(minedList) {
-    regularBlock = Object.keys(minedList).reduce((a, b) => minedList[a]['regular'] > minedList[b]['regular'] ? a : b);
-    msbBlock = Object.keys(minedList).reduce((a, b) => minedList[a]['boost'] > minedList[b]['boost'] ? a : b);
-}
-
 register("tick", () => {
-    if (currentyMining) {
+    if (currentlyMining) {
         ticks++;
         currentBreakTick++;
         if (msbTicks > 0) {
@@ -128,63 +156,47 @@ register("tick", () => {
         } else {
             msbAvailable = false;
         }
-        // TODO: switch this to ratio-basis instead of counting for higher accuracy
-        if (currentBreakTick >= (msbAvailable?blockTicks[msbBlock]['boost']:blockTicks[regularBlock]['regular'])) {
-            currentBreakTick = 0;
-            maxMined[msbAvailable?msbBlock:regularBlock][msbAvailable?'boost':'regular']++;
+        if (currentBreakTick >= (blockTicks[targetGem][msbAvailable ? 'boost' : 'regular'])) {
+            currentBreakTick = currentBreakTick - (blockTicks[targetGem][msbAvailable ? 'boost' : 'regular']);
+            maxMined[targetGem][msbAvailable ? 'boost' : 'regular']++;
         }
 
-        efficiency = getTotalMined(mined)/getTotalMined(maxMined);
+        efficiency = getTotalMined(mined) / getTotalMined(maxMined);
     }
 })
 
-register("chat", (gem, amount, event) => {
+register("chat", () => {
     msbAvailable = true;
     msbTicks = Settings.blueCheese ? 500 : 400;
 }).setChatCriteria(/&r&a&r&6Mining Speed Boost &r&ais now available!&r/g);
 
-register("chat", (gem, amount, event) => {
+register("chat", () => {
     msbActive = true;
 }).setChatCriteria(/&r&aYou used your &r&6Mining Speed Boost &r&aPickaxe Ability!&r/g);
 
-register("chat", (gem, amount, event) => {
+register("chat", () => {
     msbActive = false;
 }).setChatCriteria(/&r&cYour Mining Speed Boost has expired!&r/g);
+
+register("worldLoad", () => {
+    msbAvailable = false;
+    msbActive = false;
+    resetVars();
+});
 //=========== end efficiency calc
-
-//=========== gui
-register("renderOverlay", recentlyHit);
-register("renderOverlay", efficiencyOverlay);
-
-function recentlyHit() {
-    Renderer.drawString(`Recently Hit Blocks:`, 100, 10);
-    let i = 2;
-    hitBlocks.forEach((obj, coord) => {
-        Renderer.drawString(`${coord}, ${obj['time'] + timeout - Date.now()}`, 100, i * 10);
-        i++;
-    });
-}
-
-function efficiencyOverlay() {
-    Renderer.drawString(`Efficiency: ${Math.round(efficiency * 10000) / 100}%`, 300, 10);
-    Renderer.drawString(`Regular: ${regularBlock} Boost: ${msbBlock}`, 300, 20);
-    Renderer.drawString(`Broken: ${JSON.stringify(mined,null,2)}`, 300, 30);
-    Renderer.drawString(`Possible: ${JSON.stringify(maxMined,null,2)}`, 400, 30);
-}
-//=========== end gui
 
 //=========== helpers
 let blockStatesToFind = [
-    {name: "minecraft:stained_glass", variants: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]},
-    {name: "minecraft:stained_glass_pane", variants: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]},
+    { name: "minecraft:stained_glass", variants: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] },
+    { name: "minecraft:stained_glass_pane", variants: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] },
 ]
 
 function filterBlock(block) {
-    if(block == undefined || block?.getRegistryName() == "minecraft:air" || !block instanceof Block) {
+    if (block == undefined || block?.getRegistryName() == "minecraft:air" || !block instanceof Block) {
         return false;
     }
 
-    if(blockStatesToFind.some(obj => obj.name === block.type.getRegistryName() && obj.variants.includes(block.getMetadata()))) {
+    if (blockStatesToFind.some(obj => obj.name === block.type.getRegistryName() && obj.variants.includes(block.getMetadata()))) {
         return true;
     } else {
         return false;
@@ -211,3 +223,9 @@ function getGemType(glassType) {
             return;
     }
 }
+
+function getEfficiency() {
+    return efficiency;
+}
+
+export { getEfficiency };

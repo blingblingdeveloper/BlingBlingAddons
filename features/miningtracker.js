@@ -3,6 +3,7 @@ import { makeObjectDraggable } from "../../Draggable";
 
 import Settings from "../settings";
 import { addCommas, secondsToMessage } from "./util/helperFunctions";
+import { getEfficiency } from "./efficiency";
 
 let pristine = 18.63; // IDK if/how to get from stats, maybe settings input box, should be toggleable
 
@@ -118,10 +119,26 @@ register("renderOverlay", () => {
         if (startTime <= 0 && Settings.hide)
             return;
     let lines = [];
-    lines[0] = `Uptime: ${(startTime <= 0)?"n/a":secondsToMessage((Date.now() - startTime) / 1000)}`;
-    lines[1] = `$/hr: ${money == null?"n/a":"$"+addCommas(Settings.roughGems?(moneyPerHour+roughmoneyPerHour):moneyPerHour)}`;
-    lines[2] = `fl/hr: ${money == null?"n/a":Math.round((Settings.roughGems?(moneyPerHour+roughmoneyPerHour) / flawless:moneyPerHour / flawless) * 10) / 10}`;
+    lines[0] = `Uptime: ${(startTime <= 0) ? "n/a" : secondsToMessage((Date.now() - startTime) / 1000)}`;
+    lines[1] = `$/hr: ${money == null ? "n/a" : "$" + addCommas(Settings.roughGems ? (moneyPerHour + roughmoneyPerHour) : moneyPerHour)}`;
+    lines[2] = `fl/hr: ${money == null ? "n/a" : Math.round((Settings.roughGems ? (moneyPerHour + roughmoneyPerHour) / flawless : moneyPerHour / flawless) * 10) / 10}`;
+    if (Settings.showEfficiency) {
+        lines[3] = `Efficiency:`;
+        let efficiencyText = new Text(`${Math.round(getEfficiency() * 10000) / 100}%`, text.getX()+56, text.getY()+30);
+        efficiencyText.setColor(efficiencyColor(Math.round(getEfficiency() * 10000) / 100).getRGB());
+        efficiencyText.draw();
+    }
     text.setString(lines.join("\n"));
     text.setColor(rgbToColorInt(Settings.trackerColor.getRed(), Settings.trackerColor.getGreen(), Settings.trackerColor.getBlue()));
     text.draw();
 });
+
+
+function efficiencyColor(value) {
+    const Color = Java.type("java.awt.Color");
+
+    let h = Math.round(120/100 * value)/360;
+    let s = 1.0;
+    let b = Math.round(50-((value-50)**2)/125)/50;
+    return Color.getHSBColor(h, s, b);
+}
