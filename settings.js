@@ -74,7 +74,7 @@ class Settings {
         name: '§aPing Glide Sounds',
         description: 'toggles ping glide sounds',
         category: 'Mining Skills',
-        subcategory: 'm',
+        subcategory: 'Ping Glide',
         placeholder: 'Activate',
     })
     pingGlide = true;
@@ -82,36 +82,36 @@ class Settings {
         name: 'sound',
         description: 'specify what sound to use(1.8 sounds only)',
         category: 'Mining Skills',
-        subcategory: 'm',
+        subcategory: 'Ping Glide',
         placeholder: 'Activate',
     })
     pingGlideSound = "dig.stone";
     @SliderProperty({
-        name: "volume",
-        description: "Volume of ping glide sound.",
-        category: "Mining Skills",
-        subcategory: "m",
+        name: 'volume',
+        description: 'Volume of ping glide sound.',
+        category: 'Mining Skills',
+        subcategory: 'Ping Glide',
         min: 0,
         max: 100
     })
     vol = 32;
     @SliderProperty({
-        name: "delay",
-        description: "Delay (in ms)",
-        category: "Mining Skills",
-        subcategory: "m",
+        name: 'delay',
+        description: 'Delay (in ms)',
+        category: 'Mining Skills',
+        subcategory: 'Ping Glide',
         min: 0,
         max: 2000
     })
-    del = 250;
+    pingDelay = 250;
     @SwitchProperty({
-        name: "speed",
+        name: 'speed',
         description: 'toggles ping glide sounds during speed boost',
         category: 'Mining Skills',
-        subcategory: 'm',
+        subcategory: 'Ping Glide',
         placeholder: 'Activate',
     })
-    sp = true;
+    pingSpeedBoost = false;
    // outer blockhighlight
 
    @SwitchProperty({
@@ -402,6 +402,7 @@ hide = false;
     subcategory: 'edit',
 })
 coinTracker = true;
+
 @ButtonProperty({
     name: "I need help what do i do?",
     description: "Displays a list of all the commands in chat.",
