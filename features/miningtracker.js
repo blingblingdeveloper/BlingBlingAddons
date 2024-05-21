@@ -24,6 +24,7 @@ register("chat", (gem, amount, event) => {
         resetVars();
     lastForceNPC = Settings.forceNPC;
     lastGemstoneType = Settings.gemstoneType;
+
     let type;
     switch (Settings.gemstoneType) {
         case 0:
@@ -48,6 +49,7 @@ register("chat", (gem, amount, event) => {
 
     if (startTime === 0) return;
     if (startTime === -1) {
+        // TODO: change npc check to earlier to save on api call
         startTime = 0;
         request({
             url: "https://api.hypixel.net/skyblock/bazaar",
@@ -77,7 +79,7 @@ register("chat", (gem, amount, event) => {
     money += (gemstoneCosts[id] / Math.pow(80, (3 - Settings.gemstoneType))) * amount;
     moneyPerHour = Math.floor(money / ((Date.now() - startTime) / (1000 * 60 * 60)));
     roughmoneyPerHour = Math.floor((1 - (pristine / 100)) / (pristine / 100) * (moneyPerHour / 80));
-    flawless = gemstoneCosts["FLAWLESS" + "_" + gem.toUpperCase() + "_GEM"]
+    flawless = gemstoneCosts["FLAWLESS" + "_" + gem.toUpperCase() + "_GEM"];
 }).setChatCriteria(/&r&d&lPRISTINE! &r&fYou found &r&a. Flawed (.+) Gemstone &r&8x(\d+)&r&f!&r/g);
 
 register("step", () => {
@@ -94,11 +96,9 @@ register("command", () => {
 function resetVars() {
     money = null;
     moneyPerHour = null;
-    roughMoneyPerHour = null;
+    roughmoneyPerHour = null;
     startTime = -1;
     lastMined = -1;
-    if (Settings.hide) //setting that hides display after not mining for a while
-        display.clearLines()
 }
 
 const text = new Text("", 5, 5);
@@ -114,14 +114,17 @@ function rgbToColorInt(red, green, blue) {
 }
 
 register("renderOverlay", () => {
-    if (Settings.coinTracker)
+    if (Settings.coinTracker) {
         if (startTime <= 0 && Settings.hide)
             return;
-    let lines = [];
-    lines[0] = `Uptime: ${(startTime <= 0)?"n/a":secondsToMessage((Date.now() - startTime) / 1000)}`;
-    lines[1] = `$/hr: ${money == null?"n/a":"$"+addCommas(Settings.roughGems?(moneyPerHour+roughmoneyPerHour):moneyPerHour)}`;
-    lines[2] = `fl/hr: ${money == null?"n/a":Math.round((Settings.roughGems?(moneyPerHour+roughmoneyPerHour) / flawless:moneyPerHour / flawless) * 10) / 10}`;
-    text.setString(lines.join("\n"));
-    text.setColor(rgbToColorInt(Settings.trackerColor.getRed(), Settings.trackerColor.getGreen(), Settings.trackerColor.getBlue()));
-    text.draw();
+        
+        let lines = [];
+        lines[0] = `Uptime: ${(startTime <= 0)?"n/a":secondsToMessage((Date.now() - startTime) / 1000)}`;
+        lines[1] = `$/hr: ${money == null?"n/a":"$"+addCommas(Settings.roughGems?moneyPerHour+roughmoneyPerHour:moneyPerHour)} ${Settings.roughGems?"(+ rough)":""}`;
+        lines[2] = `fl/hr: ${money == null?"n/a":Math.round((Settings.roughGems?moneyPerHour+roughmoneyPerHour:moneyPerHour) / flawless * 10) / 10} ${Settings.roughGems?"(+ rough)":""}`;
+
+        text.setString(lines.join("\n"));
+        text.setColor(rgbToColorInt(Settings.trackerColor.getRed(), Settings.trackerColor.getGreen(), Settings.trackerColor.getBlue()));
+        text.draw();
+    }
 });
