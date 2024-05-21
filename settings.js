@@ -20,7 +20,7 @@
         @SliderProperty, 
         @ButtonProperty} from 'Vigilance';
 @Vigilant("blingblingaddons")
-@Vigilant('blingblingaddons', 'config',{
+@Vigilant('blingblingaddons', 'Config',{
     getCategoryComparator: () => (a, b) => {
         // By default, categories, subcategories, and properties are sorted alphabetically.
         // You can override this behavior by returning a negative number if a should be sorted before b,
@@ -38,35 +38,35 @@ class Settings {
         name: 'Gemstone Mining Speed',
         description: 'Enter your gemstone mining speed',
         category: 'Mining Stats',
-        subcategory: 'stats',
+        subcategory: 'i\'m dumb, we\'ll import stats later <3',
     })
     gemMiningSpeed = "9576";
     @TextProperty({
         name: 'Gemstone Fortune',
         description: 'Enter your gemstone fortune',
         category: 'Mining Stats',
-        subcategory: 'stats',
+        subcategory: 'i\'m dumb, we\'ll import stats later <3',
     })
     gemFortune = "2497";
     @TextProperty({
         name: 'Pristine',
         description: 'Enter your pristine',
         category: 'Mining Stats',
-        subcategory: 'stats',
+        subcategory: 'i\'m dumb, we\'ll import stats later <3',
     })
     pristine = "18.63";
     @SwitchProperty({
         name: 'Precision Miner',
         description: 'Always use precision miner in calculations',
         category: 'Mining Stats',
-        subcategory: 'stats',
+        subcategory: 'i\'m dumb, we\'ll import stats later <3',
     })
     alwaysPrecisionMiner = false;
     @SwitchProperty({
         name: 'Blue Cheese',
         description: 'Toggle on if you have a Blue Cheese Goblin Omelette',
         category: 'Mining Stats',
-        subcategory: 'stats',
+        subcategory: 'i\'m dumb, we\'ll import stats later <3',
     })
     blueCheese = false;
 
@@ -371,7 +371,7 @@ showEfficiency = false;
 @ButtonProperty({
     name: "Move Coin Tracker Gui",
     description: "Move the location of the coin tracker gui.",
-    subcategory: "edit",
+    subcategory: "Edit",
     category: "Gui",
     placeholder: "Open"
 })
@@ -385,26 +385,26 @@ myButtonAction() {
     name: 'Coin tracker color',
     description: `sets the color of coin ctracker)`,
     category: 'Gui',
-    subcategory: 'edit',
+    subcategory: 'Edit',
 })
 trackerColor = Color.WHITE;
 @SwitchProperty({
     name: 'Auto Hide coin tracker',
     description: `after a certain amount of time, hide coin tracker`,
     category: 'Gui',
-    subcategory: 'edit',
+    subcategory: 'Edit',
 })
 hide = false;
 @SwitchProperty({
     name: 'Toggle Coin Tracker',
     description: `show/hide tracker`,
     category: 'Gui',
-    subcategory: 'edit',
+    subcategory: 'Edit',
 })
 coinTracker = true;
 
 @ButtonProperty({
-    name: "I need help what do i do?",
+    name: "I need help what do I do?",
     description: "Displays a list of all the commands in chat.",
     subcategory: "Help",
     category: "HELP",
