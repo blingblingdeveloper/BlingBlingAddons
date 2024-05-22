@@ -1,83 +1,16 @@
 let blockStatesToFind = [
     {
         name: "minecraft:stained_glass",
-        data: {
-            color: ['white', 'orange', 'magenta', 'lightBlue', 'yellow', 'lime', 'pink', 'gray', 'silver', 'cyan', 'purple', 'blue', 'brown', 'green', 'red', 'black']
-        }
+        color: ['white', 'orange', 'magenta', 'lightBlue', 'yellow', 'lime', 'pink', 'gray', 'silver', 'cyan', 'purple', 'blue', 'brown', 'green', 'red', 'black']
     },
     {
         name: "minecraft:stained_glass_pane",
-        data: {
-            color: ['white', 'orange', 'magenta', 'lightBlue', 'yellow', 'lime', 'pink', 'gray', 'silver', 'cyan', 'purple', 'blue', 'brown', 'green', 'red', 'black']
-        }
+        color: ['white', 'orange', 'magenta', 'lightBlue', 'yellow', 'lime', 'pink', 'gray', 'silver', 'cyan', 'purple', 'blue', 'brown', 'green', 'red', 'black']
     },
 ]
 
-function findVein(blocksToSearch) {
-    let veinWaypoints = [];
-    let maxSearchSteps = 15;
-    let searchRadius = 1.75;
-    let searchedBlocks = new Map();
-
-    // Use a sphere shape to find the vein's blocks
-    let searchShape = genSphere(searchRadius);
-    for (let currentStep = 1; currentStep <= maxSearchSteps; currentStep++) {
-        let newBlocks = new Map();
-
-        blocksToSearch.forEach(block => { //TODO: this could probably use more of the new system
-            let blockType = [
-                { name: "minecraft:stained_glass", data: {color: block.data.color} },
-                { name: "minecraft:stained_glass_pane", data: {color: block.data.color} },
-            ];
-
-            searchedBlocks.set(getcoords(block), block);
-            filterShape(new Vec3i(block.x, block.y, block.z), searchShape, blockType).forEach(newblock => {
-                if (!(newBlocks.has(getcoords(newblock)) || searchedBlocks.has(getcoords(newblock)))) {
-                    newBlocks.set(getcoords(newblock), newblock);
-                }
-            });
-        });
-        blocksToSearch = newBlocks;
-    }
-
-    // Put all the blocks in the data structure
-    searchedBlocks.forEach(block => {
-        veinWaypoints.push(getBlockAt(new Vec3i(block.x, block.y, block.z)));
-    });
-
-    return veinWaypoints;
-}
-
-function filterBlock(block, filter) {
-    if (filter == null) {
-        filter = blockStatesToFind;
-    }
-
-    let matchingName = filter.some(blockFilter => blockFilter.name === block.name);
-    let matchingData = filter.some(blockFilter => Object.keys(blockFilter.data).every(dataFilter => {
-        return blockFilter.data[dataFilter].includes(block.data[dataFilter])
-    }));
-
-    if (matchingName && matchingData) {
-        return true;
-    }
-    return false;
-}
-
-function getBlockAt(pos) {
-    let blockPos = new BlockPos(pos)
-    let block = {
-        name: World.getBlockStateAt(blockPos).blockLocation.toString(),
-        x: blockPos.x,
-        y: blockPos.y,
-        z: blockPos.z,
-        data: {}
-    }
-
-    World.getBlockStateAt(blockPos).func_177228_b().entrySet().forEach(property => {
-        block.data[property.getKey().func_177701_a()] = typeof property.getValue() !== 'object' ? property.getValue() : property.getValue().func_176610_l();
-    })
-    return block;
+function getcoords(block) {
+    return `${block.x},${block.y},${block.z}`;
 }
 
 function genSphere(radius) { //TODO: probably move to helperFunctions
@@ -96,26 +29,73 @@ function genSphere(radius) { //TODO: probably move to helperFunctions
     return shape;
 }
 
-function filterShape(position, shape, blockType = blockStatesToFind) {
-    let matchingBlocks = [];
-    let toSearch = [];
-    let blockPos = new BlockPos(position);
-
-    shape.forEach(offset => {
-        toSearch.push(getBlockAt(blockPos.add(offset)));
+function getInternalBlockAt(pos) {
+    let block = {
+        name: World.getBlockStateAt(pos).blockLocation.toString(),
+        x: pos.x,
+        y: pos.y,
+        z: pos.z
+    }
+    World.getBlockStateAt(pos).func_177228_b().entrySet().forEach(property => {
+        if (property.getKey().func_177701_a() == 'color') {
+            block.color = property.getValue().toString();
+        }
     });
 
-    for (let i = 0; i < toSearch.length; i++) {
-        if (filterBlock(toSearch[i], blockType)) {
-            matchingBlocks.push(toSearch[i]);
-        }
+    return block;
+}
+
+function filterBlock(block, filter) {
+    if (filter == null) {
+        filter = blockStatesToFind;
     }
+    return filter.some(state => { return (state.name == block.name && state.color.includes(block.color))}) // TODO: have this support more things :/
+}
+
+function filterShape(pos, shape, blockType = blockStatesToFind) {
+    let blockPos = new BlockPos(pos);
+    let matchingBlocks = []
+    shape.forEach(offset => {
+        let block = getInternalBlockAt(blockPos.add(offset));
+        if (filterBlock(block, blockType)) {
+            matchingBlocks.push(block);
+        }
+    });
 
     return matchingBlocks;
 }
 
-function getcoords(block) {
-    return `${block.x},${block.y},${block.z}`;
+function findVein(blocksToSearch, maxSearchSteps = 5, searchRadius = 1.75) {
+    let veinBlocks = [];
+    let foundBlocks = new Map();
+
+    // Use a sphere shape to find the vein's blocks
+    let searchShape = genSphere(searchRadius);
+    for (let currentStep = 1; currentStep <= maxSearchSteps; currentStep++) {
+        let newBlocks = new Map();
+
+        blocksToSearch.forEach(block => {
+            let blockType = [
+                { name: "minecraft:stained_glass", color: block.color },
+                { name: "minecraft:stained_glass_pane", color: block.color },
+            ];
+
+            foundBlocks.set(getcoords(block), block);
+            filterShape(new Vec3i(block.x, block.y, block.z), searchShape, blockType).forEach(newblock => {
+                if (!(newBlocks.has(getcoords(newblock)) || foundBlocks.has(getcoords(newblock)))) {
+                    newBlocks.set(getcoords(newblock), newblock);
+                }
+            });
+        });
+        blocksToSearch = newBlocks;
+    }
+
+    // Put all the blocks in the data structure
+    foundBlocks.forEach((block) => {
+        veinBlocks.push(block);
+    });
+
+    return veinBlocks;
 }
 
-export { filterBlock, getBlockAt, genSphere, filterShape, findVein, getcoords }
+export { filterBlock, getInternalBlockAt, genSphere, filterShape, findVein, getcoords }

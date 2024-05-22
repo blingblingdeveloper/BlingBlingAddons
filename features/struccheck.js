@@ -1,6 +1,6 @@
 import { drawCustomEspBox } from "./util/drawCustomEspBox.js"
 import Settings from "../settings"
-import { findVein, genSphere, filterShape, getcoords, filterBlock, getBlockAt } from "./util/world.js";
+import { findVein, genSphere, filterShape, getcoords, filterBlock, getInternalBlockAt } from "./util/world.js";
 import { calcPlayerEyeDist } from "./util/player.js";
 import { rgbToColorInt } from "./util/helperFunctions.js";
 
@@ -24,23 +24,23 @@ register("command", () => {
             return;
         }
     }
-
+    
     route.forEach(waypoint => {
         let initialSearchRadius = 3;
         let waypointPos = new Vec3i(waypoint.x, waypoint.y + 2, waypoint.z);
-
+        
         let searchStart = new Map();
-
+        console.log("finding vein start");
         // Find the vein start
         filterShape(waypointPos, genSphere(initialSearchRadius)).forEach(newblock => {
             if (!searchStart.has(getcoords(newblock))) {
                 searchStart.set(getcoords(newblock), newblock);
             }
         });
-
+        
         waypoint.options.vein = findVein(searchStart);
     });
-
+    
     ChatLib.chat("Loaded vein guesses");
 }).setName('loadrouteguess').setAliases(['lrg']);
 
@@ -86,7 +86,7 @@ register('command', () => {
                     }
                 },
             ]
-            if (!filterBlock(getBlockAt(new Vec3i(block.x, block.y, block.z)), filter)) {
+            if (!filterBlock(getInternalBlockAt(new Vec3i(block.x, block.y, block.z)), filter)) {
                 missingBlocks.push(block);
             }
         });
