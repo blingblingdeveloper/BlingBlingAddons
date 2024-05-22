@@ -20,24 +20,61 @@
         @SliderProperty, 
         @ButtonProperty} from 'Vigilance';
 @Vigilant("blingblingaddons")
-@Vigilant('blingblingaddons', 'config',{
+@Vigilant('blingblingaddons', 'Config',{
     getCategoryComparator: () => (a, b) => {
         // By default, categories, subcategories, and properties are sorted alphabetically.
         // You can override this behavior by returning a negative number if a should be sorted before b,
         // or a positive number if b should be sorted before a.
 
         // In this case, we can put Not general! to be above general.
-        const categories = ["Waypoints", "Mining Skills","bhl","Struc Check","Gui","HELP"];
+        const categories = ["Waypoints", "Mining Skills","bhl","Struc Check","Gui","Mining Stats","HELP"];
 
         return categories.indexOf(a.name) - categories.indexOf(b.name);
     },
 })
 class Settings {
+    //TODO: get from player stats automatically somehow
+    @TextProperty({
+        name: 'Gemstone Mining Speed',
+        description: 'Enter your gemstone mining speed',
+        category: 'Mining Stats',
+        subcategory: 'i\'m dumb, we\'ll import stats later <3',
+    })
+    gemMiningSpeed = "9576";
+    @TextProperty({
+        name: 'Gemstone Fortune',
+        description: 'Enter your gemstone fortune',
+        category: 'Mining Stats',
+        subcategory: 'i\'m dumb, we\'ll import stats later <3',
+    })
+    gemFortune = "2497";
+    @TextProperty({
+        name: 'Pristine',
+        description: 'Enter your pristine',
+        category: 'Mining Stats',
+        subcategory: 'i\'m dumb, we\'ll import stats later <3',
+    })
+    pristine = "18.63";
+    @SwitchProperty({
+        name: 'Precision Miner',
+        description: 'Always use precision miner in calculations',
+        category: 'Mining Stats',
+        subcategory: 'i\'m dumb, we\'ll import stats later <3',
+    })
+    alwaysPrecisionMiner = false;
+    @SwitchProperty({
+        name: 'Blue Cheese',
+        description: 'Toggle on if you have a Blue Cheese Goblin Omelette',
+        category: 'Mining Stats',
+        subcategory: 'i\'m dumb, we\'ll import stats later <3',
+    })
+    blueCheese = false;
+
     @SwitchProperty({
         name: '§aPing Glide Sounds',
         description: 'toggles ping glide sounds',
         category: 'Mining Skills',
-        subcategory: 'm',
+        subcategory: 'Ping Glide',
         placeholder: 'Activate',
     })
     pingGlide = true;
@@ -45,36 +82,36 @@ class Settings {
         name: 'sound',
         description: 'specify what sound to use(1.8 sounds only)',
         category: 'Mining Skills',
-        subcategory: 'm',
+        subcategory: 'Ping Glide',
         placeholder: 'Activate',
     })
     pingGlideSound = "dig.stone";
     @SliderProperty({
-        name: "volume",
-        description: "Volume of ping glide sound.",
-        category: "Mining Skills",
-        subcategory: "m",
+        name: 'volume',
+        description: 'Volume of ping glide sound.',
+        category: 'Mining Skills',
+        subcategory: 'Ping Glide',
         min: 0,
         max: 100
     })
     vol = 32;
     @SliderProperty({
-        name: "delay",
-        description: "Delay (in ms)",
-        category: "Mining Skills",
-        subcategory: "m",
+        name: 'delay',
+        description: 'Delay (in ms)',
+        category: 'Mining Skills',
+        subcategory: 'Ping Glide',
         min: 0,
         max: 2000
     })
-    del = 250;
+    pingDelay = 250;
     @SwitchProperty({
-        name: "speed",
+        name: 'speed',
         description: 'toggles ping glide sounds during speed boost',
         category: 'Mining Skills',
-        subcategory: 'm',
+        subcategory: 'Ping Glide',
         placeholder: 'Activate',
     })
-    sp = true;
+    pingSpeedBoost = false;
    // outer blockhighlight
 
    @SwitchProperty({
@@ -309,15 +346,32 @@ forceNPC = false;
 sellOffer = true;
 @SwitchProperty({
     name: 'Include Rough Estimate?',
-    description: 'Estimates rough gemstone profit.',
+    description: 'Add rough gemstone profit estimate into $/hr and fl/hr.',
     category: 'Gui',
     subcategory: 'Coin Tracker',
 })
-roughGems = true;
+roughGems = false;
+@SliderProperty({
+    name: 'Reset delay',
+    description: 'How long to wait before resetting the timer (seconds).',
+    category: 'Gui',
+    subcategory: 'Coin Tracker',
+    min: 5,
+    max: 30
+})
+resetDelay=10;
+@SwitchProperty({
+    name: 'Efficiency Tracker',
+    description: 'Add efficiency to the coin tracker?',
+    category: 'Gui',
+    subcategory: 'Coin Tracker',
+})
+showEfficiency = false;
+
 @ButtonProperty({
-    name: "Coin Tracker Gui",
+    name: "Move Coin Tracker Gui",
     description: "Move the location of the coin tracker gui.",
-    subcategory: "edit",
+    subcategory: "Edit",
     category: "Gui",
     placeholder: "Open"
 })
@@ -331,25 +385,26 @@ myButtonAction() {
     name: 'Coin tracker color',
     description: `sets the color of coin ctracker)`,
     category: 'Gui',
-    subcategory: 'edit',
+    subcategory: 'Edit',
 })
 trackerColor = Color.WHITE;
 @SwitchProperty({
     name: 'Auto Hide coin tracker',
     description: `after a certain amount of time, hide coin tracker`,
     category: 'Gui',
-    subcategory: 'edit',
+    subcategory: 'Edit',
 })
 hide = false;
 @SwitchProperty({
     name: 'Toggle Coin Tracker',
     description: `show/hide tracker`,
     category: 'Gui',
-    subcategory: 'edit',
+    subcategory: 'Edit',
 })
 coinTracker = true;
+
 @ButtonProperty({
-    name: "I need help what do i do?",
+    name: "I need help what do I do?",
     description: "Displays a list of all the commands in chat.",
     subcategory: "Help",
     category: "HELP",

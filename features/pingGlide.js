@@ -1,52 +1,42 @@
 import Settings from "../settings"
 
-register('command', () => Settings.openGUI() ).setName('bling').setAliases(['b']);
+register('command', () => Settings.openGUI()).setName('bling').setAliases(['b']);
 let recentTimeout;
+let msbActive = false;
 let timeoutId = 0;
 
 register("packetSent", (packet, event) => {
-  if (packet.func_180762_c().toString().includes("START") && Player.lookingAt().toString().includes('glass')) {
-    let currentId = ++timeoutId; // Increment the timeoutId for each new timeout set
+    if (Settings.pingGlide && !(msbActive && !Settings.pingSpeedBoost)) {
+        if (packet.func_180762_c().toString().includes("START") && Player.lookingAt().toString().includes('glass')) {
+            let currentId = ++timeoutId; // Increment the timeoutId for each new timeout set
 
-    if (recentTimeout) {
-      clearTimeout(recentTimeout); // Clear the previous timeout
+            if (recentTimeout) {
+                clearTimeout(recentTimeout); // Clear the previous timeout
+            }
+
+            recentTimeout = setTimeout(function (id) {
+                return function () {
+                    if (id === timeoutId) {
+                        World.playSound(Settings.pingGlideSound, parseFloat(Settings.vol) / 100, 1);
+                    }
+                    else {
+                        cancel(event)
+                    }
+                };
+            }(currentId), Settings.pingDelay);
+
+        }
     }
-
-    recentTimeout = setTimeout(function(id) {
-      return function() {
-        if (id === timeoutId) {
-          World.playSound(Settings.pingGlideSound, parseFloat(Settings.vol) / 100, 1);
-        }
-        else{
-          cancel(event)
-        }
-      };
-    }(currentId), Settings.del);
-
-  }
 }).setFilteredClass(net.minecraft.network.play.client.C07PacketPlayerDigging);
 
-//working on a way to disable it during msb but for now just totally ignore this
+register("chat", () => {
+    msbActive = true;
+}).setChatCriteria(/&r&aYou used your &r&6Mining Speed Boost &r&aPickaxe Ability!&r/g);
 
-// export function capitalizeFirst(sentence) {
-//     if (sentence == undefined) return sentence
-//     let words = sentence.split(" ")
-//     let capitalized = words.map(word => {
-//         return word[0].toUpperCase() + word.slice(1)
-//     })
+register("chat", () => {
+    msbActive = false;
+}).setChatCriteria(/&r&cYour Mining Speed Boost has expired!&r/g);
 
-//     return capitalized.join(" ")
-// }
-
-// register("chat", (abilityName, event) => {
-//   selectedAbility = capitalizeFirst(abilityName)
-//   addAbility(abilityName)
-// }).setCriteria(/&r&aYou used your &r&6(.+) &r&aPickaxe Ability!&r/g)
-
-
-// register("worldLoad", () => {
-//   activeAbilities.forEach(ability => {
-//       ability.timer = ability.maxTimer/2
-// Chatlib.chat(ability.timer)
-//   })
-// })
+register("worldLoad", () => {
+    msbActive = false;
+})
