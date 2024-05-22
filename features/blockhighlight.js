@@ -54,10 +54,10 @@ function drawBlock(x, y, z) {
     }
     if (Settings.innerBlockHighlightSwitch) {
         RenderLib.drawInnerEspBox(
-            Math.floor(x) + .5,
-            Math.floor(y),
+            Math.floor(x) + 0.5,
+            Math.floor(y) - 0.005,
             Math.floor(z) + 0.5,
-            1, 1,
+            1.01, 1.01,
             Settings.innerBlockHighlightColor.getRed(),
             Settings.innerBlockHighlightColor.getGreen(),
             Settings.innerBlockHighlightColor.getBlue(),

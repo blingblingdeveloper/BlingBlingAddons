@@ -24,11 +24,11 @@ register("command", () => {
             return;
         }
     }
-    
+
     route.forEach(waypoint => {
         let initialSearchRadius = 3;
         let waypointPos = new Vec3i(waypoint.x, waypoint.y + 2, waypoint.z);
-        
+
         let searchStart = new Map();
         console.log("finding vein start");
         // Find the vein start
@@ -37,10 +37,10 @@ register("command", () => {
                 searchStart.set(getcoords(newblock), newblock);
             }
         });
-        
+
         waypoint.options.vein = findVein(searchStart);
     });
-    
+
     ChatLib.chat("Loaded vein guesses");
 }).setName('loadrouteguess').setAliases(['lrg']);
 
