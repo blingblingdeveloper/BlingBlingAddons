@@ -1,13 +1,13 @@
 let blockStatesToFind = [
     {
         name: "minecraft:stained_glass",
-        variants: {
+        data: {
             color: ['white', 'orange', 'magenta', 'lightBlue', 'yellow', 'lime', 'pink', 'gray', 'silver', 'cyan', 'purple', 'blue', 'brown', 'green', 'red', 'black']
         }
     },
     {
         name: "minecraft:stained_glass_pane",
-        variants: {
+        data: {
             color: ['white', 'orange', 'magenta', 'lightBlue', 'yellow', 'lime', 'pink', 'gray', 'silver', 'cyan', 'purple', 'blue', 'brown', 'green', 'red', 'black']
         }
     },
@@ -26,8 +26,8 @@ function findVein(blocksToSearch) {
 
         blocksToSearch.forEach(block => { //TODO: this could probably use more of the new system
             let blockType = [
-                { name: "minecraft:stained_glass", variants: [block.data.color] },
-                { name: "minecraft:stained_glass_pane", variants: [block.data.color] },
+                { name: "minecraft:stained_glass", data: {color: block.data.color} },
+                { name: "minecraft:stained_glass_pane", data: {color: block.data.color} },
             ];
 
             searchedBlocks.set(getcoords(block), block);
@@ -54,11 +54,11 @@ function filterBlock(block, filter) {
     }
 
     let matchingName = filter.some(blockFilter => blockFilter.name === block.name);
-    let matchingVariant = filter.some(blockFilter => Object.keys(blockFilter.variants).every(variantFilter => {
-        return blockFilter.variants[variantFilter].includes(block.data[variantFilter])
+    let matchingData = filter.some(blockFilter => Object.keys(blockFilter.data).every(dataFilter => {
+        return blockFilter.data[dataFilter].includes(block.data[dataFilter])
     }));
 
-    if (matchingName && matchingVariant) {
+    if (matchingName && matchingData) {
         return true;
     }
     return false;

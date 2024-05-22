@@ -1,6 +1,6 @@
 import { drawCustomEspBox } from "./util/drawCustomEspBox.js"
 import Settings from "../settings"
-import { findVein, genSphere, filterShape, getcoords } from "./util/world.js";
+import { findVein, genSphere, filterShape, getcoords, filterBlock, getBlockAt } from "./util/world.js";
 import { calcPlayerEyeDist } from "./util/player.js";
 import { rgbToColorInt } from "./util/helperFunctions.js";
 
@@ -14,9 +14,8 @@ register('command', () => {
 
 register('command', () => {
     ChatLib.command(`ct copy ${JSON.stringify(route)}`, true)
-}).setName('exportstruc').setAliases(['se']);
+}).setName('exportstruc').setAliases(['es']);
 
-// TODO: convert to new block format thing
 // TODO: add strucCheck settings
 // TODO: block type filter in command?
 register("command", () => {
@@ -76,10 +75,18 @@ register('command', () => {
     missingRoute = JSON.parse(JSON.stringify(route));;
     ChatLib.chat("checking rn bro");
 
-    missingRoute.forEach(waypoint => {
+    missingRoute.forEach(waypoint => { // FIXME: add filter support for block, this sucks
         missingBlocks = [];
         waypoint.options.vein.forEach(block => {
-            if (block.blockId != World.getBlockAt(block.x, block.y, block.z).getType().getID()) {
+            let filter = [
+                {
+                    name: block.name,
+                    data: {
+                        color: [block.data.color]
+                    }
+                },
+            ]
+            if (!filterBlock(getBlockAt(new Vec3i(block.x, block.y, block.z)), filter)) {
                 missingBlocks.push(block);
             }
         });
