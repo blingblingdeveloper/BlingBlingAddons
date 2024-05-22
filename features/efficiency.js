@@ -1,5 +1,5 @@
 import Settings from "../settings";
-import { filterBlock } from "./util/world";
+import { filterBlock, getBlockAt } from "./util/world";
 import { getMsbActive } from "./util/player";
 
 let hitBlocks = new Map();
@@ -88,7 +88,7 @@ function resetVars() {
 
 //=========== block mining registration
 register("hitBlock", (block, event) => {
-    if (filterBlock(block) && !hitBlocks.has(block)) {
+    if (filterBlock(getBlockAt(block.pos)) && !hitBlocks.has(block)) {
         hitBlocks.set(`${block.getX()},${block.getY()},${block.getZ()}`, {
             'type': block.getMetadata(),
             'time': Date.now()

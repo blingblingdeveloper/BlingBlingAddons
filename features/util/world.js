@@ -1,12 +1,11 @@
-// FIXME: color names
 let blockStatesToFind = [
-    { 
+    {
         name: "minecraft:stained_glass",
         variants: {
             color: ['white', 'orange', 'magenta', 'lightBlue', 'yellow', 'lime', 'pink', 'gray', 'silver', 'cyan', 'purple', 'blue', 'brown', 'green', 'red', 'black']
         }
     },
-    { 
+    {
         name: "minecraft:stained_glass_pane",
         variants: {
             color: ['white', 'orange', 'magenta', 'lightBlue', 'yellow', 'lime', 'pink', 'gray', 'silver', 'cyan', 'purple', 'blue', 'brown', 'green', 'red', 'black']
@@ -25,14 +24,14 @@ function findVein(blocksToSearch) {
     for (let currentStep = 1; currentStep <= maxSearchSteps; currentStep++) {
         let newBlocks = new Map();
 
-        blocksToSearch.forEach(block => {
+        blocksToSearch.forEach(block => { //TODO: this could probably use more of the new system
             let blockType = [
-                { name: "minecraft:stained_glass", variants: [block.getMetadata()] },
-                { name: "minecraft:stained_glass_pane", variants: [block.getMetadata()] },
+                { name: "minecraft:stained_glass", variants: [block.data.color] },
+                { name: "minecraft:stained_glass_pane", variants: [block.data.color] },
             ];
 
             searchedBlocks.set(getcoords(block), block);
-            filterShape(block, searchShape, blockType).forEach(newblock => {
+            filterShape(new Vec3i(block.x, block.y, block.z), searchShape, blockType).forEach(newblock => {
                 if (!(newBlocks.has(getcoords(newblock)) || searchedBlocks.has(getcoords(newblock)))) {
                     newBlocks.set(getcoords(newblock), newblock);
                 }
@@ -43,12 +42,7 @@ function findVein(blocksToSearch) {
 
     // Put all the blocks in the data structure
     searchedBlocks.forEach(block => {
-        veinWaypoints.push({
-            x: block.getX(),
-            y: block.getY(),
-            z: block.getZ(),
-            blockId: block.getType().getID() // TODO: use other system?
-        })
+        veinWaypoints.push(getBlockAt(new Vec3i(block.x, block.y, block.z)));
     });
 
     return veinWaypoints;
@@ -61,7 +55,7 @@ function filterBlock(block, filter) {
 
     let matchingName = filter.some(blockFilter => blockFilter.name === block.name);
     let matchingVariant = filter.some(blockFilter => Object.keys(blockFilter.variants).every(variantFilter => {
-        return blockFilter.variants[variantFilter].includes(block[variantFilter])
+        return blockFilter.variants[variantFilter].includes(block.data[variantFilter])
     }));
 
     if (matchingName && matchingVariant) {
@@ -73,16 +67,16 @@ function filterBlock(block, filter) {
 function getBlockAt(pos) {
     let blockPos = new BlockPos(pos)
     let block = {
-        name: World.getBlockStateAt().blockLocation.toString(),
+        name: World.getBlockStateAt(blockPos).blockLocation.toString(),
         x: blockPos.x,
         y: blockPos.y,
-        z: blockPos.z
+        z: blockPos.z,
+        data: {}
     }
 
     World.getBlockStateAt(blockPos).func_177228_b().entrySet().forEach(property => {
-        block[property.getKey().func_177701_a()] = typeof property.getValue() !== 'object' ? property.getValue() : property.getValue().func_176610_l();
+        block.data[property.getKey().func_177701_a()] = typeof property.getValue() !== 'object' ? property.getValue() : property.getValue().func_176610_l();
     })
-
     return block;
 }
 
@@ -105,9 +99,10 @@ function genSphere(radius) { //TODO: probably move to helperFunctions
 function filterShape(position, shape, blockType = blockStatesToFind) {
     let matchingBlocks = [];
     let toSearch = [];
+    let blockPos = new BlockPos(position);
 
     shape.forEach(offset => {
-        toSearch.push(getBlockAt(position.add(offset)));
+        toSearch.push(getBlockAt(blockPos.add(offset)));
     });
 
     for (let i = 0; i < toSearch.length; i++) {
@@ -120,7 +115,7 @@ function filterShape(position, shape, blockType = blockStatesToFind) {
 }
 
 function getcoords(block) {
-    return `${block.getX()},${block.getY()},${block.getZ()}`;
+    return `${block.x},${block.y},${block.z}`;
 }
 
 export { filterBlock, getBlockAt, genSphere, filterShape, findVein, getcoords }
