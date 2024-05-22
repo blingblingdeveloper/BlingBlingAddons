@@ -1,11 +1,23 @@
 # To-Do
 
 ## Celeite:
+- Better ability tracking like CW
+- Split/refactor block check use custom format
+- Split block/refactor block broken detaction
+- Fix position reset on gui move
+- Look through util
+- commandManager
+- guiManager
+- Add higher-level toggles for more features for performance reasons
+- Vigilance reactivity
+- Efficiency tracker --> start mining tracker
+- Efficiency tracker --> better rough calc
+- Move some block hit stuff from efficiency
+
 - strucCheck block filter options
 - strucCheck /lv "add" option for multiple on one waypoint
 - Efficiency tracker
   - Mining stats
-  - Gemstone ticks
 - Ping glide change
   - Fix console errors >:|
 - Licence + attribution (stolen ColeWeight code lmao)
@@ -16,6 +28,9 @@
 - Nice block whitelist
 - Suggested mining order (hard)
 - Hash waypoints
+
+- CT unload/load modules
+- Texture pack reload lag fix
 
 
 Block order stuffs:

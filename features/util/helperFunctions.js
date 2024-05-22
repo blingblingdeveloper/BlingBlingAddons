@@ -350,3 +350,7 @@ export function updateRegisters() {
         }
     });
   }
+
+export function rgbToColorInt(red, green, blue) {
+    return (255 << 24) | (red << 16) | (green << 8) | blue;
+}

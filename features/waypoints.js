@@ -1,6 +1,7 @@
 import { drawCustomEspBox } from "./util/drawCustomEspBox.js"
 import RenderLib from "RenderLib";
 import Settings from "../settings"
+import { rgbToColorInt } from "./util/helperFunctions.js";
 
 let data = [];
 const processArray = (data) => {
@@ -264,10 +265,6 @@ register('command', (message) => {
 
 
 let color = rgbToColorInt(Settings.textColor.getRed(), Settings.textColor.getGreen(), Settings.textColor.getBlue());
-
-function rgbToColorInt(red, green, blue) {
-    return (255 << 24) | (red << 16) | (green << 8) | blue;
-}
 
 function drawBlock(wpNum, x, y, z, red, green, blue) {
     // let distToPlayerSq = (x-Player.getRenderX())**2 + (y-(Player.getRenderY()+Player.getPlayer()["func_70047_e"]()))**2 + (z-Player.getRenderZ())**2

@@ -1,11 +1,12 @@
+import { Color } from 'Vigilance';
 import request from "../../requestV2";
 import { makeObjectDraggable } from "../../Draggable";
 
 import Settings from "../settings";
-import { addCommas, secondsToMessage } from "./util/helperFunctions";
+import { rgbToColorInt, addCommas, secondsToMessage } from "./util/helperFunctions";
 import { getEfficiency } from "./efficiency";
 
-let pristine = 18.63; // IDK if/how to get from stats, maybe settings input box, should be toggleable
+let pristine = Settings.pristine;
 
 const gemstoneCosts = {};
 let lastForceNPC = Settings.forceNPC;
@@ -110,21 +111,17 @@ register("command", () => {
     gui.open();
 }).setName("movecointracker"); //ignore this for manual use, this is just there so settings works.
 
-function rgbToColorInt(red, green, blue) {
-    return (255 << 24) | (red << 16) | (green << 8) | blue;
-}
-
 register("renderOverlay", () => {
     if (Settings.coinTracker) {
         if (startTime <= 0 && Settings.hide)
             return;
         let lines = [];
-        lines[0] = `Uptime: ${(startTime <= 0)?"n/a":secondsToMessage((Date.now() - startTime) / 1000)}`;
-        lines[1] = `$/hr: ${money == null?"n/a":"$"+addCommas(Settings.roughGems?moneyPerHour+roughmoneyPerHour:moneyPerHour)} ${Settings.roughGems?"(+ rough)":""}`;
-        lines[2] = `fl/hr: ${money == null?"n/a":Math.round((Settings.roughGems?moneyPerHour+roughmoneyPerHour:moneyPerHour) / flawless * 10) / 10} ${Settings.roughGems?"(+ rough)":""}`;
+        lines[0] = `Uptime: ${(startTime <= 0) ? "n/a" : secondsToMessage((Date.now() - startTime) / 1000)}`;
+        lines[1] = `$/hr: ${money == null ? "n/a" : "$" + addCommas(Settings.roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour)} ${Settings.roughGems ? "(+ rough)" : ""}`;
+        lines[2] = `fl/hr: ${money == null ? "n/a" : Math.round((Settings.roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour) / flawless * 10) / 10} ${Settings.roughGems ? "(+ rough)" : ""}`;
         if (Settings.showEfficiency) {
             lines[3] = `Efficiency:`;
-            let efficiencyText = new Text(`${Math.round(getEfficiency() * 10000) / 100}%`, text.getX()+56, text.getY()+30);
+            let efficiencyText = new Text(`${Math.round(getEfficiency() * 10000) / 100}%`, text.getX() + 56, text.getY() + 30);
             efficiencyText.setColor(efficiencyColor(Math.round(getEfficiency() * 10000) / 100).getRGB());
             efficiencyText.draw();
         }
@@ -134,12 +131,9 @@ register("renderOverlay", () => {
     }
 });
 
-
 function efficiencyColor(value) {
-    const Color = Java.type("java.awt.Color");
-
-    let h = Math.round(120/100 * value)/360;
+    let h = Math.round(120 / 100 * value) / 360;
     let s = 1.0;
-    let b = Math.round(50-((value-50)**2)/125)/50;
+    let b = Math.round(50 - ((value - 50) ** 2) / 125) / 50;
     return Color.getHSBColor(h, s, b);
 }

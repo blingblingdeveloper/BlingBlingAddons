@@ -1,4 +1,6 @@
+import Settings from '../settings';
 
+register('command', () => Settings.openGUI()).setName('bling').setAliases(['b']); // FIXME: move this somewhere better
 
 register('command', (message) => {
   ChatLib.chat(ChatLib.getCenteredText("&4--------------[ §d[BlingBling Addons] &4]--------------"))

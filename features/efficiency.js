@@ -1,9 +1,9 @@
 import Settings from "../settings";
+import { filterBlock } from "./util/world";
+import { getMsbActive } from "./util/player";
 
 let hitBlocks = new Map();
 let timeout = 2000;
-
-//TODO: gui
 
 //=========== block efficiency garbage
 let miningSpeed = Settings.alwaysPrecisionMiner ? parseInt(Settings.gemMiningSpeed) + 920 : Settings.gemMiningSpeed;
@@ -12,7 +12,6 @@ let currentlyMining = false;
 let lastMined = -1;
 
 let msbAvailable = false;
-let msbActive = false;
 let ticks = 0;
 let msbTicks = 0;
 let currentBreakTick = 0;
@@ -125,10 +124,10 @@ register("packetReceived", (packet, event) => {
             if (getGemType(blockType)) {
                 if (!currentlyMining) {
                     currentlyMining = true;
-                    maxMined[getGemType(blockType)][msbActive ? 'boost' : 'regular']++;
+                    maxMined[getGemType(blockType)][getMsbActive() ? 'boost' : 'regular']++;
                 }
                 lastMined = Date.now();
-                mined[getGemType(blockType)][msbActive ? 'boost' : 'regular']++;
+                mined[getGemType(blockType)][getMsbActive() ? 'boost' : 'regular']++;
                 targetGem = getGemType(blockType);
             }
             hitBlocks.delete(`${blockPos.getX()},${blockPos.getY()},${blockPos.getZ()}`);
@@ -170,38 +169,13 @@ register("chat", () => {
     msbTicks = Settings.blueCheese ? 500 : 400;
 }).setChatCriteria(/&r&a&r&6Mining Speed Boost &r&ais now available!&r/g);
 
-register("chat", () => {
-    msbActive = true;
-}).setChatCriteria(/&r&aYou used your &r&6Mining Speed Boost &r&aPickaxe Ability!&r/g);
-
-register("chat", () => {
-    msbActive = false;
-}).setChatCriteria(/&r&cYour Mining Speed Boost has expired!&r/g);
-
 register("worldLoad", () => {
     msbAvailable = false;
-    msbActive = false;
     resetVars();
 });
 //=========== end efficiency calc
 
 //=========== helpers
-let blockStatesToFind = [
-    { name: "minecraft:stained_glass", variants: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] },
-    { name: "minecraft:stained_glass_pane", variants: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] },
-]
-
-function filterBlock(block) {
-    if (block == undefined || block?.getRegistryName() == "minecraft:air" || !block instanceof Block) {
-        return false;
-    }
-
-    if (blockStatesToFind.some(obj => obj.name === block.type.getRegistryName() && obj.variants.includes(block.getMetadata()))) {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 function getGemType(glassType) {
     switch (glassType) {
