@@ -2,8 +2,6 @@
 
 ## Celeite:
 - Better ability tracking
-- Split/refactor block check use custom format
-- Split block/refactor block broken detaction
 - Fix position reset on gui move
 - Look through util
 - commandManager
@@ -12,17 +10,14 @@
 - Vigilance reactivity
 - Efficiency tracker --> start mining tracker
 - Efficiency tracker --> better rough calc
-- Move some block hit stuff from efficiency
 - Update help commands
 - Check if tick required between blocks for efficiency
-- Just wrap block info dummy it'll probably be better in the long run
-- /lrg lag resolution?
+- Just wrap block info, dummy it'll probably be better in the long run
 
 - Look into getShape stuff for panetest
 - strucCheck block filter options
 - strucCheck /lv "add" option for multiple on one waypoint
-- Efficiency tracker
-  - Mining stats
+- Dynamic mining stats
 - Ping glide change
   - Fix console errors >:|
 - Licence + attribution

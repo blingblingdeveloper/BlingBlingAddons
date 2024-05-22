@@ -3,7 +3,7 @@ import { filterBlock, getInternalBlockAt } from "./world";
 import { getcoords } from "./world";
 import { blockStrength, getGemType } from "./mininginfo";
 
-class BlingPlayer {
+class BlingPlayer { // FIXME: extend Player???
     constructor() {
         this.currentlyMining = false;
         this.msbActive = false;
@@ -117,7 +117,7 @@ class BlingPlayer {
         });
     }
 
-    calcEyeDist(x, y, z) { // FIXME: extend Player???
+    calcEyeDist(x, y, z) {
         return Math.sqrt((x - (Player.getRenderX())) ** 2 + (y - (Player.getRenderY() + Player.getPlayer()["func_70047_e"]())) ** 2 + (z - (Player.getRenderZ())) ** 2);
     }
 }

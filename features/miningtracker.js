@@ -1,17 +1,16 @@
 import { Color } from 'Vigilance';
-import request from "../../requestV2";
 import { makeObjectDraggable } from "../../Draggable";
 
 import Settings from "../settings";
 import { rgbToColorInt, addCommas, secondsToMessage } from "./util/helperFunctions";
 import { getEfficiency } from "./efficiency";
+import { updateGemCosts, getGemCost } from './util/mininginfo';
 
 let pristine = Settings.pristine;
 
-const gemstoneCosts = {};
 let lastForceNPC = Settings.forceNPC;
 let lastGemstoneType = Settings.gemstoneType;
-let lastGemstone = "n/a";
+let lastMinedGem;
 
 let startTime = -1;
 let lastMined = -1;
@@ -27,61 +26,21 @@ register("chat", (gem, amount, event) => {
     lastForceNPC = Settings.forceNPC;
     lastGemstoneType = Settings.gemstoneType;
 
-    let type;
-    switch (Settings.gemstoneType) {
-        case 0:
-            type = "PERFECT";
-            break;
-        case 1:
-            type = "FLAWLESS";
-            break;
-        case 2:
-            type = "FINE";
-            break;
-        case 3:
-            type = "FLAWED";
-            break;
-        case 4:
-            type = "ROUGH";
-            break;
-    }
-
-    let id = type + "_" + gem.toUpperCase() + "_GEM";
-    lastMined = Date.now();
-
-    if (startTime === 0) return;
     if (startTime === -1) {
-        // TODO: change npc check to earlier to save on api call
-        startTime = 0;
-        request({
-            url: "https://api.hypixel.net/skyblock/bazaar",
-            json: true
-        }).then(res => {
+        if (updateGemCosts()) {
             startTime = Date.now();
             lastMined = Date.now();
-            Object.keys(res.products).filter(i => {
-                if (i.startsWith("FLAWED") || i.startsWith("FINE") || i.startsWith("FLAWLESS") | i.startsWith("PERFECT") || i.startsWith("ROUGH")) return true
-            }).forEach(i => {
-                let npc = 3 * Math.pow(80, (4 - Settings.gemstoneType));
-                if (Settings.sellOffer) {
-                    gemstoneCosts[i] = Settings.forceNPC ? npc : Math.max(npc, res.products[i].quick_status.buyPrice);
-                }
-                else {
-                    gemstoneCosts[i] = Settings.forceNPC ? npc : Math.max(npc, res.products[i].quick_status.sellPrice);
-                }
-            });
-        }).catch(err => {
-            if (Settings.debug)
-                console.log("Coin tracker: " + err);
-        });
+        }
         return;
     }
 
-    lastGemstone = gem;
-    money += (gemstoneCosts[id] / Math.pow(80, (3 - Settings.gemstoneType))) * amount;
+    lastMined = Date.now();
+    lastMinedGem = getGemCost(gem, 1);
+
+    money += getGemCost(gem, 1) * amount;
     moneyPerHour = Math.floor(money / ((Date.now() - startTime) / (1000 * 60 * 60)));
     roughmoneyPerHour = Math.floor((1 - (pristine / 100)) / (pristine / 100) * (moneyPerHour / 80));
-    flawless = gemstoneCosts["FLAWLESS" + "_" + gem.toUpperCase() + "_GEM"];
+    flawless = getGemCost(gem, 3);
 }).setChatCriteria(/&r&d&lPRISTINE! &r&fYou found &r&a. Flawed (.+) Gemstone &r&8x(\d+)&r&f!&r/g);
 
 register("step", () => {
@@ -116,7 +75,7 @@ register("renderOverlay", () => {
         if (startTime <= 0 && Settings.hide)
             return;
         let lines = [];
-        lines[0] = `Uptime: ${(startTime <= 0) ? "n/a" : secondsToMessage((Date.now() - startTime) / 1000)}`;
+        lines[0] = `Uptime: ${(startTime <= 0) ? "n/a" : secondsToMessage((Date.now() - startTime) / 1000)} @${lastMinedGem}`;
         lines[1] = `$/hr: ${money == null ? "n/a" : "$" + addCommas(Settings.roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour)} ${Settings.roughGems ? "(+ rough)" : ""}`;
         lines[2] = `fl/hr: ${money == null ? "n/a" : Math.round((Settings.roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour) / flawless * 10) / 10} ${Settings.roughGems ? "(+ rough)" : ""}`;
         if (Settings.showEfficiency) {
