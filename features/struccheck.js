@@ -1,7 +1,7 @@
 import { drawCustomEspBox } from "./util/drawCustomEspBox.js"
 import Settings from "../settings"
 import { findVein, genSphere, filterShape, getcoords, filterBlock, getInternalBlockAt } from "./util/world.js";
-import { calcPlayerEyeDist } from "./util/player.js";
+import BlingPlayer from "./util/BlingPlayer.js";
 import { rgbToColorInt } from "./util/helperFunctions.js";
 
 let route = [];
@@ -113,7 +113,7 @@ register("renderWorld", () => {
         route.forEach(waypoint => {
             if (waypoint.options.vein) {
                 waypoint.options.vein.forEach(block => {
-                    if (calcPlayerEyeDist(block.x, block.y, block.z) < 30) {
+                    if (BlingPlayer.calcPlayerEyeDist(block.x, block.y, block.z) < 30) {
                         drawCustomEspBox(
                             Math.floor(block.x) + .5,
                             Math.floor(block.y),
@@ -129,7 +129,7 @@ register("renderWorld", () => {
             }
 
             let veinNum = waypoint.options.name;
-            let labelScale = Math.min(calcPlayerEyeDist(waypoint.x, waypoint.y, waypoint.z), 50);
+            let labelScale = Math.min(BlingPlayer.calcPlayerEyeDist(waypoint.x, waypoint.y, waypoint.z), 50);
             Tessellator.drawString(
                 veinNum,
                 waypoint.x + .5,
@@ -146,7 +146,7 @@ register("renderWorld", () => {
     missingRoute.forEach(waypoint => {
         if (waypoint.options.vein) {
             waypoint.options.vein.forEach(block => {
-                if (calcPlayerEyeDist(block.x, block.y, block.z) < 30) {
+                if (BlingPlayer.calcPlayerEyeDist(block.x, block.y, block.z) < 30) {
                     drawCustomEspBox(
                         Math.floor(block.x) + .5,
                         Math.floor(block.y),
@@ -162,7 +162,7 @@ register("renderWorld", () => {
             });
 
             if (waypoint.options.vein.length > 0) {
-                let labelScale = Math.min(calcPlayerEyeDist(waypoint.x, waypoint.y, waypoint.z), 50);
+                let labelScale = Math.min(BlingPlayer.calcPlayerEyeDist(waypoint.x, waypoint.y, waypoint.z), 50);
                 Tessellator.drawString(
                     `Missing blocks: ${waypoint.options.vein.length}, Vein ${waypoint.options.name}`,
                     waypoint.x + .5,

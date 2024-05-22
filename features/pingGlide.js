@@ -1,12 +1,12 @@
 import Settings from "../settings"
-import { getMsbActive } from "./util/player";
+import BlingPlayer from './util/BlingPlayer';
 import { filterBlock, getInternalBlockAt } from "./util/world";
 
 let recentTimeout;
 let timeoutId = 0;
 
 register("packetSent", (packet, event) => {
-    if (Settings.pingGlide && !(getMsbActive() && !Settings.pingSpeedBoost)) {
+    if (Settings.pingGlide && !(BlingPlayer.isMsbActive() && !Settings.pingSpeedBoost)) {
         if (packet.func_180762_c().toString().includes("START") && Player.lookingAt().pos?filterBlock(getInternalBlockAt(Player.lookingAt().pos)):false) {
             let currentId = ++timeoutId; // Increment the timeoutId for each new timeout set
 
