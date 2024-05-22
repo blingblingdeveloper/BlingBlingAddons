@@ -1,6 +1,17 @@
+// FIXME: color names
 let blockStatesToFind = [
-    { name: "minecraft:stained_glass", variants: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] },
-    { name: "minecraft:stained_glass_pane", variants: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] },
+    { 
+        name: "minecraft:stained_glass",
+        variants: {
+            color: ['white', 'orange', 'magenta', 'lightBlue', 'yellow', 'lime', 'pink', 'gray', 'silver', 'cyan', 'purple', 'blue', 'brown', 'green', 'red', 'black']
+        }
+    },
+    { 
+        name: "minecraft:stained_glass_pane",
+        variants: {
+            color: ['white', 'orange', 'magenta', 'lightBlue', 'yellow', 'lime', 'pink', 'gray', 'silver', 'cyan', 'purple', 'blue', 'brown', 'green', 'red', 'black']
+        }
+    },
 ]
 
 function findVein(blocksToSearch) {
@@ -43,32 +54,32 @@ function findVein(blocksToSearch) {
     return veinWaypoints;
 }
 
-function filterBlock(block, blockType) {
-    if (block == undefined || block?.getRegistryName() == "minecraft:air" || !block instanceof Block) {
-        return false;
+function filterBlock(block, filter) {
+    if (filter == null) {
+        filter = blockStatesToFind;
     }
 
-    if (blockType == null) {
-        blockType = blockStatesToFind;
-    }
+    let matchingName = filter.some(blockFilter => blockFilter.name === block.name);
+    let matchingVariant = filter.some(blockFilter => Object.keys(blockFilter.variants).every(variantFilter => {
+        return blockFilter.variants[variantFilter].includes(block[variantFilter])
+    }));
 
-    // FIXME: Cannot get property color as it does not exist in BlockState{block=minecraft:air, properties=[]
-    if (blockType.some(obj => obj.name === block.type.getRegistryName() && obj.variants.includes(block.getMetadata()))) {
+    if (matchingName && matchingVariant) {
         return true;
     }
-
     return false;
 }
 
-function getBlockAt(x, y, z) {
+function getBlockAt(pos) {
+    let blockPos = new BlockPos(pos)
     let block = {
-        name: World.getBlockStateAt(new BlockPos(new Vec3i(x, y, z))).blockLocation.toString(),
-        x: x,
-        y: y,
-        z: z
+        name: World.getBlockStateAt().blockLocation.toString(),
+        x: blockPos.x,
+        y: blockPos.y,
+        z: blockPos.z
     }
 
-    World.getBlockStateAt(new BlockPos(new Vec3i(x, y, z))).func_177228_b().entrySet().forEach(property => {
+    World.getBlockStateAt(blockPos).func_177228_b().entrySet().forEach(property => {
         block[property.getKey().func_177701_a()] = typeof property.getValue() !== 'object' ? property.getValue() : property.getValue().func_176610_l();
     })
 
@@ -91,12 +102,12 @@ function genSphere(radius) { //TODO: probably move to helperFunctions
     return shape;
 }
 
-function filterShape(block, shape, blockType = blockStatesToFind) {
+function filterShape(position, shape, blockType = blockStatesToFind) {
     let matchingBlocks = [];
     let toSearch = [];
 
     shape.forEach(offset => {
-        toSearch.push(World.getBlockAt(block.pos.add(offset)));
+        toSearch.push(getBlockAt(position.add(offset)));
     });
 
     for (let i = 0; i < toSearch.length; i++) {

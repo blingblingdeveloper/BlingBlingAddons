@@ -1,13 +1,13 @@
 import Settings from "../settings"
 import { getMsbActive } from "./util/player";
-import { filterBlock } from "./util/world";
+import { filterBlock, getBlockAt } from "./util/world";
 
 let recentTimeout;
 let timeoutId = 0;
 
 register("packetSent", (packet, event) => {
     if (Settings.pingGlide && !(getMsbActive() && !Settings.pingSpeedBoost)) {
-        if (packet.func_180762_c().toString().includes("START") && filterBlock(Player.lookingAt())) {
+        if (packet.func_180762_c().toString().includes("START") && Player.lookingAt().pos?filterBlock(getBlockAt(Player.lookingAt().pos)):false) {
             let currentId = ++timeoutId; // Increment the timeoutId for each new timeout set
 
             if (recentTimeout) {

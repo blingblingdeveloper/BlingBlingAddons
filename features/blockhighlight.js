@@ -26,7 +26,7 @@ register("step", () => {
     
         let searchShape = outerShape.filter(offset => !innerShape.some(innerOffset => innerOffset.equals(offset)));
         
-        coordinatesArray = filterShape(World.getBlockAt(playerX, playerY, playerZ), searchShape);
+        coordinatesArray = filterShape(new Vec3i(playerX, playerY, playerZ), searchShape);
     }
 }).setFps(1)
 

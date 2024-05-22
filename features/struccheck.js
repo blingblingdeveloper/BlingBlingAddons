@@ -21,17 +21,19 @@ register('command', () => {
 // TODO: block type filter in command?
 register("command", () => {
     if (route.length == 0) {
-        loadRoute();
+        if (!loadRoute()) {
+            return;
+        }
     }
 
     route.forEach(waypoint => {
         let initialSearchRadius = 3;
-        let waypointBlock = World.getBlockAt(waypoint.x, waypoint.y + 2, waypoint.z);
+        let waypointPos = new Vec3i(waypoint.x, waypoint.y + 2, waypoint.z);
 
         let searchStart = new Map();
 
         // Find the vein start
-        filterShape(waypointBlock, genSphere(initialSearchRadius)).forEach(newblock => {
+        filterShape(waypointPos, genSphere(initialSearchRadius)).forEach(newblock => {
             if (!searchStart.has(getcoords(newblock))) {
                 searchStart.set(getcoords(newblock), newblock);
             }
@@ -172,11 +174,19 @@ register("renderWorld", () => {
 // ==== helper functions ====
 
 function loadRoute() {
-    // TODO: add check for if it's a valid route
     const Toolkit = Java.type("java.awt.Toolkit");
     const DataFlavor = Java.type("java.awt.datatransfer.DataFlavor");
     const clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
     const clipboardData = clipboard.getData(DataFlavor.stringFlavor);
-    route = JSON.parse(clipboardData);
-    ChatLib.chat("loaded!");
+    try {
+        route = JSON.parse(clipboardData);
+        ChatLib.chat("Loaded!");
+        return true;
+    } catch (e) {
+        if (!(e instanceof SyntaxError)) {
+            console.log(e);
+        }
+        ChatLib.chat("Couldn't load route");
+        return false;
+    }
 }
