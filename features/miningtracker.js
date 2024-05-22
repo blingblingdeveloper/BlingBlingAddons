@@ -4,16 +4,8 @@ import { makeObjectDraggable } from "../../Draggable";
 import Settings from "../settings";
 import { rgbToColorInt, addCommas, secondsToMessage } from "./util/helperFunctions";
 import { getEfficiency } from "./efficiency";
-import { updateGemCosts, getGemCost } from './util/mininginfo';
-
-let pristine = Settings.pristine;
-
-let lastForceNPC = Settings.forceNPC;
-let lastGemstoneType = Settings.gemstoneType;
-let lastMinedGem;
-
-let startTime = -1;
-let lastMined = -1;
+import { getGemCost } from './util/mininginfo';
+import BlingPlayer from './util/BlingPlayer';
 
 let money;
 let moneyPerHour;
@@ -21,30 +13,14 @@ let roughmoneyPerHour;
 let flawless;
 
 register("chat", (gem, amount, event) => {
-    if (lastForceNPC != Settings.forceNPC || lastGemstoneType != Settings.gemstoneType)
-        resetVars();
-    lastForceNPC = Settings.forceNPC;
-    lastGemstoneType = Settings.gemstoneType;
-
-    if (startTime === -1) {
-        if (updateGemCosts()) {
-            startTime = Date.now();
-            lastMined = Date.now();
-        }
-        return;
-    }
-
-    lastMined = Date.now();
-    lastMinedGem = getGemCost(gem, 1);
-
     money += getGemCost(gem, 1) * amount;
-    moneyPerHour = Math.floor(money / ((Date.now() - startTime) / (1000 * 60 * 60)));
-    roughmoneyPerHour = Math.floor((1 - (pristine / 100)) / (pristine / 100) * (moneyPerHour / 80));
+    moneyPerHour = Math.floor(money / ((Date.now() - BlingPlayer.getMiningStartTime()) / (1000 * 60 * 60)));
+    roughmoneyPerHour = Math.floor((1 - (BlingPlayer.getPristine() / 100)) / (BlingPlayer.getPristine() / 100) * (moneyPerHour / 80));
     flawless = getGemCost(gem, 3);
 }).setChatCriteria(/&r&d&lPRISTINE! &r&fYou found &r&a. Flawed (.+) Gemstone &r&8x(\d+)&r&f!&r/g);
 
 register("step", () => {
-    if (startTime && Date.now() - lastMined > Settings.resetDelay * 1000) {
+    if (!BlingPlayer.isCurrentlyMining()) {
         resetVars();
     }
 }).setFps(1);
@@ -58,8 +34,6 @@ function resetVars() {
     money = null;
     moneyPerHour = null;
     roughmoneyPerHour = null;
-    startTime = -1;
-    lastMined = -1;
 }
 
 const text = new Text("", 5, 5);
@@ -72,10 +46,10 @@ register("command", () => {
 
 register("renderOverlay", () => {
     if (Settings.coinTracker) {
-        if (startTime <= 0 && Settings.hide)
+        if (BlingPlayer.isCurrentlyMining() <= 0 && Settings.hide)
             return;
         let lines = [];
-        lines[0] = `Uptime: ${(startTime <= 0) ? "n/a" : secondsToMessage((Date.now() - startTime) / 1000)} @${lastMinedGem}`;
+        lines[0] = `Uptime: ${(BlingPlayer.isCurrentlyMining()) ? "n/a" : secondsToMessage((Date.now() - BlingPlayer.getMiningStartTime()) / 1000)}`;
         lines[1] = `$/hr: ${money == null ? "n/a" : "$" + addCommas(Settings.roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour)} ${Settings.roughGems ? "(+ rough)" : ""}`;
         lines[2] = `fl/hr: ${money == null ? "n/a" : Math.round((Settings.roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour) / flawless * 10) / 10} ${Settings.roughGems ? "(+ rough)" : ""}`;
         if (Settings.showEfficiency) {

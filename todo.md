@@ -7,12 +7,13 @@
 - commandManager
 - guiManager
 - Add higher-level checks for more features (should also help performance)
-- Vigilance reactivity
+- Vigilance reactivity (or Amaterasu)
 - Efficiency tracker --> start mining tracker
 - Efficiency tracker --> better rough calc
 - Update help commands
 - Check if tick required between blocks for efficiency
 - Just wrap block info, dummy it'll probably be better in the long run
+- diy RenderLib
 
 - Look into getShape stuff for panetest
 - strucCheck block filter options
@@ -20,14 +21,16 @@
 - Dynamic mining stats
 - Ping glide change
   - Fix console errors >:|
-- Licence + attribution
+- License + attribution
 - Probably refactor some stuff
-- Gui stuff? Bling hates Vigilance.
 - strucCheck cross-chunk/lobby swap check
 - strucCheck from world file
 - Nice block whitelist
 - Suggested mining order (hard)
 - Hash waypoints
+- Bob-omb placement
+- Mining ability switcher?
+- Glacite mineshaft routing
 
 - CT unload/load modules
 - Texture pack reload lag fix

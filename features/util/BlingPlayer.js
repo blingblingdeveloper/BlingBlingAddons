@@ -1,7 +1,7 @@
 import Settings from "../../settings";
 import { filterBlock, getInternalBlockAt } from "./world";
 import { getcoords } from "./world";
-import { blockStrength, getGemType } from "./mininginfo";
+import { blockStrength, getGemType, updateGemCosts } from "./mininginfo";
 
 class BlingPlayer { // FIXME: extend Player???
     constructor() {
@@ -9,9 +9,12 @@ class BlingPlayer { // FIXME: extend Player???
         this.msbActive = false;
         this.hitBlocks = new Map();
         this.miningSpeed = Settings.alwaysPrecisionMiner ? parseInt(Settings.gemMiningSpeed) + 920 : Settings.gemMiningSpeed;
+        this.pristine = Settings.pristine;
+        this.miningFortune = Settings.miningFortune;
         this.lastMinedBlock = '';
         this.mined = {};
         this.lastMinedTime;
+        this.startedMiningTime;
 
         this.stopMining();
 
@@ -68,6 +71,9 @@ class BlingPlayer { // FIXME: extend Player???
                     if (getGemType(blockType)) {
                         if (!this.currentlyMining) {
                             this.currentlyMining = true;
+                            if (updateGemCosts()) {
+                                this.startedMiningTime = Date.now();
+                            }
                         }
                         this.lastMinedBlock = getGemType(blockType);
                         this.lastMinedTime = Date.now();
@@ -103,6 +109,18 @@ class BlingPlayer { // FIXME: extend Player???
         return this.miningSpeed;
     }
 
+    getPristine() {
+        return this.pristine;
+    }
+
+    getMiningFortune() {
+        return this.miningFortune;
+    }
+
+    getMiningStartTime() {
+        return this.startedMiningTime;
+    }
+
     stopMining() {
         this.currentlyMining = false;
         this.hitBlocks = new Map();
@@ -118,7 +136,11 @@ class BlingPlayer { // FIXME: extend Player???
     }
 
     calcEyeDist(x, y, z) {
-        return Math.sqrt((x - (Player.getRenderX())) ** 2 + (y - (Player.getRenderY() + Player.getPlayer()["func_70047_e"]())) ** 2 + (z - (Player.getRenderZ())) ** 2);
+        return Math.sqrt((x - Player.getRenderX()) ** 2 + (y - (Player.getRenderY() + Player.getPlayer()["func_70047_e"]())) ** 2 + (z - Player.getRenderZ()) ** 2);
+    }
+
+    calcDist(x, y, z) {
+        return Math.sqrt((x - Player.getRenderX()) ** 2 + (y - Player.getRenderY()) ** 2 + (z - Player.getRenderZ()) ** 2);
     }
 }
 

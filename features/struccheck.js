@@ -25,23 +25,24 @@ register("command", () => {
         }
     }
 
-    route.forEach(waypoint => {
-        let initialSearchRadius = 3;
-        let waypointPos = new Vec3i(waypoint.x, waypoint.y + 2, waypoint.z);
+    new Thread(() => {
+        route.forEach(waypoint => {
+            let initialSearchRadius = 3;
+            let waypointPos = new Vec3i(waypoint.x, waypoint.y + 2, waypoint.z);
 
-        let searchStart = new Map();
-        console.log("finding vein start");
-        // Find the vein start
-        filterShape(waypointPos, genSphere(initialSearchRadius)).forEach(newblock => {
-            if (!searchStart.has(getcoords(newblock))) {
-                searchStart.set(getcoords(newblock), newblock);
-            }
+            let searchStart = new Map();
+            // Find the vein start
+            filterShape(waypointPos, genSphere(initialSearchRadius)).forEach(newblock => {
+                if (!searchStart.has(getcoords(newblock))) {
+                    searchStart.set(getcoords(newblock), newblock);
+                }
+            });
+
+            waypoint.options.vein = findVein(searchStart);
         });
 
-        waypoint.options.vein = findVein(searchStart);
-    });
-
-    ChatLib.chat("Loaded vein guesses");
+        ChatLib.chat("Loaded vein guesses");
+    }).start();
 }).setName('loadrouteguess').setAliases(['lrg']);
 
 // TODO: add "add" overload
@@ -105,7 +106,7 @@ register('command', () => {
 }).setName('checkstruc').setAliases(['cs']);
 
 register("renderWorld", () => {
-    let color = rgbToColorInt(Settings.textColor.getRed(), Settings.textColor.getGreen(), Settings.textColor.getBlue());
+    let color = rgbToColorInt(Settings.waypointTextColor.getRed(), Settings.waypointTextColor.getGreen(), Settings.waypointTextColor.getBlue());
     let color2 = rgbToColorInt(255, 0, 0); // TODO: use Settings
 
     // render route blocks (for setting up struc check)
@@ -113,7 +114,7 @@ register("renderWorld", () => {
         route.forEach(waypoint => {
             if (waypoint.options.vein) {
                 waypoint.options.vein.forEach(block => {
-                    if (BlingPlayer.calcPlayerEyeDist(block.x, block.y, block.z) < 30) {
+                    if (BlingPlayer.calcEyeDist(block.x, block.y, block.z) < 30) {
                         drawCustomEspBox(
                             Math.floor(block.x) + .5,
                             Math.floor(block.y),
@@ -129,7 +130,7 @@ register("renderWorld", () => {
             }
 
             let veinNum = waypoint.options.name;
-            let labelScale = Math.min(BlingPlayer.calcPlayerEyeDist(waypoint.x, waypoint.y, waypoint.z), 50);
+            let labelScale = Math.min(BlingPlayer.calcEyeDist(waypoint.x, waypoint.y, waypoint.z), 50);
             Tessellator.drawString(
                 veinNum,
                 waypoint.x + .5,
@@ -146,7 +147,7 @@ register("renderWorld", () => {
     missingRoute.forEach(waypoint => {
         if (waypoint.options.vein) {
             waypoint.options.vein.forEach(block => {
-                if (BlingPlayer.calcPlayerEyeDist(block.x, block.y, block.z) < 30) {
+                if (BlingPlayer.calcEyeDist(block.x, block.y, block.z) < 30) {
                     drawCustomEspBox(
                         Math.floor(block.x) + .5,
                         Math.floor(block.y),
@@ -162,7 +163,7 @@ register("renderWorld", () => {
             });
 
             if (waypoint.options.vein.length > 0) {
-                let labelScale = Math.min(BlingPlayer.calcPlayerEyeDist(waypoint.x, waypoint.y, waypoint.z), 50);
+                let labelScale = Math.min(BlingPlayer.calcEyeDist(waypoint.x, waypoint.y, waypoint.z), 50);
                 Tessellator.drawString(
                     `Missing blocks: ${waypoint.options.vein.length}, Vein ${waypoint.options.name}`,
                     waypoint.x + .5,
