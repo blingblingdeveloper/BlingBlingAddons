@@ -3,6 +3,7 @@ import Settings from '../settings.js'
 import Settings from "../settings"
 import { findVein, genSphere, filterShape, getcoords, filterBlock, getInternalBlockAt } from "./util/world.js";
 import { drawBlock, drawTrace, drawText } from './util/render.js';
+import BlingPlayer from './util/BlingPlayer.js';
 
 let route = [];
 let missingRoute = [];
@@ -15,6 +16,12 @@ let missing = 0;
 register('command', () => {
     loadRoute();
 }).setName('loadroute').setAliases(['lr']);
+
+register('command', () => {
+    route = [];
+    missingRoute = [];
+    missing = 0;
+}).setName('unloadroute').setAliases(['ur']);
 
 register('command', () => {
     ChatLib.command(`ct copy ${JSON.stringify(route)}`, true)
@@ -93,7 +100,7 @@ register("renderWorld", () => {
         route.forEach(waypoint => {
             if (waypoint.options.vein) {
                 waypoint.options.vein.forEach(block => {
-                    if (BlingPlayer.calcEyeDist(x,y,z) > Settings.renderLimit) {
+                    if (BlingPlayer.calcEyeDist(waypoint.x,waypoint.y,waypoint.z) > Settings.renderLimit) {
                         return;
                     }
                     drawBlock(block, Settings.strucCheckSetupColor, false);

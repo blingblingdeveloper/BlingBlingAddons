@@ -18,6 +18,11 @@ class BlingPlayer { // FIXME: extend Player???
 
         this.stopMining();
 
+        register("command", () => {
+            this.stopMining()
+            ChatLib.chat("§d[BlingBling Addons] §fReset Tracker!");
+        }).setName("miningtest");
+
         register("chat", () => {
             this.msbActive = true;
         }).setChatCriteria(/&r&aYou used your &r&6Mining Speed Boost &r&aPickaxe Ability!&r/g);

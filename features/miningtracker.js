@@ -25,11 +25,6 @@ register("step", () => {
     }
 }).setFps(1);
 
-register("command", () => {
-    resetVars()
-    ChatLib.chat("§d[BlingBling Addons] §fReset Tracker!");
-}).setName("miningtest");
-
 function resetVars() {
     money = null;
     moneyPerHour = null;
