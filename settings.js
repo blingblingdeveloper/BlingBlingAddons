@@ -11,7 +11,7 @@ import { @CheckboxProperty,
 
 @Vigilant('blingblingaddons', 'Config', {
     getCategoryComparator: () => (a, b) => {
-        const categories = ["Waypoints", "Mining Skills", "GUI", "Struc Check", "Block Highlight", "Mining Stats", "HELP"];
+        const categories = ['Waypoints', 'Mining Skills', 'GUI', 'Struc Check', 'Block Highlight', 'Mining Stats', 'HELP'];
 
         return categories.indexOf(a.name) - categories.indexOf(b.name);
     }
@@ -20,19 +20,12 @@ import { @CheckboxProperty,
 class Settings {
     // #region Waypoints
     @SwitchProperty({
-        name: "§dshow all veins",
-        description: "enable = waypoints disable = ordered",
-        category: "Waypoints",
-        subcategory: "Waypoints",
+        name: 'Waypoint Mode',
+        description: 'enabled: waypoints, disabled: ordered',
+        category: 'Waypoints',
+        subcategory: 'Waypoints',
     })
     waypoint = true;
-    @SwitchProperty({
-        name: "§dshow line between veins",
-        description: "activate",
-        category: "Waypoints",
-        subcategory: "Waypoints",
-    })
-    waypointExtraLine = false;
     @SwitchProperty({
         name: '§bi love cactus',
         description: 'skip ordered wps out of order. suggested by cactusloverr',
@@ -40,78 +33,105 @@ class Settings {
         subcategory: 'Waypoints',
     })
     cactusThing = false;
+    
     @SwitchProperty({
-        name: '§bwaypoint outline',
+        name: 'Waypoint Outline',
         description: 'toggles waypoint outline',
         category: 'Waypoints',
-        subcategory: 'Waypoints',
+        subcategory: '§rWaypoint Visuals',
     })
     waypointOutline = true;
     @ColorProperty({
-        name: '§bwaypoints outline color',
-        description: 'waypoint inner color',
+        name: 'Waypoint Outline Color',
+        description: 'change the outline color',
         category: 'Waypoints',
-        subcategory: 'Waypoints',
+        subcategory: '§rWaypoint Visuals',
     })
-    waypointOuterColor = Color.PINK;
+    waypointOutlineColor = Color.PINK;
     @SwitchProperty({
-        name: '§bwaypoints inner',
-        description: 'toggles waypoint inner outline',
+        name: 'Waypoint Fill',
+        description: 'toggles waypoint fill',
         category: 'Waypoints',
-        subcategory: 'Waypoints',
+        subcategory: '§rWaypoint Visuals',
     })
-    waypointInner = true;
-    @PercentSliderProperty({
-        name: '§bwaypoints inner opacity',
-        description: 'waypoint inner opacity',
-        category: 'Waypoints',
-        subcategory: 'Waypoints',
-    })
-    waypointInnerAlpha = 0.2;
+    waypointFill = true;
     @ColorProperty({
-        name: '§btext color',
-        description: 'text inner color',
+        name: 'Waypoint Fill Color',
+        description: 'change the fill color',
         category: 'Waypoints',
-        subcategory: 'Waypoints',
+        subcategory: '§rWaypoint Visuals',
+    })
+    waypointFillColor = Color.PINK;
+    
+    @ColorProperty({
+        name: 'Text Color',
+        description: 'change the waypoint label color',
+        category: 'Waypoints',
+        subcategory: '§rWaypoint Visuals',
     })
     waypointTextColor = Color.WHITE;
-    @SliderProperty({
-        name: '§bline thickness',
-        description: 'ordered line thickness',
+
+    @SwitchProperty({
+        name: 'Extra Line',
+        description: 'toggles showing a line between veins',
         category: 'Waypoints',
-        subcategory: 'Waypoints',
+        subcategory: '§rWaypoint Visuals',
+    })
+    waypointExtraLine = false;
+    @ColorProperty({
+        name: 'Extra Line Color',
+        description: 'color of the line',
+        category: 'Waypoints',
+        subcategory: '§rWaypoint Visuals',
+    })
+    waypointLineColor = Color.WHITE;
+    @SliderProperty({
+        name: 'Extra Line Thickness',
+        description: 'tickness of the line',
+        category: 'Waypoints',
+        subcategory: '§rWaypoint Visuals',
+        min: 0,
+        max: 30
+    })
+    waypointLineThickness = 3;
+    
+    @ColorProperty({
+        name: 'Ordered Previous Color',
+        description: 'color of the previous ordered waypoint',
+        category: 'Waypoints',
+        subcategory: '§r§rOrdered Waypoint Visuals',
+    })
+    orderedColorBefore = Color.BLACK;
+    @ColorProperty({
+        name: 'Ordered Next Color',
+        description: 'color of the next ordered waypoint',
+        category: 'Waypoints',
+        subcategory: '§r§rOrdered Waypoint Visuals',
+    })
+    orderedColorAfter = Color.BLACK;
+    @SwitchProperty({
+        name: 'Ordered Line',
+        description: 'toggles showing a tracer to the next vein',
+        category: 'Waypoints',
+        subcategory: '§r§rOrdered Waypoint Visuals',
+    })
+    orderedLine = true;
+    @ColorProperty({
+        name: 'Ordered Line Color',
+        description: 'color of next block tracer',
+        category: 'Waypoints',
+        subcategory: '§r§rOrdered Waypoint Visuals',
+    })
+    orderedLineColor = Color.BLACK;
+    @SliderProperty({
+        name: 'Ordered Line Thickness',
+        description: 'tickness of the line',
+        category: 'Waypoints',
+        subcategory: '§r§rOrdered Waypoint Visuals',
         min: 0,
         max: 30
     })
     orderedLineThickness = 3;
-    @ColorProperty({
-        name: '§bline color',
-        description: 'color of line',
-        category: 'Waypoints',
-        subcategory: 'Waypoints',
-    })
-    waypointLineColor = Color.WHITE;
-    @ColorProperty({
-        name: '§bordered tracer color',
-        description: 'color of next block tracer',
-        category: 'Waypoints',
-        subcategory: 'Waypoints',
-    })
-    orderedLineColor = Color.BLACK;
-    @ColorProperty({
-        name: '§bordered previous color',
-        description: 'color of previous ordered wp',
-        category: 'Waypoints',
-        subcategory: 'Waypoints',
-    })
-    orderedColorBefore = Color.BLACK;
-    @ColorProperty({
-        name: '§bordered next color',
-        description: 'color of next ordered wp',
-        category: 'Waypoints',
-        subcategory: 'Waypoints',
-    })
-    orderedColorAfter = Color.BLACK;
 
     // #endregion
     // #region Mining Skills
@@ -127,8 +147,9 @@ class Settings {
         description: 'specify what sound to use(1.8 sounds only)',
         category: 'Mining Skills',
         subcategory: 'Ping Glide',
+        placeholder: 'dig.stone'
     })
-    pingGlideSound = "dig.stone";
+    pingGlideSound = 'dig.stone';
     @SliderProperty({
         name: 'volume',
         description: 'Volume of ping glide sound.',
@@ -157,18 +178,18 @@ class Settings {
     // #endregion
     // #region GUI
     @SelectorProperty({
-        name: "Gemstone Type",
-        description: "Sets the type of gemstones to use for coin tracker for bazaar prices.",
-        subcategory: "Coin Tracker",
-        category: "GUI",
-        options: ["Perfect", "Flawless", "Fine", "Flawed", "Rough"]
+        name: 'Gemstone Type',
+        description: 'Sets the type of gemstones to use for coin tracker for bazaar prices.',
+        subcategory: 'Coin Tracker',
+        category: 'GUI',
+        options: ['Perfect', 'Flawless', 'Fine', 'Flawed', 'Rough']
     })
     gemstoneType = 2;
     @SwitchProperty({
-        name: "Force NPC",
-        description: "Forces NPC price for the coin tracker.",
-        subcategory: "Coin Tracker",
-        category: "GUI"
+        name: 'Force NPC',
+        description: 'Forces NPC price for the coin tracker.',
+        subcategory: 'Coin Tracker',
+        category: 'GUI'
     })
     forceNPC = false;
     @SwitchProperty({
@@ -203,16 +224,16 @@ class Settings {
     showEfficiency = false;
 
     @ButtonProperty({
-        name: "Move Coin Tracker GUI",
-        description: "Move the location of the coin tracker gui.",
-        subcategory: "Edit",
-        category: "GUI",
-        placeholder: "Open"
+        name: 'Move Coin Tracker GUI',
+        description: 'Move the location of the coin tracker gui.',
+        subcategory: 'Edit',
+        category: 'GUI',
+        placeholder: 'Move'
     })
     myButtonAction() {
         Client.currentGui.close()
         setTimeout(() => {
-            ChatLib.command("movecointracker", true)
+            ChatLib.command('movecointracker', true)
         }, 1);
     }
     @ColorProperty({
@@ -261,8 +282,9 @@ class Settings {
         description: `enter the name of the block you want to search for`,
         category: 'Block Highlight',
         subcategory: 'bhl',
+        placeholder: 'minecraft:stained_glass'
     })
-    daBlock = "glass";
+    daBlock = 'minecraft:stained_glass';
 
     @ColorProperty({
         name: '§bbhl custom color',
@@ -273,10 +295,10 @@ class Settings {
     blockHighlightColor = Color.WHITE;
 
     @SliderProperty({
-        name: "§bthickness",
-        description: "sets a custom thickness of the block highlight.",
-        category: "Block Highlight",
-        subcategory: "bhl",
+        name: '§bthickness',
+        description: 'sets a custom thickness of the block highlight.',
+        category: 'Block Highlight',
+        subcategory: 'bhl',
         min: 0,
         max: 6
     })
@@ -284,10 +306,10 @@ class Settings {
     
     // inner blockhighlight
     @SwitchProperty({
-        name: "§ainner bhl",
-        description: "bhl but for the inside of the block",
-        category: "Block Highlight",
-        subcategory: "bhl",
+        name: '§ainner bhl',
+        description: 'bhl but for the inside of the block',
+        category: 'Block Highlight',
+        subcategory: 'bhl',
     })
     innerBlockHighlightSwitch = true;
     @ColorProperty({
@@ -299,29 +321,29 @@ class Settings {
     innerBlockHighlightColor = Color.WHITE;
 
     @SliderProperty({
-        name: "§binner opacity",
-        description: "sets a custom opacity of the inner block highlight.",
-        category: "Block Highlight",
-        subcategory: "bhl",
+        name: '§binner opacity',
+        description: 'sets a custom opacity of the inner block highlight.',
+        category: 'Block Highlight',
+        subcategory: 'bhl',
         min: 0,
         max: 100
     })
     innerBlockHighlightOpacity = 15;
     @SliderProperty({
-        name: "§dbhl max distance",
-        description: "maximum distance an object can be to be highlighted",
-        category: "Block Highlight",
-        subcategory: "bhl",
+        name: '§dbhl max distance',
+        description: 'maximum distance an object can be to be highlighted',
+        category: 'Block Highlight',
+        subcategory: 'bhl',
         min: 0,
         max: 10
     })
     maxDist = 5;
 
     @SliderProperty({
-        name: "§dbhl min distance",
-        description: "sets the minimum distance required to highlight an object(set it to 0 to exclude it)",
-        category: "Block Highlight",
-        subcategory: "bhl",
+        name: '§dbhl min distance',
+        description: 'sets the minimum distance required to highlight an object(set it to 0 to exclude it)',
+        category: 'Block Highlight',
+        subcategory: 'bhl',
         min: 0,
         max: 10
     })
@@ -334,22 +356,25 @@ class Settings {
         description: 'Enter your gemstone mining speed',
         category: 'Mining Stats',
         subcategory: 'i\'m dumb, we\'ll import stats later <3',
+        placeholder: '0'
     })
-    gemMiningSpeed = "9576";
+    gemMiningSpeed = '9576';
     @TextProperty({
         name: 'Gemstone Fortune',
         description: 'Enter your gemstone fortune',
         category: 'Mining Stats',
         subcategory: 'i\'m dumb, we\'ll import stats later <3',
+        placeholder: '0'
     })
-    gemFortune = "2497";
+    gemFortune = '2497';
     @TextProperty({
         name: 'Pristine',
         description: 'Enter your pristine',
         category: 'Mining Stats',
         subcategory: 'i\'m dumb, we\'ll import stats later <3',
+        placeholder: '0'
     })
-    pristine = "18.63";
+    pristine = '18.63';
     @SwitchProperty({
         name: 'Precision Miner',
         description: 'Always use precision miner in calculations',
@@ -368,22 +393,48 @@ class Settings {
     // #region HELP
     
     @ButtonProperty({
-        name: "I need help what do I do?",
-        description: "Displays a list of all the commands in chat.",
-        subcategory: "Help",
-        category: "HELP",
-        placeholder: "Get Help."
+        name: 'I need help what do I do?',
+        description: 'Displays a list of all the commands in chat.',
+        subcategory: 'Help',
+        category: 'HELP',
+        placeholder: 'Get Help.'
     })
     myButtonAction2() {
         Client.currentGui.close()
         setTimeout(() => {
-            ChatLib.command("bahelp", true)
+            ChatLib.command('bahelp', true)
         }, 1);
     }
     // #endregion
     constructor() {
         this.initialize(this);
+        this.addDependency('Waypoint Outline Color', 'Waypoint Outline');
+        this.addDependency('Waypoint Fill Color', 'Waypoint Fill');
+        this.addDependency('Extra Line Color', 'Extra Line');
+        this.addDependency('Extra Line Thickness', 'Extra Line');
+        this.addDependency('Ordered Line Color', 'Ordered Line');
+        this.addDependency('Ordered Line Thickness', 'Ordered Line');
     }
 }
 
 export default new Settings();
+
+// return new PropertyAttributesExt(
+//     propertyType,
+//     configObj.name,
+//     configObj.category,
+//     configObj.subcategory ?? "",
+//     configObj.description ?? "",
+//     configObj.min ?? 0,
+//     configObj.max ?? 0,
+//     configObj.minF ?? 0,
+//     configObj.maxF ?? 0,
+//     configObj.decimalPlaces ?? 1,
+//     configObj.increment ?? 1,
+//     configObj.options ?? new java.util.ArrayList(),
+//     configObj.allowAlpha ?? true,
+//     configObj.placeholder ?? "",
+//     configObj.protected ?? false,
+//     configObj.triggerActionOnInitialization ?? true,
+//     configObj.hidden ?? false,
+// );

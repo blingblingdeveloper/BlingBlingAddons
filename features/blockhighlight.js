@@ -52,17 +52,30 @@ function drawBlock(x, y, z) {
             1, false
         )
     }
+
     if (Settings.innerBlockHighlightSwitch) {
         RenderLib.drawInnerEspBox(
-            Math.floor(x) + 0.5,
-            Math.floor(y) - 0.005,
-            Math.floor(z) + 0.5,
-            1.01, 1.01,
+            Math.floor(x) + .49,
+            Math.floor(y) - 0.01,
+            Math.floor(z) + 0.49,
+            1, 1,
             Settings.innerBlockHighlightColor.getRed(),
             Settings.innerBlockHighlightColor.getGreen(),
             Settings.innerBlockHighlightColor.getBlue(),
-            Settings.innerBlockHighlightOpacity / 100,
+            Settings.innerBlockHighlightColor.getAlpha() / 255,
             false
-        )
+        );
+
+        RenderLib.drawInnerEspBox(
+            Math.floor(x) + .51,
+            Math.floor(y) + 0.01,
+            Math.floor(z) + .51,
+            1, 1,
+            Settings.innerBlockHighlightColor.getRed(),
+            Settings.innerBlockHighlightColor.getGreen(),
+            Settings.innerBlockHighlightColor.getBlue(),
+            Settings.innerBlockHighlightColor.getAlpha() / 255,
+            false
+        );
     }
 }
