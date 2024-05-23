@@ -14,6 +14,8 @@
 - Check if tick required between blocks for efficiency
 - Just wrap block info, dummy it'll probably be better in the long run
 - diy RenderLib
+- better color defaults (alpha)
+- command input checks
 
 - Look into getShape stuff for panetest
 - strucCheck block filter options
@@ -34,6 +36,8 @@
 
 - CT unload/load modules
 - Texture pack reload lag fix
+- gfmod settings.save that one toggle
+- Vigilance onScroll fix
 
 
 Block order stuffs:

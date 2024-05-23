@@ -1,6 +1,7 @@
 import { @CheckboxProperty,
     Color,
     @ColorProperty,
+    @DecimalSliderProperty,
     @PercentSliderProperty,
     @SelectorProperty,
     @SwitchProperty,
@@ -90,8 +91,8 @@ class Settings {
         description: 'tickness of the line',
         category: 'Waypoints',
         subcategory: '§rWaypoint Visuals',
-        min: 0,
-        max: 30
+        min: 1,
+        max: 6
     })
     waypointLineThickness = 3;
     
@@ -128,8 +129,8 @@ class Settings {
         description: 'tickness of the line',
         category: 'Waypoints',
         subcategory: '§r§rOrdered Waypoint Visuals',
-        min: 0,
-        max: 30
+        min: 1,
+        max: 6
     })
     orderedLineThickness = 3;
 
@@ -259,10 +260,95 @@ class Settings {
     coinTrackerHide = false;
     // #endregion
     // #region Struc Check
+    @SwitchProperty({
+        name: 'Automatic Structure Checking',
+        description: 'check the route when loading chunks\n§c(CURRENTLY DOES NOTHING)',
+        category: 'Struc Check',
+        subcategory: 'Struc Check'
+    })
+    strucCheckAuto = false;
+    @SelectorProperty({
+        name: 'Gemstone Type',
+        description: 'set the gemstone types struc check searches\nfor when setting up routes\n§c(CURRENTLY DOES NOTHING)',
+        subcategory: 'Struc Check',
+        category: 'Struc Check',
+        options: ['Ruby', 'Amber', 'Amethyst', 'Jade', 'Sapphire', 'Topaz']
+    })
+    strucCheckGem = 1;
+    @DecimalSliderProperty({
+        name: 'Initial Search Radius',
+        description: 'distance from waypoints to look for gemstone blocks',
+        category: 'Struc Check',
+        subcategory: 'Struc Check',
+        minF: 1.0,
+        maxF: 5.0,
+        decimalPlaces: 1
+    })
+    strucCheckInitialRadius = 3.0;
+    
+    @SliderProperty({
+        name: 'Outline Thickness',
+        description: 'set block outline thickness',
+        category: 'Struc Check',
+        subcategory: '§rEdit',
+        min: 1,
+        max: 6
+    })
+    strucCheckOutlineThickness = 2;
+    @SwitchProperty({
+        name: 'Setup Blocks',
+        description: 'highlight all blocks when creating struc check routes',
+        category: 'Struc Check',
+        subcategory: '§rEdit'
+    })
+    strucCheckSetup = true;
+    @ColorProperty({
+        name: 'Setup Blocks Color',
+        description: 'the color used when creating struc check routes',
+        category: 'Struc Check',
+        subcategory: '§rEdit',
+    })
+    strucCheckSetupColor = Color.WHITE;
+    @SwitchProperty({
+        name: 'Missing Blocks',
+        description: 'highlight all missing blocks',
+        category: 'Struc Check',
+        subcategory: '§rEdit'
+    })
+    strucCheckMissing = true;
+    @ColorProperty({
+        name: 'Missing Blocks Color',
+        description: 'the color used when a vein is incomplete',
+        category: 'Struc Check',
+        subcategory: '§rEdit',
+    })
+    strucCheckMissingColor = Color.RED;
+    @SwitchProperty({
+        name: 'Tracer',
+        description: 'draw a tracer to each missing vein',
+        category: 'Struc Check',
+        subcategory: '§rEdit'
+    })
+    strucCheckTracer = true;
+    @ColorProperty({
+        name: 'Tracer Color',
+        description: 'the color for tracer to missing veins',
+        category: 'Struc Check',
+        subcategory: '§rEdit',
+    })
+    strucCheckTracerColor = Color.WHITE;
+    @SliderProperty({
+        name: 'Tracer Thickness',
+        description: 'set block outline thickness',
+        category: 'Struc Check',
+        subcategory: '§rEdit',
+        min: 1,
+        max: 6
+    })
+    strucCheckTracerThickness = 3;
 
     // #endregion
     // #region Block Highlight
-    // outer blockhighlight
     @SwitchProperty({
         name: 'Block Highlight',
         description: 'toggle block highlight',
@@ -301,22 +387,22 @@ class Settings {
         name: 'Outline',
         description: 'toggle block highlight outline',
         category: 'Block Highlight',
-        subcategory: 'edit',
+        subcategory: 'Edit',
     })
     blockHighlightOutline = false;
     @ColorProperty({
         name: 'Outline Color',
         description: 'set block highlight outline color',
         category: 'Block Highlight',
-        subcategory: 'edit',
+        subcategory: 'Edit',
     })
     blockHighlightOutlineColor = Color.WHITE;
     @SliderProperty({
         name: 'Outline Thickness',
         description: 'set block highlight outline thickness',
         category: 'Block Highlight',
-        subcategory: 'edit',
-        min: 0,
+        subcategory: 'Edit',
+        min: 1,
         max: 6
     })
     blockHighlightThickness = 2;
@@ -324,14 +410,14 @@ class Settings {
         name: 'Fill',
         description: 'toggle block highlight fill',
         category: 'Block Highlight',
-        subcategory: 'edit',
+        subcategory: 'Edit',
     })
     blockHighlightFill = true;
     @ColorProperty({
         name: 'Fill Color',
         description: 'set block highlight fill color',
         category: 'Block Highlight',
-        subcategory: 'edit',
+        subcategory: 'Edit',
     })
     blockHighlightFillColor = Color.WHITE;
     // #endregion
@@ -341,7 +427,7 @@ class Settings {
         name: 'Gemstone Mining Speed',
         description: 'enter your gemstone mining speed',
         category: 'Mining Stats',
-        subcategory: 'i\'m dumb, we\'ll import stats later <3',
+        subcategory: 'i\'m dumb, we\'ll import stats later §d<3',
         placeholder: '0'
     })
     gemMiningSpeed = '9576';
@@ -349,7 +435,7 @@ class Settings {
         name: 'Gemstone Fortune',
         description: 'enter your gemstone fortune',
         category: 'Mining Stats',
-        subcategory: 'i\'m dumb, we\'ll import stats later <3',
+        subcategory: 'i\'m dumb, we\'ll import stats later §d<3',
         placeholder: '0'
     })
     gemFortune = '2497';
@@ -357,7 +443,7 @@ class Settings {
         name: 'Pristine',
         description: 'enter your pristine',
         category: 'Mining Stats',
-        subcategory: 'i\'m dumb, we\'ll import stats later <3',
+        subcategory: 'i\'m dumb, we\'ll import stats later §d<3',
         placeholder: '0'
     })
     pristine = '18.63';
@@ -365,14 +451,14 @@ class Settings {
         name: 'Precision Miner',
         description: 'always use precision miner in calculations',
         category: 'Mining Stats',
-        subcategory: 'i\'m dumb, we\'ll import stats later <3',
+        subcategory: 'i\'m dumb, we\'ll import stats later §d<3',
     })
     alwaysPrecisionMiner = false;
     @SwitchProperty({
         name: 'Blue Cheese',
         description: 'toggle on if you have a Blue Cheese Goblin Omelette',
         category: 'Mining Stats',
-        subcategory: 'i\'m dumb, we\'ll import stats later <3',
+        subcategory: 'i\'m dumb, we\'ll import stats later §d<3',
     })
     blueCheese = false;
     // #endregion
@@ -383,7 +469,7 @@ class Settings {
         description: 'displays a list of all the commands in chat',
         subcategory: 'Help',
         category: 'HELP',
-        placeholder: 'Get Help.'
+        placeholder: '§2Get Help.'
     })
     myButtonAction2() {
         Client.currentGui.close()
@@ -392,6 +478,7 @@ class Settings {
         }, 1);
     }
     // #endregion
+    
     constructor() {
         this.initialize(this);
         this.addDependency('Waypoint Outline Color', 'Waypoint Outline');
@@ -419,6 +506,11 @@ class Settings {
         this.addDependency('Outline Color', 'Outline');
         this.addDependency('Outline Thickness', 'Outline');
         this.addDependency('Fill Color', 'Fill');
+
+        this.addDependency('Setup Blocks Color', 'Setup Blocks');
+        this.addDependency('Missing Blocks Color', 'Missing Blocks');
+        this.addDependency('Tracer Color', 'Tracer');
+        this.addDependency('Tracer Thickness', 'Tracer');
     }
 }
 
