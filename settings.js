@@ -177,55 +177,62 @@ class Settings {
     pingGlideMsb = false;
     // #endregion
     // #region GUI
-    @SelectorProperty({
-        name: 'Gemstone Type',
-        description: 'Sets the type of gemstones to use for coin tracker for bazaar prices.',
-        subcategory: 'Coin Tracker',
+    @SwitchProperty({
+        name: 'Toggle Coin Tracker',
+        description: `show/hide tracker`,
         category: 'GUI',
-        options: ['Perfect', 'Flawless', 'Fine', 'Flawed', 'Rough']
+        subcategory: 'Coin Tracker',
     })
-    gemstoneType = 2;
+    coinTracker = true;
+    @SwitchProperty({
+        name: 'Include Rough Estimate?',
+        description: 'add rough gemstone profit estimate into $/hr and fl/hr',
+        category: 'GUI',
+        subcategory: 'Coin Tracker',
+    })
+    roughGems = false;
+    @SwitchProperty({
+        name: 'Efficiency Tracker',
+        description: 'include block efficiency on coin tracker',
+        category: 'GUI',
+        subcategory: 'Coin Tracker',
+    })
+    showEfficiency = false;
     @SwitchProperty({
         name: 'Force NPC',
-        description: 'Forces NPC price for the coin tracker.',
+        description: 'use npc price for profits',
         subcategory: 'Coin Tracker',
         category: 'GUI'
     })
     forceNPC = false;
     @SwitchProperty({
         name: 'Use Sell Offer?',
-        description: `Uses sell offer for coin tracker.`,
+        description: `use bazaar sell offer prices for profits`,
         category: 'GUI',
         subcategory: 'Coin Tracker',
     })
     sellOffer = true;
-    @SwitchProperty({
-        name: 'Include Rough Estimate?',
-        description: 'Add rough gemstone profit estimate into $/hr and fl/hr.',
-        category: 'GUI',
+    @SelectorProperty({
+        name: 'Gemstone Type',
+        description: 'set the gemstone type to use for bazaar prices',
         subcategory: 'Coin Tracker',
+        category: 'GUI',
+        options: ['Rough', 'Flawed', 'Fine', 'Flawless', 'Perfect']
     })
-    roughGems = false;
+    gemstoneType = 3;
     @SliderProperty({
-        name: 'Reset delay',
-        description: 'How long to wait before resetting the timer (seconds).',
+        name: 'Reset Delay',
+        description: 'how long to wait before resetting the tracker (seconds)',
         category: 'GUI',
         subcategory: 'Coin Tracker',
         min: 5,
         max: 30
     })
-    resetDelay = 10;
-    @SwitchProperty({
-        name: 'Efficiency Tracker',
-        description: 'Add efficiency to the coin tracker?',
-        category: 'GUI',
-        subcategory: 'Coin Tracker',
-    })
-    showEfficiency = false;
+    resetDelay = 15;
 
     @ButtonProperty({
         name: 'Move Coin Tracker GUI',
-        description: 'Move the location of the coin tracker gui.',
+        description: 'move the location of the coin tracker gui',
         subcategory: 'Edit',
         category: 'GUI',
         placeholder: 'Move'
@@ -237,26 +244,19 @@ class Settings {
         }, 1);
     }
     @ColorProperty({
-        name: 'Coin tracker color',
-        description: `sets the color of coin ctracker)`,
+        name: 'Coin Tracker Color',
+        description: 'set the coin tracker text color',
         category: 'GUI',
         subcategory: 'Edit',
     })
-    trackerColor = Color.WHITE;
+    coinTrackerColor = Color.WHITE;
     @SwitchProperty({
-        name: 'Auto Hide coin tracker',
-        description: `after a certain amount of time, hide coin tracker`,
+        name: 'Auto Hide Coin Tracker',
+        description: 'automatically hide the coin tracker when not mining',
         category: 'GUI',
         subcategory: 'Edit',
     })
-    hide = false;
-    @SwitchProperty({
-        name: 'Toggle Coin Tracker',
-        description: `show/hide tracker`,
-        category: 'GUI',
-        subcategory: 'Edit',
-    })
-    coinTracker = true;
+    coinTrackerHide = false;
     // #endregion
     // #region Struc Check
 
@@ -296,7 +296,7 @@ class Settings {
 
     @SliderProperty({
         name: '§bthickness',
-        description: 'sets a custom thickness of the block highlight.',
+        description: 'sets a custom thickness of the block highlight',
         category: 'Block Highlight',
         subcategory: 'bhl',
         min: 0,
@@ -322,7 +322,7 @@ class Settings {
 
     @SliderProperty({
         name: '§binner opacity',
-        description: 'sets a custom opacity of the inner block highlight.',
+        description: 'sets a custom opacity of the inner block highlight',
         category: 'Block Highlight',
         subcategory: 'bhl',
         min: 0,
@@ -353,7 +353,7 @@ class Settings {
     //TODO: get from player stats automatically somehow
     @TextProperty({
         name: 'Gemstone Mining Speed',
-        description: 'Enter your gemstone mining speed',
+        description: 'enter your gemstone mining speed',
         category: 'Mining Stats',
         subcategory: 'i\'m dumb, we\'ll import stats later <3',
         placeholder: '0'
@@ -361,7 +361,7 @@ class Settings {
     gemMiningSpeed = '9576';
     @TextProperty({
         name: 'Gemstone Fortune',
-        description: 'Enter your gemstone fortune',
+        description: 'enter your gemstone fortune',
         category: 'Mining Stats',
         subcategory: 'i\'m dumb, we\'ll import stats later <3',
         placeholder: '0'
@@ -369,7 +369,7 @@ class Settings {
     gemFortune = '2497';
     @TextProperty({
         name: 'Pristine',
-        description: 'Enter your pristine',
+        description: 'enter your pristine',
         category: 'Mining Stats',
         subcategory: 'i\'m dumb, we\'ll import stats later <3',
         placeholder: '0'
@@ -377,14 +377,14 @@ class Settings {
     pristine = '18.63';
     @SwitchProperty({
         name: 'Precision Miner',
-        description: 'Always use precision miner in calculations',
+        description: 'always use precision miner in calculations',
         category: 'Mining Stats',
         subcategory: 'i\'m dumb, we\'ll import stats later <3',
     })
     alwaysPrecisionMiner = false;
     @SwitchProperty({
         name: 'Blue Cheese',
-        description: 'Toggle on if you have a Blue Cheese Goblin Omelette',
+        description: 'toggle on if you have a Blue Cheese Goblin Omelette',
         category: 'Mining Stats',
         subcategory: 'i\'m dumb, we\'ll import stats later <3',
     })
@@ -394,7 +394,7 @@ class Settings {
     
     @ButtonProperty({
         name: 'I need help what do I do?',
-        description: 'Displays a list of all the commands in chat.',
+        description: 'displays a list of all the commands in chat',
         subcategory: 'Help',
         category: 'HELP',
         placeholder: 'Get Help.'
@@ -419,6 +419,16 @@ class Settings {
         this.addDependency('Volume', 'Ping Glide Sounds');
         this.addDependency('Delay', 'Ping Glide Sounds');
         this.addDependency('Mining Speed Boost', 'Ping Glide Sounds');
+
+        this.addDependency('Include Rough Estimate?', 'Toggle Coin Tracker');
+        this.addDependency('Efficiency Tracker', 'Toggle Coin Tracker');
+        this.addDependency('Force NPC', 'Toggle Coin Tracker');
+        this.addDependency('Use Sell Offer?', 'Toggle Coin Tracker');
+        this.addDependency('Gemstone Type', 'Toggle Coin Tracker');
+        this.addDependency('Reset Delay', 'Toggle Coin Tracker');
+        this.addDependency('Move Coin Tracker GUI', 'Toggle Coin Tracker');
+        this.addDependency('Coin Tracker Color', 'Toggle Coin Tracker');
+        this.addDependency('Auto Hide Coin Tracker', 'Toggle Coin Tracker');
     }
 }
 

@@ -38,7 +38,7 @@ function getGemCost(gem, tier) {
     }
     let id = type + "_" + gem.toUpperCase() + "_GEM";
 
-    return Settings.forceNPC ? npc : Math.max(npc, gemCosts[id]);
+    return Math.max(npc, gemCosts[id]);
 }
 
 function updateGemCosts() {

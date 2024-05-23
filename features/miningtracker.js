@@ -13,7 +13,7 @@ let roughmoneyPerHour;
 let flawless;
 
 register("chat", (gem, amount, event) => {
-    money += getGemCost(gem, 1) * amount;
+    money += getGemCost(gem, Settings.gemstoneType)/(Math.pow(80, Settings.gemstoneType-1)) * amount;
     moneyPerHour = Math.floor(money / ((Date.now() - BlingPlayer.getMiningStartTime()) / (1000 * 60 * 60)));
     roughmoneyPerHour = Math.floor((1 - (BlingPlayer.getPristine() / 100)) / (BlingPlayer.getPristine() / 100) * (moneyPerHour / 80));
     flawless = getGemCost(gem, 3);
@@ -46,7 +46,7 @@ register("command", () => {
 
 register("renderOverlay", () => {
     if (Settings.coinTracker) {
-        if (BlingPlayer.isCurrentlyMining() <= 0 && Settings.hide)
+        if (BlingPlayer.isCurrentlyMining() <= 0 && Settings.coinTrackerHide)
             return;
         let lines = [];
         lines[0] = `Uptime: ${!BlingPlayer.isCurrentlyMining() ? "n/a" : secondsToMessage((Date.now() - BlingPlayer.getMiningStartTime()) / 1000)}`;
@@ -59,7 +59,7 @@ register("renderOverlay", () => {
             efficiencyText.draw();
         }
         text.setString(lines.join("\n"));
-        text.setColor(rgbToColorInt(Settings.trackerColor.getRed(), Settings.trackerColor.getGreen(), Settings.trackerColor.getBlue()));
+        text.setColor(rgbToColorInt(Settings.coinTrackerColor.getRed(), Settings.coinTrackerColor.getGreen(), Settings.coinTrackerColor.getBlue()));
         text.draw();
     }
 });
