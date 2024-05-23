@@ -49,7 +49,7 @@ function filterBlock(block, filter) {
     if (filter == null) {
         filter = blockStatesToFind;
     }
-    return filter.some(state => { return (state.name == block.name && state.color.includes(block.color))}) // TODO: have this support more things :/
+    return filter.some(state => { return (state.name == block.name && (state.color?state.color.includes(block.color):true))}) // TODO: have this support more things :/
 }
 
 function filterShape(pos, shape, blockType = blockStatesToFind) {

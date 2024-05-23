@@ -36,7 +36,7 @@ class Settings {
     
     @SwitchProperty({
         name: 'Waypoint Outline',
-        description: 'toggles waypoint outline',
+        description: 'toggle waypoint outline',
         category: 'Waypoints',
         subcategory: '§rWaypoint Visuals',
     })
@@ -50,7 +50,7 @@ class Settings {
     waypointOutlineColor = Color.PINK;
     @SwitchProperty({
         name: 'Waypoint Fill',
-        description: 'toggles waypoint fill',
+        description: 'toggle waypoint fill',
         category: 'Waypoints',
         subcategory: '§rWaypoint Visuals',
     })
@@ -73,7 +73,7 @@ class Settings {
 
     @SwitchProperty({
         name: 'Extra Line',
-        description: 'toggles showing a line between veins',
+        description: 'toggle showing a line between veins',
         category: 'Waypoints',
         subcategory: '§rWaypoint Visuals',
     })
@@ -111,7 +111,7 @@ class Settings {
     orderedColorAfter = Color.BLACK;
     @SwitchProperty({
         name: 'Ordered Line',
-        description: 'toggles showing a tracer to the next vein',
+        description: 'toggle showing a tracer to the next vein',
         category: 'Waypoints',
         subcategory: '§r§rOrdered Waypoint Visuals',
     })
@@ -161,7 +161,7 @@ class Settings {
     pingGlideVolume = 32;
     @SliderProperty({
         name: 'Delay',
-        description: 'delay (in ms) before the sound plays &c(will be changed in the future)',
+        description: 'delay (in ms) before the sound plays §c(will be changed in the future)',
         category: 'Mining Skills',
         subcategory: 'Ping Glide',
         min: 0,
@@ -170,7 +170,7 @@ class Settings {
     pingGlideDelay = 250;
     @SwitchProperty({
         name: 'Mining Speed Boost',
-        description: 'toggles ping glide sounds during mining speed boost',
+        description: 'toggle ping glide sounds during mining speed boost',
         category: 'Mining Skills',
         subcategory: 'Ping Glide'
     })
@@ -179,7 +179,7 @@ class Settings {
     // #region GUI
     @SwitchProperty({
         name: 'Toggle Coin Tracker',
-        description: `show/hide tracker`,
+        description: 'show/hide tracker',
         category: 'GUI',
         subcategory: 'Coin Tracker',
     })
@@ -207,7 +207,7 @@ class Settings {
     forceNPC = false;
     @SwitchProperty({
         name: 'Use Sell Offer?',
-        description: `use bazaar sell offer prices for profits`,
+        description: 'use bazaar sell offer prices for profits',
         category: 'GUI',
         subcategory: 'Coin Tracker',
     })
@@ -264,90 +264,76 @@ class Settings {
     // #region Block Highlight
     // outer blockhighlight
     @SwitchProperty({
-        name: '§abhl',
-        description: 'toggles block highlight',
+        name: 'Block Highlight',
+        description: 'toggle block highlight',
         category: 'Block Highlight',
-        subcategory: 'bhl',
+        subcategory: 'Block Highlight',
     })
-    blockHighlightSwitch = false;
-    @SwitchProperty({
-        name: '§bouter bhl',
-        description: 'toggles block highlight outline',
-        category: 'Block Highlight',
-        subcategory: 'bhl',
-    })
-    blockHighlightOutlineSwitch = false;
+    blockHighlight = false;
     @TextProperty({
-        name: '§bbhl block to search for',
-        description: `enter the name of the block you want to search for`,
+        name: 'Block',
+        description: 'enter the name of the block you want to search for',
         category: 'Block Highlight',
-        subcategory: 'bhl',
+        subcategory: 'Block Highlight',
         placeholder: 'minecraft:stained_glass'
     })
-    daBlock = 'minecraft:stained_glass';
-
-    @ColorProperty({
-        name: '§bbhl custom color',
-        description: `sets the color of your block highlight (set your preset color to custom for this to work!)`,
-        category: 'Block Highlight',
-        subcategory: 'bhl',
-    })
-    blockHighlightColor = Color.WHITE;
-
+    blockHighlightBlock = 'minecraft:stained_glass';
     @SliderProperty({
-        name: '§bthickness',
-        description: 'sets a custom thickness of the block highlight',
+        name: 'Maximum Distance',
+        description: 'maximum distance an object can be to be highlighted',
         category: 'Block Highlight',
-        subcategory: 'bhl',
+        subcategory: 'Block Highlight',
+        min: 0,
+        max: 10
+    })
+    blockHighlightMaxDist = 5;
+    @SliderProperty({
+        name: 'Minimum Distance',
+        description: 'sets the minimum distance required to highlight an object(set it to 0 to exclude it)',
+        category: 'Block Highlight',
+        subcategory: 'Block Highlight',
+        min: 0,
+        max: 10
+    })
+    blockHighlightMinDist = 0;
+
+    @SwitchProperty({
+        name: 'Outline',
+        description: 'toggle block highlight outline',
+        category: 'Block Highlight',
+        subcategory: 'edit',
+    })
+    blockHighlightOutline = false;
+    @ColorProperty({
+        name: 'Outline Color',
+        description: 'set block highlight outline color',
+        category: 'Block Highlight',
+        subcategory: 'edit',
+    })
+    blockHighlightOutlineColor = Color.WHITE;
+    @SliderProperty({
+        name: 'Outline Thickness',
+        description: 'set block highlight outline thickness',
+        category: 'Block Highlight',
+        subcategory: 'edit',
         min: 0,
         max: 6
     })
-    blockHighlightThickness = 1;
-    
-    // inner blockhighlight
+    blockHighlightThickness = 2;
     @SwitchProperty({
-        name: '§ainner bhl',
-        description: 'bhl but for the inside of the block',
+        name: 'Fill',
+        description: 'toggle block highlight fill',
         category: 'Block Highlight',
-        subcategory: 'bhl',
+        subcategory: 'edit',
     })
-    innerBlockHighlightSwitch = true;
+    blockHighlightFill = true;
     @ColorProperty({
-        name: '§binner bhl custom color',
-        description: `sets the color of your inner block highlight (set your preset color to custom for this to work!) (currently not working)`,
+        name: 'Fill Color',
+        description: 'set block highlight fill color',
         category: 'Block Highlight',
-        subcategory: 'bhl',
+        subcategory: 'edit',
     })
-    innerBlockHighlightColor = Color.WHITE;
-
-    @SliderProperty({
-        name: '§binner opacity',
-        description: 'sets a custom opacity of the inner block highlight',
-        category: 'Block Highlight',
-        subcategory: 'bhl',
-        min: 0,
-        max: 100
-    })
-    innerBlockHighlightOpacity = 15;
-    @SliderProperty({
-        name: '§dbhl max distance',
-        description: 'maximum distance an object can be to be highlighted',
-        category: 'Block Highlight',
-        subcategory: 'bhl',
-        min: 0,
-        max: 10
-    })
-    maxDist = 5;
-
-    @SliderProperty({
-        name: '§dbhl min distance',
-        description: 'sets the minimum distance required to highlight an object(set it to 0 to exclude it)',
-        category: 'Block Highlight',
-        subcategory: 'bhl',
-        min: 0,
-        max: 10
-    })
-    minDist = 0;
+    blockHighlightFillColor = Color.WHITE;
     // #endregion
     // #region Mining Stats
     //TODO: get from player stats automatically somehow
@@ -429,6 +415,10 @@ class Settings {
         this.addDependency('Move Coin Tracker GUI', 'Toggle Coin Tracker');
         this.addDependency('Coin Tracker Color', 'Toggle Coin Tracker');
         this.addDependency('Auto Hide Coin Tracker', 'Toggle Coin Tracker');
+
+        this.addDependency('Outline Color', 'Outline');
+        this.addDependency('Outline Thickness', 'Outline');
+        this.addDependency('Fill Color', 'Fill');
     }
 }
 
