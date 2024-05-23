@@ -1,5 +1,5 @@
 import { Color } from 'Vigilance';
-import { makeObjectDraggable } from "../../Draggable";
+import { makeObjectDraggable } from "Draggable";
 
 import Settings from "../settings";
 import { rgbToColorInt, addCommas, secondsToMessage } from "./util/helperFunctions";
@@ -49,7 +49,7 @@ register("renderOverlay", () => {
         if (BlingPlayer.isCurrentlyMining() <= 0 && Settings.hide)
             return;
         let lines = [];
-        lines[0] = `Uptime: ${(BlingPlayer.isCurrentlyMining()) ? "n/a" : secondsToMessage((Date.now() - BlingPlayer.getMiningStartTime()) / 1000)}`;
+        lines[0] = `Uptime: ${!BlingPlayer.isCurrentlyMining() ? "n/a" : secondsToMessage((Date.now() - BlingPlayer.getMiningStartTime()) / 1000)}`;
         lines[1] = `$/hr: ${money == null ? "n/a" : "$" + addCommas(Settings.roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour)} ${Settings.roughGems ? "(+ rough)" : ""}`;
         lines[2] = `fl/hr: ${money == null ? "n/a" : Math.round((Settings.roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour) / flawless * 10) / 10} ${Settings.roughGems ? "(+ rough)" : ""}`;
         if (Settings.showEfficiency) {

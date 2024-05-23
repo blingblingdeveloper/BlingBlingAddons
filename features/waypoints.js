@@ -7,6 +7,8 @@ const Toolkit = Java.type("java.awt.Toolkit");
 const DataFlavor = Java.type("java.awt.datatransfer.DataFlavor");
 
 let route = [];
+let wp = 0;
+let nearbyWaypoints = [];
 
 register('command', () => {
     loadRoute();
@@ -131,8 +133,12 @@ register('command', (message) => {
     }
 }).setName('setblocks').setAliases(['sb']);
 
-let wp = 0;
-let nearbyWaypoints = [];
+// ====== functionality
+
+register("worldLoad", () => {
+    wp = 0;
+});
+
 register('tick', () => {
     if (route.length > 0) {
         let distance = BlingPlayer.calcDist(route[wp].x + 0.5, route[wp].y, route[wp].z + 0.5);
@@ -169,9 +175,7 @@ register('renderWorld', () => {
                     drawFunc(route[i], route[(i + 1) % route.length], Settings.waypointLineColor, Settings.orderedLineThickness);
                 }
             }
-        }
-
-        else {
+        } else {
             const wpAfter = (wp + 1 + route.length) % route.length;
             const wpBefore = (wp - 1 + route.length) % route.length;
 
@@ -191,7 +195,6 @@ register('renderWorld', () => {
         }
     }
 })
-
 
 function drawBlock(block, color) {
     let textColor = rgbToColorInt(Settings.waypointTextColor.getRed(), Settings.waypointTextColor.getRed(), Settings.waypointTextColor.getRed());
@@ -254,16 +257,20 @@ function drawFunc(pos1, pos2, color, lineWidth) {
         color.getBlue() / 255,
         color.getGreen() / 255,
         color.getAlpha() / 100,
-        lineWidth
+        lineWidth,
+        false
     )
 }
 
-function drawLine(x1, y1, z1, x2, y2, z2, red, green, blue, alpha, width) {
-    GL11.glBlendFunc(770, 771);
-    GL11.glEnable(GL11.GL_BLEND);
+function drawLine(x1, y1, z1, x2, y2, z2, red, green, blue, alpha, width, phase) {
+    if (phase) {
+        GlStateManager.func_179097_i() // disableDepth
+    }
     GL11.glLineWidth(width);
-    GL11.glDisable(GL11.GL_TEXTURE_2D);
+    GL11.glEnable(GL11.GL_BLEND);
+    GL11.glBlendFunc(770, 771);
     GL11.glDepthMask(false);
+    GL11.glDisable(GL11.GL_TEXTURE_2D);
     GlStateManager.func_179094_E(); // pushMatrix()
 
     Tessellator.begin(3).colorize(red, green, blue, alpha);
@@ -274,9 +281,12 @@ function drawLine(x1, y1, z1, x2, y2, z2, red, green, blue, alpha, width) {
     Tessellator.draw();
 
     GlStateManager.func_179121_F(); // popMatrix()
-    GL11.glEnable(GL11.GL_TEXTURE_2D);
-    GL11.glDepthMask(true);
     GL11.glDisable(GL11.GL_BLEND);
+    GL11.glDepthMask(true);
+    GL11.glEnable(GL11.GL_TEXTURE_2D);
+    if (phase) {
+        GlStateManager.func_179126_j(); // enableDepth
+    }
 }
 
 function drawTrace(block, color, lineWidth) {
@@ -291,6 +301,7 @@ function drawTrace(block, color, lineWidth) {
         color.getBlue() / 255,
         color.getGreen() / 255,
         color.getAlpha() / 255,
-        lineWidth
+        lineWidth,
+        true
     );
 }

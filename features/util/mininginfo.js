@@ -1,4 +1,4 @@
-import request from "../../../requestV2";
+import request from "requestV2";
 import Settings from '../../settings';
 
 const gemCosts = {}
