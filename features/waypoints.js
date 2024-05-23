@@ -1,7 +1,6 @@
-import RenderLib from "RenderLib";
-import Settings from "../settings"
-import { rgbToColorInt } from "./util/helperFunctions.js";
+import Settings from "../settings";
 import BlingPlayer from "./util/BlingPlayer.js";
+import { drawTrace, drawText, drawBlock, drawBlockFill, drawBlockConnection } from "./util/render.js";
 
 const Toolkit = Java.type("java.awt.Toolkit");
 const DataFlavor = Java.type("java.awt.datatransfer.DataFlavor");
@@ -169,145 +168,43 @@ register('renderWorld', () => {
     if (route.length > 0) {
         if (Settings.waypoint) {
             for (let i = 0; i < route.length; i++) {
-                drawFunc(route[i], route[(i + 1) % route.length], Settings.waypointLineColor, Settings.waypointLineThickness);
-                drawInnerBlock(route[i], Settings.waypointFillColor);
-                drawBlock(route[i], Settings.waypointOutlineColor);
-                drawLabel(route[i])
+                if (Settings.waypointExtraLine) {
+                    drawBlockConnection(route[i], route[(i + 1) % route.length], Settings.waypointLineColor);
+                }
+                if (Settings.waypointFill) {
+                    drawBlockFill(route[i], Settings.waypointFillColor);
+                }
+                if (Settings.waypointOutline) {
+                    drawBlock(route[i], Settings.waypointOutlineColor);
+                }
+                drawText(route[i].options.name, route[i], Settings.waypointTextColor);
             }
         } else {
             const nextWp = (currentWp + 1 + route.length) % route.length;
             const previousWp = (currentWp - 1 + route.length) % route.length;
-            drawFunc(route[previousWp], route[currentWp], Settings.waypointLineColor, Settings.waypointLineThickness);
-            drawFunc(route[currentWp], route[nextWp], Settings.waypointLineColor, Settings.waypointLineThickness);
+            if (Settings.waypointExtraLine) {
+                drawBlockConnection(route[previousWp], route[currentWp], Settings.waypointLineColor);
+                drawBlockConnection(route[currentWp], route[nextWp], Settings.waypointLineColor);
+            }
+            if (Settings.waypointFill) {
+                drawBlockFill(route[nextWp], Settings.orderedColorAfter);
+                drawBlockFill(route[currentWp], Settings.waypointFillColor);
+                drawBlockFill(route[previousWp], Settings.orderedColorBefore);
+            }
+            if (Settings.waypointOutline) {
+                drawBlock(route[nextWp], Settings.orderedColorAfter);
+                drawBlock(route[currentWp], Settings.waypointOutlineColor);
+                drawBlock(route[previousWp], Settings.orderedColorBefore);
+            }
 
-            drawInnerBlock(route[nextWp], Settings.orderedColorAfter);
-            drawInnerBlock(route[currentWp], Settings.waypointFillColor);
-            drawInnerBlock(route[previousWp], Settings.orderedColorBefore);
+            if (Settings.orderedLine) {
+                drawTrace(route[currentWp], Settings.orderedLineColor);
+            }
 
-            drawBlock(route[nextWp], Settings.orderedColorAfter);
-            drawBlock(route[currentWp], Settings.waypointOutlineColor);
-            drawBlock(route[previousWp], Settings.orderedColorBefore);
-
-            drawLabel(route[nextWp])
-            drawLabel(route[currentWp])
-            drawLabel(route[previousWp])
-            
-            drawTrace(route[currentWp], Settings.orderedLineColor, Settings.orderedLineThickness);
+            drawText(route[nextWp].options.name, route[nextWp], Settings.waypointTextColor);
+            drawText(route[currentWp].options.name, route[currentWp], Settings.waypointTextColor);
+            drawText(route[previousWp].options.name, route[previousWp], Settings.waypointTextColor);
         }
     }
 })
 
-function drawBlock(block, color) {
-    if (Settings.waypointOutline) {
-        RenderLib.drawEspBox(
-            Math.floor(block.x) + .5,
-            Math.floor(block.y),
-            Math.floor(block.z) + .5,
-            1, 1,
-            color.getRed() / 255,
-            color.getGreen() / 255,
-            color.getBlue() / 255,
-            color.getAlpha() / 255,
-            true
-        );
-    }    
-}
-
-function drawLabel(block) {
-    let textColor = rgbToColorInt(Settings.waypointTextColor.getRed(), Settings.waypointTextColor.getRed(), Settings.waypointTextColor.getRed());
-    let labelScale = Math.min(BlingPlayer.calcEyeDist(block.x + .5, block.y + 1.5, block.z + .5), 50) / 200;
-    Tessellator.drawString(block.options.name, block.x + .5, block.y + 1.5, block.z + .5, textColor, true, labelScale, false);
-}
-
-function drawInnerBlock(block, color) {
-    if (Settings.waypointFill) {
-        RenderLib.drawInnerEspBox(
-            Math.floor(block.x) + .49,
-            Math.floor(block.y) - 0.01,
-            Math.floor(block.z) + 0.49,
-            1, 1,
-            color.getRed() / 255,
-            color.getGreen() / 255,
-            color.getBlue() / 255,
-            color.getAlpha() / 255,
-            true
-        );
-
-        RenderLib.drawInnerEspBox(
-            Math.floor(block.x) + .51,
-            Math.floor(block.y) + 0.01,
-            Math.floor(block.z) + .51,
-            1, 1,
-            color.getRed() / 255,
-            color.getGreen() / 255,
-            color.getBlue() / 255,
-            color.getAlpha() / 255,
-            true
-        );
-    }
-}
-
-function drawFunc(pos1, pos2, color, lineWidth) {
-    if (Settings.waypointExtraLine) {
-        drawLine(
-            pos1.x + 0.5,
-            pos1.y + 0.5,
-            pos1.z + 0.5,
-            pos2.x + 0.5,
-            pos2.y + 0.5,
-            pos2.z + 0.5,
-            color.getRed() / 255,
-            color.getBlue() / 255,
-            color.getGreen() / 255,
-            color.getAlpha() / 100,
-            lineWidth,
-            false
-        );
-    }
-}
-
-function drawLine(x1, y1, z1, x2, y2, z2, red, green, blue, alpha, width, phase) {
-    if (phase) {
-        GlStateManager.func_179097_i() // disableDepth
-    }
-    GL11.glLineWidth(width);
-    GL11.glEnable(GL11.GL_BLEND);
-    GL11.glBlendFunc(770, 771);
-    GL11.glDepthMask(false);
-    GL11.glDisable(GL11.GL_TEXTURE_2D);
-    GlStateManager.func_179094_E(); // pushMatrix()
-
-    Tessellator.begin(3).colorize(red, green, blue, alpha);
-
-    Tessellator.pos(x1, y1, z1);
-    Tessellator.pos(x2, y2, z2);
-
-    Tessellator.draw();
-
-    GlStateManager.func_179121_F(); // popMatrix()
-    GL11.glDisable(GL11.GL_BLEND);
-    GL11.glDepthMask(true);
-    GL11.glEnable(GL11.GL_TEXTURE_2D);
-    if (phase) {
-        GlStateManager.func_179126_j(); // enableDepth
-    }
-}
-
-function drawTrace(block, color, lineWidth) {
-    if (Settings.orderedLine) {
-        drawLine(
-            Player.getRenderX(),
-            Player.getRenderY() + Player.getPlayer()["func_70047_e"](),
-            Player.getRenderZ(),
-            block.x + 0.5,
-            block.y + 0.5,
-            block.z + 0.5,
-            color.getRed() / 255,
-            color.getBlue() / 255,
-            color.getGreen() / 255,
-            color.getAlpha() / 255,
-            lineWidth,
-            true
-        );
-    }
-}

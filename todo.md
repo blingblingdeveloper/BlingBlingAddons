@@ -13,7 +13,6 @@
 - Update help commands
 - Check if tick required between blocks for efficiency
 - Just wrap block info, dummy it'll probably be better in the long run
-- diy RenderLib
 - better color defaults (alpha)
 - command input checks
 

@@ -12,7 +12,7 @@ import { @CheckboxProperty,
 
 @Vigilant('blingblingaddons', 'Config', {
     getCategoryComparator: () => (a, b) => {
-        const categories = ['Waypoints', 'Mining Skills', 'GUI', 'Struc Check', 'Block Highlight', 'Mining Stats', 'HELP'];
+        const categories = ['Waypoints', 'Mining Skills', 'GUI', 'Struc Check', 'Block Highlight', 'Mining Stats', 'Render', 'HELP'];
 
         return categories.indexOf(a.name) - categories.indexOf(b.name);
     }
@@ -61,6 +61,7 @@ class Settings {
         description: 'change the fill color',
         category: 'Waypoints',
         subcategory: '§rWaypoint Visuals',
+        allowAlpha: false
     })
     waypointFillColor = Color.PINK;
     
@@ -78,7 +79,7 @@ class Settings {
         category: 'Waypoints',
         subcategory: '§rWaypoint Visuals',
     })
-    waypointExtraLine = false;
+    waypointExtraLine = true;
     @ColorProperty({
         name: 'Extra Line Color',
         description: 'color of the line',
@@ -86,15 +87,6 @@ class Settings {
         subcategory: '§rWaypoint Visuals',
     })
     waypointLineColor = Color.WHITE;
-    @SliderProperty({
-        name: 'Extra Line Thickness',
-        description: 'tickness of the line',
-        category: 'Waypoints',
-        subcategory: '§rWaypoint Visuals',
-        min: 1,
-        max: 6
-    })
-    waypointLineThickness = 3;
     
     @ColorProperty({
         name: 'Ordered Previous Color',
@@ -112,27 +104,18 @@ class Settings {
     orderedColorAfter = Color.BLACK;
     @SwitchProperty({
         name: 'Ordered Line',
-        description: 'toggle showing a tracer to the next vein',
+        description: 'toggle showing a trace line to the next vein',
         category: 'Waypoints',
         subcategory: '§r§rOrdered Waypoint Visuals',
     })
     orderedLine = true;
     @ColorProperty({
         name: 'Ordered Line Color',
-        description: 'color of next block tracer',
+        description: 'color of next block trace line',
         category: 'Waypoints',
         subcategory: '§r§rOrdered Waypoint Visuals',
     })
     orderedLineColor = Color.BLACK;
-    @SliderProperty({
-        name: 'Ordered Line Thickness',
-        description: 'tickness of the line',
-        category: 'Waypoints',
-        subcategory: '§r§rOrdered Waypoint Visuals',
-        min: 1,
-        max: 6
-    })
-    orderedLineThickness = 3;
 
     // #endregion
     // #region Mining Skills
@@ -257,7 +240,7 @@ class Settings {
         category: 'GUI',
         subcategory: 'Edit',
     })
-    coinTrackerHide = false;
+    coinTrackerHide = true;
     // #endregion
     // #region Struc Check
     @SwitchProperty({
@@ -277,7 +260,7 @@ class Settings {
     strucCheckGem = 1;
     @DecimalSliderProperty({
         name: 'Initial Search Radius',
-        description: 'distance from waypoints to look for gemstone blocks',
+        description: 'distance from waypoints to look for gemstone blocks\n§6§oprobably don\'t touch this',
         category: 'Struc Check',
         subcategory: 'Struc Check',
         minF: 1.0,
@@ -286,15 +269,6 @@ class Settings {
     })
     strucCheckInitialRadius = 3.0;
     
-    @SliderProperty({
-        name: 'Outline Thickness',
-        description: 'set block outline thickness',
-        category: 'Struc Check',
-        subcategory: '§rEdit',
-        min: 1,
-        max: 6
-    })
-    strucCheckOutlineThickness = 2;
     @SwitchProperty({
         name: 'Setup Blocks',
         description: 'highlight all blocks when creating struc check routes',
@@ -324,28 +298,19 @@ class Settings {
     })
     strucCheckMissingColor = Color.RED;
     @SwitchProperty({
-        name: 'Tracer',
-        description: 'draw a tracer to each missing vein',
+        name: 'Missing Trace',
+        description: 'draw a trace line to each missing vein',
         category: 'Struc Check',
         subcategory: '§rEdit'
     })
-    strucCheckTracer = true;
+    strucCheckTrace = false;
     @ColorProperty({
-        name: 'Tracer Color',
-        description: 'the color for tracer to missing veins',
+        name: 'Missing Trace Color',
+        description: 'the color for trace line to missing veins',
         category: 'Struc Check',
         subcategory: '§rEdit',
     })
-    strucCheckTracerColor = Color.WHITE;
-    @SliderProperty({
-        name: 'Tracer Thickness',
-        description: 'set block outline thickness',
-        category: 'Struc Check',
-        subcategory: '§rEdit',
-        min: 1,
-        max: 6
-    })
-    strucCheckTracerThickness = 3;
+    strucCheckTraceColor = Color.WHITE;
 
     // #endregion
     // #region Block Highlight
@@ -397,15 +362,6 @@ class Settings {
         subcategory: 'Edit',
     })
     blockHighlightOutlineColor = Color.WHITE;
-    @SliderProperty({
-        name: 'Outline Thickness',
-        description: 'set block highlight outline thickness',
-        category: 'Block Highlight',
-        subcategory: 'Edit',
-        min: 1,
-        max: 6
-    })
-    blockHighlightThickness = 2;
     @SwitchProperty({
         name: 'Fill',
         description: 'toggle block highlight fill',
@@ -418,6 +374,7 @@ class Settings {
         description: 'set block highlight fill color',
         category: 'Block Highlight',
         subcategory: 'Edit',
+        allowAlpha: false
     })
     blockHighlightFillColor = Color.WHITE;
     // #endregion
@@ -462,6 +419,62 @@ class Settings {
     })
     blueCheese = false;
     // #endregion
+    // #region Render
+    @SwitchProperty({
+        name: 'Global Render Limit',
+        description: 'enabling this may improve performance',
+        category: 'Render',
+        subcategory: 'Render',
+    })
+    renderLimitEnabled = false;
+    @SliderProperty({
+        name: 'Render Distance',
+        description: 'how far away boxes will be drawn',
+        category: 'Render',
+        subcategory: 'Render',
+        min: 0,
+        max: 50
+    })
+    renderLimit = 30;
+
+    @SliderProperty({
+        name: 'Block Fill Opacity',
+        description: 'opacity for block fill',
+        category: 'Render',
+        subcategory: 'Render',
+        min: 0,
+        max: 255
+    })
+    blockFillOpacity = 50;
+    @SliderProperty({
+        name: 'Block Outline Thickness',
+        description: 'thickness for block outlines',
+        category: 'Render',
+        subcategory: 'Render',
+        min: 1,
+        max: 10
+    })
+    blockOutlineThickness = 3;
+    @SliderProperty({
+        name: 'Line Thickness',
+        description: 'thickness for rendered lines',
+        category: 'Render',
+        subcategory: 'Render',
+        min: 1,
+        max: 10
+    })
+    lineThickness = 3;
+    @SliderProperty({
+        name: 'Trace Thickness',
+        description: 'thickness for trace lines',
+        category: 'Render',
+        subcategory: 'Render',
+        min: 1,
+        max: 10
+    })
+    traceThickness = 3;
+    
+    // #endregion
     // #region HELP
     
     @ButtonProperty({
@@ -484,9 +497,7 @@ class Settings {
         this.addDependency('Waypoint Outline Color', 'Waypoint Outline');
         this.addDependency('Waypoint Fill Color', 'Waypoint Fill');
         this.addDependency('Extra Line Color', 'Extra Line');
-        this.addDependency('Extra Line Thickness', 'Extra Line');
         this.addDependency('Ordered Line Color', 'Ordered Line');
-        this.addDependency('Ordered Line Thickness', 'Ordered Line');
 
         this.addDependency('Sound', 'Ping Glide Sounds');
         this.addDependency('Volume', 'Ping Glide Sounds');
@@ -503,35 +514,18 @@ class Settings {
         this.addDependency('Coin Tracker Color', 'Toggle Coin Tracker');
         this.addDependency('Auto Hide Coin Tracker', 'Toggle Coin Tracker');
 
+        this.addDependency('Block', 'Block Highlight');
+        this.addDependency('Maximum Distance', 'Block Highlight');
+        this.addDependency('Minimum Distance', 'Block Highlight');
         this.addDependency('Outline Color', 'Outline');
-        this.addDependency('Outline Thickness', 'Outline');
         this.addDependency('Fill Color', 'Fill');
 
         this.addDependency('Setup Blocks Color', 'Setup Blocks');
         this.addDependency('Missing Blocks Color', 'Missing Blocks');
-        this.addDependency('Tracer Color', 'Tracer');
-        this.addDependency('Tracer Thickness', 'Tracer');
+        this.addDependency('Missing Trace Color', 'Missing Trace');
+
+        this.addDependency('Render Distance', 'Global Render Limit');
     }
 }
 
 export default new Settings();
-
-// return new PropertyAttributesExt(
-//     propertyType,
-//     configObj.name,
-//     configObj.category,
-//     configObj.subcategory ?? "",
-//     configObj.description ?? "",
-//     configObj.min ?? 0,
-//     configObj.max ?? 0,
-//     configObj.minF ?? 0,
-//     configObj.maxF ?? 0,
-//     configObj.decimalPlaces ?? 1,
-//     configObj.increment ?? 1,
-//     configObj.options ?? new java.util.ArrayList(),
-//     configObj.allowAlpha ?? true,
-//     configObj.placeholder ?? "",
-//     configObj.protected ?? false,
-//     configObj.triggerActionOnInitialization ?? true,
-//     configObj.hidden ?? false,
-// );
