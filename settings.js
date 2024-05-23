@@ -136,45 +136,45 @@ class Settings {
     // #endregion
     // #region Mining Skills
     @SwitchProperty({
-        name: '§aPing Glide Sounds',
-        description: 'toggles ping glide sounds',
+        name: 'Ping Glide Sounds',
+        description: 'plays a sound when you can start mining the next block',
         category: 'Mining Skills',
-        subcategory: 'Ping Glide',
+        subcategory: 'Ping Glide'
     })
     pingGlide = true;
     @TextProperty({
-        name: 'sound',
-        description: 'specify what sound to use(1.8 sounds only)',
+        name: 'Sound',
+        description: 'specify what sound to use (1.8 sounds only)',
         category: 'Mining Skills',
         subcategory: 'Ping Glide',
         placeholder: 'dig.stone'
     })
     pingGlideSound = 'dig.stone';
     @SliderProperty({
-        name: 'volume',
-        description: 'Volume of ping glide sound.',
+        name: 'Volume',
+        description: 'volume of ping glide sound',
         category: 'Mining Skills',
         subcategory: 'Ping Glide',
         min: 0,
         max: 100
     })
-    vol = 32;
+    pingGlideVolume = 32;
     @SliderProperty({
-        name: 'delay',
-        description: 'Delay (in ms)',
+        name: 'Delay',
+        description: 'delay (in ms) before the sound plays &c(will be changed in the future)',
         category: 'Mining Skills',
         subcategory: 'Ping Glide',
         min: 0,
         max: 2000
     })
-    pingDelay = 250;
+    pingGlideDelay = 250;
     @SwitchProperty({
-        name: 'speed',
-        description: 'toggles ping glide sounds during speed boost',
+        name: 'Mining Speed Boost',
+        description: 'toggles ping glide sounds during mining speed boost',
         category: 'Mining Skills',
-        subcategory: 'Ping Glide',
+        subcategory: 'Ping Glide'
     })
-    pingSpeedBoost = false;
+    pingGlideMsb = false;
     // #endregion
     // #region GUI
     @SelectorProperty({
@@ -414,6 +414,11 @@ class Settings {
         this.addDependency('Extra Line Thickness', 'Extra Line');
         this.addDependency('Ordered Line Color', 'Ordered Line');
         this.addDependency('Ordered Line Thickness', 'Ordered Line');
+
+        this.addDependency('Sound', 'Ping Glide Sounds');
+        this.addDependency('Volume', 'Ping Glide Sounds');
+        this.addDependency('Delay', 'Ping Glide Sounds');
+        this.addDependency('Mining Speed Boost', 'Ping Glide Sounds');
     }
 }
 
