@@ -209,9 +209,9 @@ function drawText(text, pos, color) {
 function drawBlock(block, color, phase) {
     drawWireBox(
         Math.floor(block.x) + .5,
-        Math.floor(block.y),
+        Math.floor(block.y) - .005,
         Math.floor(block.z) + .5,
-        1, 1, 1,
+        1.01, 1.01, 1.01,
         Settings.blockOutlineThickness,
         color.getRed() / 255,
         color.getGreen() / 255,
@@ -224,9 +224,9 @@ function drawBlock(block, color, phase) {
 function drawBlockFill(block, color, phase) {
     drawFillBox (
         Math.floor(block.x) + .5,
-        Math.floor(block.y),
+        Math.floor(block.y) - .005,
         Math.floor(block.z) + .5,
-        1, 1, 1,
+        1.01, 1.01, 1.01,
         color.getRed() / 255,
         color.getGreen() / 255,
         color.getBlue() / 255,
