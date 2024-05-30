@@ -1,10 +1,7 @@
 import PogObject from "PogData"
-import axios from "../../../axios"
-import Settings from "../../settings"
 import { updateRegisters } from "./helperFunctions.js"
 
-
-let PogData = new PogObject("Coleweight", {
+let PogData = new PogObject("blingblingaddons", {
     "api_key": "",
     "professional": 0,
     "jungle_amulet": true,
@@ -14,12 +11,6 @@ let PogData = new PogObject("Coleweight", {
     "museum": [],
     "currentPet": "",
     "effMinerEnabled": false,
-    "coleweightGui": {
-        "x": 0.5,
-        "y": 141,
-        "alignment": 0,
-        "scale": 1.0
-    },
     "powdertrackerGui": {
         "chests": 0,
         "gemstonePowder": 0,
@@ -28,99 +19,18 @@ let PogData = new PogObject("Coleweight", {
         "y": 0,
         "alignment": 0,
         "scale": 1.0
-    },
-    "timerGui": {
-        "x": 0,
-        "y": 0,
-        "timer": 0,
-        "alignment": 0,
-        "scale": 1.0
-    },
-    "alloyGui": {
-        "x": 0,
-        "y": 0,
-        "alignment": 0,
-        "scale": 1.0
-    },
-    "stopwatchGui": {
-        "x": 0,
-        "y": 0,
-        "stopwatch": 0,
-        "alignment": 0,
-        "scale": 1.0
-    },
-    "downtimeGui" : {
-        "x": 0,
-        "y": 0,
-        "alignment": 0,
-        "scale": 1.0
-    },
-    "collectionGui": {
-        "x": 0,
-        "y": 0,
-        "alignment": 0,
-        "scale": 1.0
-    },
-    "abilityGui": {
-        "x": 0,
-        "y": 0,
-        "alignment": 0,
-        "scale": 1.0
-    },
-    "gyroGui": {
-        "x": 0,
-        "y": 0,
-        "alignment": 0,
-        "scale": 1.0
-    },
-    "coinGui": {
-        "x": 0,
-        "y": 0,
-        "alignment": 0,
-        "scale": 1.0
-    },
-    "ffGui": {
-        "x": 0,
-        "y": 0,
-        "alignment": 0,
-        "scale": 1.0
-    },
-    "danceGui": {
-        "x": 0,
-        "y": 0,
-        "alignment": 0,
-        "scale": 1.0
-    },
-    "scrapGui": {
-        "x": 0,
-        "y": 0,
-        "alignment": 0,
-        "scale": 1.0
     }
 }, "config/data.json")
 
-const PREFIX = "&2[CW] "
 export default constants = {
-    PREFIX: PREFIX,
-    CALCULATEERRORMESSAGE: `${PREFIX}&cInvalid arguments. '/cw calculate help' for more information.`,
-    INVALIDARGS: `${PREFIX}&cInvalid arguments. '/cw help' for more information.`,
-    VERSION: (JSON.parse(FileLib.read("Coleweight", "metadata.json"))).version,
-    CWINFO: undefined,
+    PREFIX: "§d[BBA] ",
+    CALCULATEERRORMESSAGE: `${PREFIX}&cInvalid arguments. '/ba calculate help' for more information.`,
+    INVALIDARGS: `${PREFIX}&cInvalid arguments. '/ba help' for more information.`,
+    VERSION: (JSON.parse(FileLib.read("blingblingaddons", "metadata.json"))).version,
     data: PogData,
     beta: false,
-    checkedGemstoneStats: false,
-    Settings,
-    isFiesta: false
+    checkedGemstoneStats: false
 }
-
-register("gameLoad", () => {
-    axios.get("https://ninjune.dev/api/cwinfo?new=true")
-    .then((res) => {
-        constants.CWINFO = res.data
-    })
-    .catch((e) => {
-    })
-})
 
 
 register("chat", (lvl, pet, event) => {
@@ -145,20 +55,17 @@ register("chat", (state, event) => {
 }).setCriteria(/&r&.([a-zA-Z]+) Efficient Miner&r/g)
 
 
-register("worldLoad", () => {
-    updateRegisters()
-})
-
-
 // ct load
 updateRegisters()
 
+register("worldLoad", () => {
+    updateRegisters()
+})
 
 // Event handler for GUI settings close.
 register("guiClosed", (event) => {
     updateRegisters();
 });
-
 
 register("guiOpened", (event) => {
     updateRegisters();

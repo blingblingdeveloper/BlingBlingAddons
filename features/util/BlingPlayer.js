@@ -141,11 +141,11 @@ class BlingPlayer { // FIXME: extend Player???
     }
 
     calcEyeDist(x, y, z) {
-        return Math.sqrt((x - Player.getRenderX()) ** 2 + (y - (Player.getRenderY() + Player.getPlayer()["func_70047_e"]())) ** 2 + (z - Player.getRenderZ()) ** 2);
+        return Math.hypot(x - Player.getRenderX(), y - (Player.getRenderY() + Player.getPlayer()["func_70047_e"]()), z - Player.getRenderZ());
     }
 
     calcDist(x, y, z) {
-        return Math.sqrt((x - Player.getRenderX()) ** 2 + (y - Player.getRenderY()) ** 2 + (z - Player.getRenderZ()) ** 2);
+        return Math.hypot(x - Player.getRenderX(), y - Player.getRenderY(), z - Player.getRenderZ());
     }
 }
 
