@@ -115,7 +115,7 @@ register("renderWorld", () => {
         missingRoute.forEach(waypoint => {
             if (waypoint.options.vein) {
                 waypoint.options.vein.forEach(block => {
-                    if (BlingPlayer.calcEyeDist(x,y,z) > Settings.renderLimit) {
+                    if (BlingPlayer.calcEyeDist(waypoint.x,waypoint.y,waypoint.z) > Settings.renderLimit) {
                         return;
                     }
                     drawBlock(block, Settings.strucCheckMissingColor, true);
