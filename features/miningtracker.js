@@ -12,6 +12,8 @@ let moneyPerHour;
 let roughmoneyPerHour;
 let flawless;
 
+let mouseDown = false;
+
 register("chat", (gem, amount, event) => {
     money += getGemCost(gem, Settings.gemstoneType)/(Math.pow(80, Settings.gemstoneType-1)) * amount;
     moneyPerHour = Math.floor(money / ((Date.now() - BlingPlayer.getMiningStartTime()) / (1000 * 60 * 60)));
@@ -33,7 +35,18 @@ function resetVars() {
 
 const text = new Text("", 5, 5);
 const gui = new Gui();
-makeObjectDraggable("Mining Tracker", text, () => gui.isOpen());
+
+makeObjectDraggable("Mining Tracker", text, () => gui.isOpen() && mouseDown);
+
+// TODO: this is kinda gross, move to gui manager stuff later
+register("guiMouseClick", (mx, my, b, activeGui) => {
+    if (activeGui.equals(gui)) {
+        mouseDown = true;
+    }
+});
+register("guiMouseRelease", (mx, my, b, activeGui) => {
+    mouseDown = false;
+});
 
 register("command", () => {
     gui.open();
