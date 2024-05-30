@@ -12,6 +12,9 @@ let moneyPerHour;
 let roughmoneyPerHour;
 let flawless;
 
+let time;
+let oldTime;
+
 let mouseDown = false;
 
 register("chat", (gem, amount, event) => {
@@ -34,6 +37,7 @@ function resetVars() {
 }
 
 const text = new Text("", 5, 5);
+const efficiencyText = new Text("", text.getX() + 56, text.getY() + 30);
 const gui = new Gui();
 
 makeObjectDraggable("Mining Tracker", text, () => gui.isOpen() && mouseDown);
@@ -54,23 +58,38 @@ register("command", () => {
 
 register("renderOverlay", () => {
     if (Settings.coinTracker) {
-        if (BlingPlayer.isCurrentlyMining() <= 0 && Settings.coinTrackerHide)
+        if (!BlingPlayer.isCurrentlyMining() && Settings.coinTrackerHide)
             return;
-        let lines = [];
-        lines[0] = `Uptime: ${!BlingPlayer.isCurrentlyMining() ? "n/a" : secondsToMessage((Date.now() - BlingPlayer.getMiningStartTime()) / 1000)}`;
-        lines[1] = `$/hr: ${money == null ? "n/a" : "$" + addCommas(Settings.roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour)} ${Settings.roughGems ? "(+ rough)" : ""}`;
-        lines[2] = `fl/hr: ${money == null ? "n/a" : Math.round((Settings.roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour) / flawless * 10) / 10} ${Settings.roughGems ? "(+ rough)" : ""}`;
+
+        time = secondsToMessage((Date.now() - BlingPlayer.getMiningStartTime()) / 1000);
+        if (oldTime != time) {
+            updateGui();
+        }
         if (Settings.showEfficiency) {
-            lines[3] = `Efficiency:`;
-            let efficiencyText = new Text(`${Math.round(getEfficiency() * 10000) / 100}%`, text.getX() + 56, text.getY() + 30);
-            efficiencyText.setColor(efficiencyColor(Math.round(getEfficiency() * 10000) / 100).getRGB());
+            efficiencyText.setX(text.getX() + 56);
+            efficiencyText.setY(text.getY() + 30);
             efficiencyText.draw();
         }
-        text.setString(lines.join("\n"));
-        text.setColor(rgbToColorInt(Settings.coinTrackerColor.getRed(), Settings.coinTrackerColor.getGreen(), Settings.coinTrackerColor.getBlue()));
         text.draw();
+
+        oldTime = time;
     }
 });
+
+function updateGui() {
+    let lines = [];
+    lines[0] = `Uptime: ${!BlingPlayer.isCurrentlyMining() ? "n/a" : time}`;
+    lines[1] = `$/hr: ${money == null ? "n/a" : "$" + addCommas(Settings.roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour)} ${Settings.roughGems ? "(+ rough)" : ""}`;
+    lines[2] = `fl/hr: ${money == null ? "n/a" : Math.round((Settings.roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour) / flawless * 10) / 10} ${Settings.roughGems ? "(+ rough)" : ""}`;
+    if (Settings.showEfficiency) {
+        lines[3] = `Efficiency:`;
+        efficiencyText.setColor(efficiencyColor(Math.round(getEfficiency() * 10000) / 100).getRGB());
+        efficiencyText.setString(`${Math.round(getEfficiency() * 10000) / 100}%`);
+    }
+
+    text.setColor(rgbToColorInt(Settings.coinTrackerColor.getRed(), Settings.coinTrackerColor.getGreen(), Settings.coinTrackerColor.getBlue()));
+    text.setString(lines.join("\n"));
+}
 
 function efficiencyColor(value) {
     let h = Math.round(120 / 100 * value) / 360;

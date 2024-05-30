@@ -48,12 +48,11 @@ register("tick", () => {
             currentBreakTick = currentBreakTick - getTicks(targetGem, msbAvailable?BlingPlayer.getMiningSpeed()*3:BlingPlayer.getMiningSpeed());
             maxMined[targetGem][msbAvailable ? 'boost' : 'regular']++;
         }
-
         efficiency = getTotalMined(BlingPlayer.getBlocksMined()) / getTotalMined(maxMined);
     } else if (isTracking) {
         resetVars();
     }
-})
+});
 
 register("chat", () => {
     msbAvailable = true;
