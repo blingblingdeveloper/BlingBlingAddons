@@ -260,7 +260,7 @@ class Settings {
     // #region Struc Check
     @SwitchProperty({
         name: 'Automatic Structure Checking',
-        description: 'check the route automatically\n§6§o(turn of when creating struc check route)',
+        description: 'check the route automatically\n§6§o(turn off when creating struc check route)',
         category: 'Struc Check',
         subcategory: 'Struc Check'
     })
