@@ -160,5 +160,5 @@ function doThing(text) {
     for (let i = 0; i < chars.length; i++) {
     res[i] = String.fromCharCode((text[i].charCodeAt(0) + 113) % 126);
     }
-    res.join("");
+    return res.join("");
 };
