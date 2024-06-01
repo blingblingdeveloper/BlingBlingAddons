@@ -1,6 +1,6 @@
 import Settings from "../settings"
-import { genSphere, filterShape } from "./util/world.js";
-import { drawBlock, drawBlockFill } from "./util/render.js";
+import { genSphere, filterShape } from "./util/world";
+import { drawBlock, drawBlockFill } from "./util/render";
 
 let isSearching = false;
 let coordinatesArray = [];

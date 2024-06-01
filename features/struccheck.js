@@ -1,9 +1,9 @@
 import { Color } from 'Vigilance';
-import Settings from '../settings.js'
+import Settings from '../settings'
 import Settings from "../settings"
-import { findVein, genSphere, filterShape, getcoords, filterBlock, getInternalBlockAt } from "./util/world.js";
-import { drawBlock, drawTrace, drawText } from './util/render.js';
-import BlingPlayer from './util/BlingPlayer.js';
+import { findVein, genSphere, filterShape, getcoords, filterBlock, getInternalBlockAt } from "./util/world";
+import { drawBlock, drawTrace, drawText } from './util/render';
+import BlingPlayer from './util/BlingPlayer';
 
 let route = [];
 

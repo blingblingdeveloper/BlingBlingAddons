@@ -1,6 +1,6 @@
 import Settings from "../../settings";
 import BlingPlayer from "./BlingPlayer";
-import { rgbToColorInt } from "./helperFunctions.js";
+import { rgbToColorInt } from "./helperFunctions";
 // i do not take credit for this code below in any way. I just needed to change a line for the purposes of this module.
 // original author of this method is Debuggings/Debug
 // here is a link to their module RenderLib: https://chattriggers.com/modules/v/Renderlib

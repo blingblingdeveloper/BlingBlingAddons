@@ -1,5 +1,5 @@
 import PogObject from "PogData"
-import { updateRegisters } from "./helperFunctions.js"
+import { updateRegisters } from "./helperFunctions"
 
 let PogData = new PogObject("blingblingaddons", {
     "api_key": "",
