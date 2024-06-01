@@ -64,6 +64,7 @@ register("renderOverlay", () => {
         time = secondsToMessage((Date.now() - BlingPlayer.getMiningStartTime()) / 1000);
         if (oldTime != time) {
             updateGui();
+            oldTime = time;
         }
         if (Settings.showEfficiency) {
             efficiencyText.setX(text.getX() + 56);
@@ -72,7 +73,6 @@ register("renderOverlay", () => {
         }
         text.draw();
 
-        oldTime = time;
     }
 });
 

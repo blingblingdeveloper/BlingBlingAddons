@@ -75,9 +75,9 @@ class BlingPlayer { // FIXME: extend Player???
                     let blockType = this.hitBlocks.get(getcoords(blockPos))['type'];
                     if (getGemType(blockType)) {
                         if (!this.currentlyMining) {
-                            this.currentlyMining = true;
                             if (updateGemCosts()) {
                                 this.startedMiningTime = Date.now();
+                                this.currentlyMining = true;
                             }
                         }
                         this.lastMinedBlock = getGemType(blockType);

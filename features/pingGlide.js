@@ -18,7 +18,7 @@ register("hitBlock", (hitBlock, event) => {
 
             recentTimeout = setTimeout(function (id) {
                 return function () {
-                    if (id === timeoutId && Player.lookingAt().pos && getcoords(Player.lookingAt().pos) == getcoords(lastHit)) { // FIXME: occasional null for lookingAt.pos I think
+                    if (id === timeoutId && Player.lookingAt().pos && lastHit && getcoords(Player.lookingAt().pos) == getcoords(lastHit)) { // FIXME: occasional null for lookingAt.pos I think
                         World.playSound(Settings.pingGlideSound, parseFloat(Settings.pingGlideVolume) / 100, 0.7936508059501648);
                         lastHit = block;
                     }
@@ -36,7 +36,7 @@ register("soundPlay", (pos, name, vol, pitch, category, event) => {
     if (Settings.pingGlide && Settings.disableVanillaSound) {
         if (name == "dig.glass" && lastHit) {
             if ((pos.x == lastHit.x+0.5 && pos.y == lastHit.y+0.5 && pos.y == lastHit.y+0.5) ||
-                (pos.x == Math.floor(Player.x) + 0.5 && pos.y == Math.floor(Player.y) + 0.5 && pos.z == Math.floor(Player.z) + 0.5)) {
+            (pos.x == Math.floor(Player.x) + 0.5 && pos.y == Math.floor(Player.y) + 0.5 && pos.z == Math.floor(Player.z) + 0.5)) {
                 cancel(event);
             }
         }

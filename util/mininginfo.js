@@ -1,7 +1,7 @@
 import request from "requestV2";
 import Settings from '../settings';
 
-const gemCosts = {}
+const gemCosts = {};
 
 const blockStrength = {
     'Ruby': 2300,
@@ -38,7 +38,7 @@ function getGemCost(gem, tier) {
     }
     let id = type + "_" + gem.toUpperCase() + "_GEM";
 
-    return Math.max(npc, gemCosts[id]);
+    return Math.max(npc, gemCosts[id]?gemCosts[id]:0);
 }
 
 function updateGemCosts() {
