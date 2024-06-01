@@ -57,17 +57,32 @@ register("command", () => {
     }).start();
 }).setName('loadrouteguess').setAliases(['lrg']);
 
-// TODO: add "add" overload
-register("command", (message) => {
-    if (Player.lookingAt().pos?filterBlock(getInternalBlockAt(Player.lookingAt().pos)):false) {
-        let searchStart = new Map();
-        searchStart.set(getcoords(Player.lookingAt()), getInternalBlockAt(Player.lookingAt().pos));
-        route[parseInt(message) - 1].options.vein = findVein(searchStart);
-        resetVars();
-    
-        ChatLib.chat("§d[BlingBling Addons] §fVein size: " + route[parseInt(message) - 1].options.vein.length);
-    } else {
-        ChatLib.chat("§d[BlingBling Addons] §fPlease look at a block to set vein");
+register("command", (...args) => {
+    try {
+        let veinNum;
+        if (args.length == 2 && args[0] == "add") {
+            veinNum = parseInt(args[1]) - 1;
+        } else {
+            veinNum = parseInt(args[0]) - 1;
+        }
+        if (Player.lookingAt().pos?filterBlock(getInternalBlockAt(Player.lookingAt().pos)):false) {
+            let searchStart = new Map();
+            searchStart.set(getcoords(Player.lookingAt()), getInternalBlockAt(Player.lookingAt().pos));
+            if (args.length == 2 && args[0] == "add") {
+                let vein = new Set(route[veinNum].options.vein.concat(findVein(searchStart)));
+                route[veinNum].options.vein = Array.from(vein);
+            } else {
+                route[veinNum].options.vein = findVein(searchStart);
+            }
+            resetVars();
+        
+            ChatLib.chat("§d[BlingBling Addons] §fVein size: " + route[veinNum].options.vein.length);
+        } else {
+            ChatLib.chat("§d[BlingBling Addons] §fPlease look at a block to set vein");
+        }
+    } catch (e) {
+        console.log(e);
+        ChatLib.chat("§d[BlingBling Addons] §fCouldn't add vein");
     }
 }).setName('setvein').setAliases(['sv']);
 
@@ -117,7 +132,7 @@ register("renderWorld", () => {
                 if (Settings.strucCheckTrace) {
                     drawTrace(waypoint, Settings.strucCheckTraceColor);
                 }
-            } else if (waypoint.options.vein.length > 0) {
+            } else if (waypoint.options.vein.size > 0) {
                 waypoint.options.vein.forEach(block => {
                     //TODO: consider removing this vv
                     if (BlingPlayer.calcEyeDist(waypoint.x, waypoint.y, waypoint.z) > Settings.renderLimit) {
@@ -126,7 +141,7 @@ register("renderWorld", () => {
                     // ^^
                     drawBlock(block, Settings.strucCheckMissingColor, true);
                 });
-                drawText(`Missing blocks: ${waypoint.options.vein.length}, Vein ${waypoint.options.name}`, waypoint, Color.RED);
+                drawText(`Missing blocks: ${waypoint.options.vein.size}, Vein ${waypoint.options.name}`, waypoint, Color.RED);
             }
         });
     }
@@ -172,6 +187,7 @@ function createChunkMapping() {
 
     missingRoute.forEach(waypoint => {
         waypoint.options.chunks = new Set();
+        waypoint.options.vein = new Set(waypoint.options.vein);
         waypoint.options.vein.forEach(block => {
             let chunkCoords = `${Math.floor(block.x / 16)}, ${Math.floor(block.z / 16)}`;
             if (chunkMap.has(chunkCoords)) {
@@ -191,17 +207,13 @@ function checkChunk(chunkName) {
         chunkMap.get(chunkName).forEach(block => {
             if (filterBlock(getInternalBlockAt(new BlockPos(new Vec3i(block.x, block.y, block.z))), [block])) {
                 missingRoute.forEach(waypoint => {
-                    if (waypoint.options.chunks?.has(chunkName)) {
-                        waypoint.options.vein = waypoint.options.vein.filter(blockToRemove => blockToRemove!=block);
-                    }
+                    waypoint.options.vein.delete(block);
                 });
             }
         });
 
         missingRoute.forEach(waypoint => {
-            if (waypoint.options.chunks.has(chunkName)) {
-                waypoint.options.chunks.delete(chunkName);
-            }
+            waypoint.options.chunks.delete(chunkName);
         });
         chunkMap.delete(chunkName);
     }
