@@ -1,57 +1,48 @@
 # To-Do
+## Progress:
+- [x] Make ordered waypoints reset to vein 1 on lobby swap
+- [x] Offset rendering to fix z-fighting
+- [x] Vigilance reactivity (or Amaterasu)✅
+- [x] Update help commands ✅
+- [x] BlingPlayer start mining --> start mining tracker
+- [x] Fix position reset on gui move
+- [x] Slower update for efficiency tracker
+- [x] Look through util
+- [x] Struc Check on chunk load, persistent data
+- [x] Struc Check /sv "add" option for multiple veins on one waypoint
+- [ ] Struc Check spread out chunk search across ticks (performance)
+- [x] Efficiency tracker over 100% fix
+  - [ ] Check if working (Bling, help me)
+- [ ] PingGlide fix
+- [ ] README.md
+- [ ] License
+- [ ] Attribution
 
-## Celeite:
+## Medium-priority:
+- [ ] commandManager✅
+  - [ ] command argument handling/idiot proofing
+- [ ] guiManager
+- [ ] Dynamic mining stats
+- [ ] Suggested mining order (hard)
+  - [ ] Highlight final block (probably not that hard)
+
+## Misc. To-Do:
+- Use blocks broken for better rough calc
 - Better ability tracking
-- Fix position reset on gui move
-- Look through util
-- commandManager
-- guiManager
-- Add higher-level checks for more features (should also help performance)
-- Vigilance reactivity (or Amaterasu)
-- Efficiency tracker --> start mining tracker
-- Efficiency tracker --> better rough calc
-- Update help commands
-- Check if tick required between blocks for efficiency
+  - Mining ability switcher?
+- Add higher-level checks for more features (should also help performance)✅
 - Just wrap block info, dummy it'll probably be better in the long run
-- better color defaults (alpha)
-- command input checks
-
-- Look into getShape stuff for panetest
-- strucCheck block filter options
-- strucCheck /lv "add" option for multiple on one waypoint
-- Dynamic mining stats
-- Ping glide change
-  - Fix console errors >:|
-- License + attribution
-- Probably refactor some stuff
-- strucCheck cross-chunk/lobby swap check
+- Custom render code for performance
+  - Look into getShape stuff for panetest
+- Detect ch/dwarven for some features
+- Util tweaks:
+  - Refactor Title
+  - Refactor LocationChecker
+  - Have stuff use registerWhen
+- Struc Check vein array → Set
 - strucCheck from world file
-- Nice block whitelist
-- Suggested mining order (hard)
-- Hash waypoints
+- Struc Check block command options
+  - Block whitelist UI
+- Hash waypoints 
 - Bob-omb placement
-- Mining ability switcher?
 - Glacite mineshaft routing
-
-- CT unload/load modules
-- Texture pack reload lag fix
-- gfmod settings.save that one toggle
-- Vigilance onScroll fix
-
-
-Block order stuffs:
-Block closest to raycast from previous waypoint --> current waypoint is 'path start'
-Block farthest from current waypoint within player reach, but closest to raycast from current waypoint --> next waypoint is 'path exit'
-
-For remaining blocks:
-Score with combination of smallest angle + largest visible area
-Threshold value for "candidate" next blocks
-    if no blocks found, lower threshold
-Select block from candidate
-Use angle to center as new look angle, remove 'used' blocks, recaulculate weights
-Repeat
-
-Walk several paths, total mouse distance moved for each, minimum distance = best path
-
-Can be precalculated for the entire route
-Each block then gets an "order" tag, lowest value present in the vein = suggested block
