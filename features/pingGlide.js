@@ -1,6 +1,6 @@
 import Settings from "../settings"
 import BlingPlayer from '../util/BlingPlayer';
-import { getGemType } from "../util/mininginfo";
+import { getGemType, getTicks } from "../util/mininginfo";
 import { filterBlock, getInternalBlockAt } from "../util/world";
 
 let recentTimeout;

@@ -8,7 +8,7 @@ class BlingPlayer { // FIXME: extend Player???
         this.currentlyMining = false;
         this.msbActive = false;
         this.hitBlocks = new Map();
-        this.miningSpeed = parseInt(Settings.gemMiningSpeed) + parseInt(doThing("F?="));
+        this.miningSpeed = parseInt(Settings.gemMiningSpeed);
         this.pristine = Settings.pristine;
         this.miningFortune = Settings.miningFortune;
         this.lastMinedBlock = '';
@@ -150,12 +150,3 @@ class BlingPlayer { // FIXME: extend Player???
 }
 
 export default new BlingPlayer();
-
-function doThing(text) {
-    let res = [];
-
-    for (let i = 0; i < text.length; i++) {
-    res[i] = String.fromCharCode((text[i].charCodeAt(0) + 113) % 126);
-    }
-    return res.join("");
-};
