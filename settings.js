@@ -133,15 +133,22 @@ class Settings {
         category: 'Mining Skills',
         subcategory: 'Ping Glide'
     })
-    pingGlide = true;
+    pingGlide = false;
+    @SwitchProperty({
+        name: 'Disable Vanilla Sounds',
+        description: 'stop the regular glass break sounds from playing',
+        category: 'Mining Skills',
+        subcategory: 'Ping Glide'
+    })
+    disableVanillaSound = true;
     @TextProperty({
         name: 'Sound',
         description: 'specify what sound to use (1.8 sounds only)',
         category: 'Mining Skills',
         subcategory: 'Ping Glide',
-        placeholder: 'dig.stone'
+        placeholder: 'dig.glass'
     })
-    pingGlideSound = 'dig.stone';
+    pingGlideSound = 'dig.glass';
     @SliderProperty({
         name: 'Volume',
         description: 'volume of ping glide sound',
@@ -150,23 +157,23 @@ class Settings {
         min: 0,
         max: 100
     })
-    pingGlideVolume = 32;
+    pingGlideVolume = 100;
     @SliderProperty({
-        name: 'Shift Offset',
-        description: 'offset ping glide sound by ms\n§6§o(for tweaking to preference, ping is already accounted for)',
+        name: 'Delay',
+        description: 'your ping, higher = earlier sound',
         category: 'Mining Skills',
         subcategory: 'Ping Glide',
-        min: -100,
-        max: 100
+        min: 0,
+        max: 500
     })
-    pingGlideDelay = 0;
+    pingGlideDelay = 150;
     @SwitchProperty({
         name: 'Mining Speed Boost',
         description: 'toggle ping glide sounds during mining speed boost',
         category: 'Mining Skills',
         subcategory: 'Ping Glide'
     })
-    pingGlideMsb = false;
+    pingGlideMsb = true;
     // #endregion
     // #region GUI
     @SwitchProperty({
@@ -189,7 +196,7 @@ class Settings {
         category: 'GUI',
         subcategory: 'Coin Tracker',
     })
-    showEfficiency = false;
+    showEfficiency = true;
     @SwitchProperty({
         name: 'Force NPC',
         description: 'use npc price for profits',
@@ -509,8 +516,9 @@ class Settings {
         this.addDependency('Ordered Line Color', 'Ordered Line');
 
         this.addDependency('Sound', 'Ping Glide Sounds');
+        this.addDependency('Disable Vanilla Sounds', 'Ping Glide Sounds');
         this.addDependency('Volume', 'Ping Glide Sounds');
-        this.addDependency('Shift Offset', 'Ping Glide Sounds');
+        this.addDependency('Delay', 'Ping Glide Sounds');
         this.addDependency('Mining Speed Boost', 'Ping Glide Sounds');
 
         this.addDependency('Include Rough Estimate?', 'Toggle Coin Tracker');
