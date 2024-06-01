@@ -2,7 +2,6 @@ import Settings from "../settings";
 import BlingPlayer from '../util/BlingPlayer';
 import { getTicks, blockStrength, getTotalMined } from "../util/mininginfo";
 
-let msbAvailable = false;
 let ticks = 0;
 let msbTicks = 0;
 let currentBreakTick = 0;
@@ -38,15 +37,18 @@ register("tick", () => {
         ticks++;
         currentBreakTick++;
         if (msbTicks > 0) {
+            if (currentBreakTick >= getTicks(targetGem, BlingPlayer.getMiningSpeed()*3)) {
+                currentBreakTick -= getTicks(targetGem, BlingPlayer.getMiningSpeed()*3);
+                maxMined[targetGem]['boost']++;
+            }
             msbTicks--;
         } else {
-            msbAvailable = false;
+            if (currentBreakTick >= getTicks(targetGem, BlingPlayer.getMiningSpeed())) {
+                currentBreakTick -= getTicks(targetGem, BlingPlayer.getMiningSpeed());
+                maxMined[targetGem]['regular']++;
+            }
         }
 
-        if (currentBreakTick >= getTicks(targetGem, msbAvailable?BlingPlayer.getMiningSpeed()*3:BlingPlayer.getMiningSpeed())) { // TODO: remove once stats are dynamic
-            currentBreakTick = currentBreakTick - getTicks(targetGem, msbAvailable?BlingPlayer.getMiningSpeed()*3:BlingPlayer.getMiningSpeed());
-            maxMined[targetGem][msbAvailable ? 'boost' : 'regular']++;
-        }
         efficiency = getTotalMined(BlingPlayer.getBlocksMined()) / getTotalMined(maxMined);
     } else if (isTracking) {
         resetVars();
@@ -54,12 +56,20 @@ register("tick", () => {
 });
 
 register("chat", () => {
-    msbAvailable = true;
     msbTicks = Settings.blueCheese ? 500 : 400;
 }).setChatCriteria(/&r&a&r&6Mining Speed Boost &r&ais now available!&r/g);
 
+register("chat", () => {
+    let count = 0;
+    Object.keys(maxMined).forEach(gem => {
+        count += maxMined[gem]['boost'];
+    });
+    if (count == 0) {
+        msbTicks = Settings.blueCheese ? 500 : 400;
+    }
+}).setChatCriteria(/&r&aYou used your &r&6Mining Speed Boost &r&aPickaxe Ability!&r/g);
+
 register("worldLoad", () => {
-    msbAvailable = false;
     resetVars();
 });
 
