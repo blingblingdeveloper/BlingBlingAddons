@@ -14,11 +14,10 @@ register("hitBlock", (hitBlock, event) => {
         if (filterBlock(block)) {
             let timeToBreak = getTicks(getGemType(block.color), BlingPlayer.isMsbActive()?BlingPlayer.getMiningSpeed()*3:BlingPlayer.getMiningSpeed())*50;
             let currentId = ++timeoutId;
-            lastHit = block;
 
             recentTimeout = setTimeout(function (id) {
                 return function () {
-                    if (id === timeoutId && Player.lookingAt().pos && lastHit && getcoords(Player.lookingAt().pos) == getcoords(lastHit)) { // FIXME: occasional null for lookingAt.pos I think
+                    if (id === timeoutId && Player.lookingAt().pos) {
                         World.playSound(Settings.pingGlideSound, parseFloat(Settings.pingGlideVolume) / 100, 0.7936508059501648);
                         lastHit = block;
                     }
