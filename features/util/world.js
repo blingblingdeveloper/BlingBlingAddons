@@ -13,7 +13,8 @@ function getcoords(block) {
     return `${block.x},${block.y},${block.z}`;
 }
 
-function genSphere(radius) { //TODO: probably move to helperFunctions
+//TODO: probably move to helperFunctions
+function genSphere(radius) {
     let shape = [];
 
     for (let x = -Math.ceil(radius); x <= Math.ceil(radius); x++) {
@@ -45,8 +46,9 @@ function getInternalBlockAt(pos) {
     return block;
 }
 
+// TODO: have this support more things than just color
 function filterBlock(block, filter = blockStatesToFind) {
-    return filter.some(state => { return (state.name == block.name && (state.color?state.color.includes(block.color):true))}) // TODO: have this support more things :/
+    return filter.some(state => { return (state.name == block.name && (state.color?state.color.includes(block.color):true))})
 }
 
 function filterShape(pos, shape, blockType = blockStatesToFind) {

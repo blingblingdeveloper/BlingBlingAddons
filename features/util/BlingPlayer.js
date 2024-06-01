@@ -8,9 +8,6 @@ class BlingPlayer { // FIXME: extend Player???
         this.currentlyMining = false;
         this.msbActive = false;
         this.hitBlocks = new Map();
-
-        let a = 15;
-        let b = 61;
         this.miningSpeed = parseInt(Settings.gemMiningSpeed) + parseInt(doThing("F?="));
         this.pristine = Settings.pristine;
         this.miningFortune = Settings.miningFortune;

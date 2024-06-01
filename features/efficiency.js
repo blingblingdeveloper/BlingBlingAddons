@@ -27,7 +27,6 @@ function resetVars() {
     });
 }
 
-// TODO: math with time instead for slower update?
 register("tick", () => {
     if (BlingPlayer.isCurrentlyMining()) {
         let targetGem = BlingPlayer.getLastMinedBlock();
