@@ -28,8 +28,6 @@ register('command', () => {
     ChatLib.chat("§d[BlingBling Addons] §fExported route!");
 }).setName('exportstruc').setAliases(['es']);
 
-// TODO: block type filter in command?
-// TODO: only load if needed?
 register("command", () => {
     if (route.length == 0) {
         if (!loadRoute()) {
@@ -134,11 +132,9 @@ register("renderWorld", () => {
                 }
             } else if (waypoint.options.vein.size > 0) {
                 waypoint.options.vein.forEach(block => {
-                    //TODO: consider removing this vv
                     if (BlingPlayer.calcEyeDist(waypoint.x, waypoint.y, waypoint.z) > Settings.renderLimit) {
                         return;
                     }
-                    // ^^
                     drawBlock(block, Settings.strucCheckMissingColor, true);
                 });
                 drawText(`Missing blocks: ${waypoint.options.vein.size}, Vein ${waypoint.options.name}`, waypoint, Color.RED);

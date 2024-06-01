@@ -24,6 +24,7 @@ register('command', () => {
     ChatLib.chat("&d/lr: &floads structure check format from clipboard, or a regular route for converting to struc check format manually.")
     ChatLib.chat("&d/ur: &funloads the structure check route.")
     ChatLib.chat("&d/sv [#]: &fsets vein the cursor is currently on as the vein associated with [#].")
+    ChatLib.chat("&d/sv add [#]: &fadds vein the cursor is currently on to the vein(s) associated with [#].")
     ChatLib.chat("&d/rv [#]: &fclears waypoint [#]'s associated vein.")
     ChatLib.chat("&d/cs: &fchecks for structure grief. Will make a waypoint showing missing blocks. &cchunks have to be loaded to work.")
     ChatLib.chat("&d/es: &fexports structure check format to clipboard")
