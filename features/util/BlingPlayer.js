@@ -157,7 +157,7 @@ export default new BlingPlayer();
 function doThing(text) {
     let res = [];
 
-    for (let i = 0; i < chars.length; i++) {
+    for (let i = 0; i < text.length; i++) {
     res[i] = String.fromCharCode((text[i].charCodeAt(0) + 113) % 126);
     }
     return res.join("");
