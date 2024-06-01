@@ -6,28 +6,30 @@ import { drawBlock, drawTrace, drawText } from './util/render.js';
 import BlingPlayer from './util/BlingPlayer.js';
 
 let route = [];
+
+let chunkMap = new Map();
+let checkedChunks = new Set();
+let mapCreated = false;
 let missingRoute = [];
-let missing = 0;
 
-// strucCheckAuto
-// strucCheckGem
-// strucCheckInitialRadius
-
+// TODO: Settings.strucCheckGem
 register('command', () => {
     loadRoute();
+    resetVars();
 }).setName('loadroute').setAliases(['lr']);
 
 register('command', () => {
     route = [];
-    missingRoute = [];
-    missing = 0;
+    resetVars();
 }).setName('unloadroute').setAliases(['ur']);
 
 register('command', () => {
-    ChatLib.command(`ct copy ${JSON.stringify(route)}`, true)
+    ChatLib.command(`ct copy ${JSON.stringify(route)}`, true);
+    ChatLib.chat("§d[BlingBling Addons] §fExported route!");
 }).setName('exportstruc').setAliases(['es']);
 
 // TODO: block type filter in command?
+// TODO: only load if needed?
 register("command", () => {
     if (route.length == 0) {
         if (!loadRoute()) {
@@ -49,58 +51,55 @@ register("command", () => {
 
             waypoint.options.vein = findVein(searchStart);
         });
-
+        resetVars();
+        
         ChatLib.chat("§d[BlingBling Addons] §fLoaded vein guesses");
     }).start();
 }).setName('loadrouteguess').setAliases(['lrg']);
 
 // TODO: add "add" overload
 register("command", (message) => {
-    if (filterBlock(Player.lookingAt())) {
+    if (Player.lookingAt().pos?filterBlock(getInternalBlockAt(Player.lookingAt().pos)):false) {
         let searchStart = new Map();
-        searchStart.set(getcoords(Player.lookingAt()), Player.lookingAt());
+        searchStart.set(getcoords(Player.lookingAt()), getInternalBlockAt(Player.lookingAt().pos));
         route[parseInt(message) - 1].options.vein = findVein(searchStart);
+        resetVars();
+    
+        ChatLib.chat("§d[BlingBling Addons] §fVein size: " + route[parseInt(message) - 1].options.vein.length);
+    } else {
+        ChatLib.chat("§d[BlingBling Addons] §fPlease look at a block to set vein");
     }
-
-    ChatLib.chat("§d[BlingBling Addons] §fVein size: " + veinWaypoints.length);
 }).setName('setvein').setAliases(['sv']);
 
 register("command", (message) => {
     let veinNum = parseInt(message);
     delete route[veinNum - 1].options.vein;
+    resetVars();
+    
     ChatLib.chat("§d[BlingBling Addons] §fRemoved vein " + veinNum);
 }).setName('removevein').setAliases(['rv']);
 
-register('command', () => {
-    missingRoute = JSON.parse(JSON.stringify(route));
+register("worldLoad", () => {
+    resetVars();
+});
 
-    missingRoute.forEach(waypoint => {
-        missingBlocks = [];
-        waypoint.options.vein.forEach(block => {
-            if (!filterBlock(getInternalBlockAt(new BlockPos(new Vec3i(block.x, block.y, block.z))), [block])) {
-                missingBlocks.push(block);
-            }
-        });
-        waypoint.options.vein = missingBlocks;
-    });
-
-    if (missingRoute.length == 0) {
-        ChatLib.chat("§d[BlingBling Addons] §fNo structure grief!")
-    } else {
-        missing = 0;
-        missingRoute.forEach(waypoint => {
-            missing += waypoint.options.vein.length;
-        });
-        ChatLib.chat(`§d[BlingBling Addons] §fMissing ${missing} blocks`);
+register("step", () => {
+    if (Settings.strucCheckAuto && isRouteReady()) {
+        if (!mapCreated) {
+            createChunkMapping();
+        }
+        if (chunkMap.size > 0) {
+            checkLoaded();
+        }
     }
-}).setName('checkstruc').setAliases(['cs']);
+}).setFps(1);
 
 register("renderWorld", () => {
-    if (missing == 0 && Settings.strucCheckSetup) {
+    if (!mapCreated) {
         route.forEach(waypoint => {
-            if (waypoint.options.vein) {
+            if (Settings.strucCheckSetup && waypoint.options.vein) {
                 waypoint.options.vein.forEach(block => {
-                    if (BlingPlayer.calcEyeDist(waypoint.x,waypoint.y,waypoint.z) > Settings.renderLimit) {
+                    if (BlingPlayer.calcEyeDist(waypoint.x, waypoint.y, waypoint.z) > Settings.renderLimit) {
                         return;
                     }
                     drawBlock(block, Settings.strucCheckSetupColor, false);
@@ -111,21 +110,23 @@ register("renderWorld", () => {
         });
     }
 
-    if (Settings.strucCheckMissing) {
+    if (Settings.strucCheckMissing && mapCreated) {
         missingRoute.forEach(waypoint => {
-            if (waypoint.options.vein) {
+            if (waypoint.options.chunks.size > 0) {
+                drawText(`Unchecked vein!`, waypoint, Color.RED);
+                if (Settings.strucCheckTrace) {
+                    drawTrace(waypoint, Settings.strucCheckTraceColor);
+                }
+            } else if (waypoint.options.vein.length > 0) {
                 waypoint.options.vein.forEach(block => {
-                    if (BlingPlayer.calcEyeDist(waypoint.x,waypoint.y,waypoint.z) > Settings.renderLimit) {
+                    //TODO: consider removing this vv
+                    if (BlingPlayer.calcEyeDist(waypoint.x, waypoint.y, waypoint.z) > Settings.renderLimit) {
                         return;
                     }
+                    // ^^
                     drawBlock(block, Settings.strucCheckMissingColor, true);
                 });
-                if (waypoint.options.vein.length > 0) {
-                    drawText(`Missing blocks: ${waypoint.options.vein.length}, Vein ${waypoint.options.name}`, waypoint, Color.RED);
-                    if (Settings.strucCheckTrace) {
-                        drawTrace(waypoint, Settings.strucCheckTraceColor);
-                    }
-                }
+                drawText(`Missing blocks: ${waypoint.options.vein.length}, Vein ${waypoint.options.name}`, waypoint, Color.RED);
             }
         });
     }
@@ -147,4 +148,81 @@ function loadRoute() {
         ChatLib.chat("§d[BlingBling Addons] §fCouldn't load route");
         return false;
     }
+}
+
+function checkLoaded() {
+    new Thread(() => {
+        const IChunkProvider = World.getWorld().func_72863_F();
+        const ChunkProviderClass = IChunkProvider.class;
+        const chunkListing = ChunkProviderClass.getDeclaredField('field_73237_c');
+        chunkListing.setAccessible(true);
+        const allChunksInWorld = chunkListing.get(IChunkProvider);
+    
+        allChunksInWorld.forEach(chunk => {
+            let chunkName = `${chunk.field_76635_g}, ${chunk.field_76647_h}`;
+            if (!checkedChunks.has(chunkName)) {
+                checkChunk(chunkName);
+            }
+        });
+    }).start();
+}
+
+function createChunkMapping() {
+    missingRoute = JSON.parse(JSON.stringify(route));
+
+    missingRoute.forEach(waypoint => {
+        waypoint.options.chunks = new Set();
+        waypoint.options.vein.forEach(block => {
+            let chunkCoords = `${Math.floor(block.x / 16)}, ${Math.floor(block.z / 16)}`;
+            if (chunkMap.has(chunkCoords)) {
+                chunkMap.get(chunkCoords).push(block);
+            } else {
+                chunkMap.set(chunkCoords, [block]);
+            }
+            waypoint.options.chunks.add(chunkCoords);
+        });
+    });
+    mapCreated = true;
+}
+
+function checkChunk(chunkName) {
+    checkedChunks.add(chunkName);
+    if (chunkMap.has(chunkName)) {
+        chunkMap.get(chunkName).forEach(block => {
+            if (filterBlock(getInternalBlockAt(new BlockPos(new Vec3i(block.x, block.y, block.z))), [block])) {
+                missingRoute.forEach(waypoint => {
+                    if (waypoint.options.chunks?.has(chunkName)) {
+                        waypoint.options.vein = waypoint.options.vein.filter(blockToRemove => blockToRemove!=block);
+                    }
+                });
+            }
+        });
+
+        missingRoute.forEach(waypoint => {
+            if (waypoint.options.chunks.has(chunkName)) {
+                waypoint.options.chunks.delete(chunkName);
+            }
+        });
+        chunkMap.delete(chunkName);
+    }
+}
+
+function isRouteReady() {
+    if (route.length == 0) {
+        return false;
+    }
+
+    for (let waypoint of route) {
+        if (waypoint.options.vein == undefined) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function resetVars() {
+    chunkMap = new Map();
+    checkedChunks = new Set();
+    mapCreated = false;
+    missingRoute = [];
 }

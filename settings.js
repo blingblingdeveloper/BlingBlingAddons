@@ -116,6 +116,14 @@ class Settings {
         subcategory: '§r§rOrdered Waypoint Visuals',
     })
     orderedLineColor = Color.BLACK;
+    @ButtonProperty({
+        name: 'Vigilance is dumb',
+        description: 'just moving stuff up so you can pick colors :/',
+        subcategory: '§r§r§rHelp',
+        category: 'Waypoints',
+        placeholder: ' '
+    })
+    ignoreMe2() {}
 
     // #endregion
     // #region Mining Skills
@@ -245,7 +253,7 @@ class Settings {
     // #region Struc Check
     @SwitchProperty({
         name: 'Automatic Structure Checking',
-        description: 'check the route when loading chunks\n§c(CURRENTLY DOES NOTHING)',
+        description: 'check the route automatically\n§6§o(turn of when creating struc check route)',
         category: 'Struc Check',
         subcategory: 'Struc Check'
     })
@@ -298,19 +306,27 @@ class Settings {
     })
     strucCheckMissingColor = Color.RED;
     @SwitchProperty({
-        name: 'Missing Trace',
-        description: 'draw a trace line to each missing vein',
+        name: 'Unloaded Trace',
+        description: 'draw a trace line to each unloaded vein',
         category: 'Struc Check',
         subcategory: '§rEdit'
     })
     strucCheckTrace = false;
     @ColorProperty({
-        name: 'Missing Trace Color',
-        description: 'the color for trace line to missing veins',
+        name: 'Unloaded Trace Color',
+        description: 'the color for trace line to unloaded veins',
         category: 'Struc Check',
         subcategory: '§rEdit',
     })
     strucCheckTraceColor = Color.WHITE;
+    @ButtonProperty({
+        name: 'Vigilance is dumb',
+        description: 'just moving stuff up so you can pick colors :/',
+        subcategory: '§rHelp',
+        category: 'Struc Check',
+        placeholder: ' '
+    })
+    ignoreMe() {}
 
     // #endregion
     // #region Block Highlight
@@ -522,7 +538,7 @@ class Settings {
 
         this.addDependency('Setup Blocks Color', 'Setup Blocks');
         this.addDependency('Missing Blocks Color', 'Missing Blocks');
-        this.addDependency('Missing Trace Color', 'Missing Trace');
+        this.addDependency('Unloaded Trace Color', 'Unloaded Trace');
 
         this.addDependency('Render Distance', 'Global Render Limit');
     }

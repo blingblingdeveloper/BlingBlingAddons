@@ -45,16 +45,13 @@ function getInternalBlockAt(pos) {
     return block;
 }
 
-function filterBlock(block, filter) {
-    if (filter == null) {
-        filter = blockStatesToFind;
-    }
+function filterBlock(block, filter = blockStatesToFind) {
     return filter.some(state => { return (state.name == block.name && (state.color?state.color.includes(block.color):true))}) // TODO: have this support more things :/
 }
 
 function filterShape(pos, shape, blockType = blockStatesToFind) {
     let blockPos = new BlockPos(pos);
-    let matchingBlocks = []
+    let matchingBlocks = [];
     shape.forEach(offset => {
         let block = getInternalBlockAt(blockPos.add(offset));
         if (filterBlock(block, blockType)) {
@@ -65,7 +62,7 @@ function filterShape(pos, shape, blockType = blockStatesToFind) {
     return matchingBlocks;
 }
 
-function findVein(blocksToSearch, maxSearchSteps = 5, searchRadius = 1.75) {
+function findVein(blocksToSearch, maxSearchSteps = 15, searchRadius = 1.75) {
     let veinBlocks = [];
     let foundBlocks = new Map();
 
