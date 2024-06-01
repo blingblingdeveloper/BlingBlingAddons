@@ -1,6 +1,6 @@
 import Settings from "../settings";
-import BlingPlayer from "./util/BlingPlayer";
-import { drawTrace, drawText, drawBlock, drawBlockFill, drawBlockConnection } from "./util/render";
+import BlingPlayer from "../util/BlingPlayer";
+import { drawTrace, drawText, drawBlock, drawBlockFill, drawBlockConnection } from "../util/render";
 
 const Toolkit = Java.type("java.awt.Toolkit");
 const DataFlavor = Java.type("java.awt.datatransfer.DataFlavor");

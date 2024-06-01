@@ -2,10 +2,10 @@ import { Color } from 'Vigilance';
 import { makeObjectDraggable } from "Draggable";
 
 import Settings from "../settings";
-import { rgbToColorInt, addCommas, secondsToMessage } from "./util/helperFunctions";
+import { rgbToColorInt, addCommas, secondsToMessage } from "../util/helperFunctions";
 import { getEfficiency } from "./efficiency";
-import { getGemCost } from './util/mininginfo';
-import BlingPlayer from './util/BlingPlayer';
+import { getGemCost } from '../util/mininginfo';
+import BlingPlayer from '../util/BlingPlayer';
 
 let money;
 let moneyPerHour;

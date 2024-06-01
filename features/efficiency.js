@@ -1,6 +1,6 @@
 import Settings from "../settings";
-import BlingPlayer from './util/BlingPlayer';
-import { getTicks, blockStrength, getTotalMined } from "./util/mininginfo";
+import BlingPlayer from '../util/BlingPlayer';
+import { getTicks, blockStrength, getTotalMined } from "../util/mininginfo";
 
 let msbAvailable = false;
 let ticks = 0;

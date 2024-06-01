@@ -1,6 +1,6 @@
 import Settings from "../settings"
-import BlingPlayer from './util/BlingPlayer';
-import { filterBlock, getInternalBlockAt } from "./util/world";
+import BlingPlayer from '../util/BlingPlayer';
+import { filterBlock, getInternalBlockAt } from "../util/world";
 
 let recentTimeout;
 let timeoutId = 0;
