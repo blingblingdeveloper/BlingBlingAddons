@@ -421,13 +421,6 @@ class Settings {
     })
     pristine = '18.63';
     @SwitchProperty({
-        name: 'Precision Miner',
-        description: 'always use precision miner in calculations',
-        category: 'Mining Stats',
-        subcategory: 'i\'m dumb, we\'ll import stats later §d<3',
-    })
-    alwaysPrecisionMiner = false;
-    @SwitchProperty({
         name: 'Blue Cheese',
         description: 'toggle on if you have a Blue Cheese Goblin Omelette',
         category: 'Mining Stats',

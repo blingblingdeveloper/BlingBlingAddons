@@ -8,7 +8,7 @@ class BlingPlayer { // FIXME: extend Player???
         this.currentlyMining = false;
         this.msbActive = false;
         this.hitBlocks = new Map();
-        this.miningSpeed = Settings.alwaysPrecisionMiner ? parseInt(Settings.gemMiningSpeed) + 920 : Settings.gemMiningSpeed;
+        this.miningSpeed = parseInt(Settings.gemMiningSpeed) + 230*4;
         this.pristine = Settings.pristine;
         this.miningFortune = Settings.miningFortune;
         this.lastMinedBlock = '';
