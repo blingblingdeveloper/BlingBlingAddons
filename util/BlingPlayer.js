@@ -1,4 +1,4 @@
-import Settings from "../../settings";
+import Settings from "../settings";
 import { filterBlock, getInternalBlockAt } from "./world";
 import { getcoords } from "./world";
 import { blockStrength, getGemType, updateGemCosts } from "./mininginfo";

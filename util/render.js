@@ -1,4 +1,4 @@
-import Settings from "../../settings";
+import Settings from "../settings";
 import BlingPlayer from "./BlingPlayer";
 import { rgbToColorInt } from "./helperFunctions";
 // i do not take credit for this code below in any way. I just needed to change a line for the purposes of this module.

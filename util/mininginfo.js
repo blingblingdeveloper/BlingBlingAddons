@@ -1,5 +1,5 @@
 import request from "requestV2";
-import Settings from '../../settings';
+import Settings from '../settings';
 
 const gemCosts = {}
 
@@ -91,18 +91,25 @@ function getTicks(gemType, miningSpeed) {
 function getGemType(glassType) {
     switch (glassType) {
         case 1:
+        case 'orange':
             return 'Amber';
         case 2:
+        case 'magenta':
             return 'Jasper';
         case 3:
+        case 'lightBlue':
             return 'Sapphire';
         case 4:
+        case 'yellow':
             return 'Topaz';
         case 5:
+        case 'lime':
             return 'Jade';
         case 10:
+        case 'purple':
             return 'Amethyst';
         case 14:
+        case 'red':
             return 'Ruby';
         default:
             return;

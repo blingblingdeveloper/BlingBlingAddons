@@ -152,14 +152,14 @@ class Settings {
     })
     pingGlideVolume = 32;
     @SliderProperty({
-        name: 'Delay',
-        description: 'delay (in ms) before the sound plays §c(will be changed in the future)',
+        name: 'Shift Offset',
+        description: 'offset ping glide sound by ms\n§6§o(for tweaking to preference, ping is already accounted for)',
         category: 'Mining Skills',
         subcategory: 'Ping Glide',
-        min: 0,
-        max: 2000
+        min: -100,
+        max: 100
     })
-    pingGlideDelay = 250;
+    pingGlideDelay = 0;
     @SwitchProperty({
         name: 'Mining Speed Boost',
         description: 'toggle ping glide sounds during mining speed boost',
@@ -510,7 +510,7 @@ class Settings {
 
         this.addDependency('Sound', 'Ping Glide Sounds');
         this.addDependency('Volume', 'Ping Glide Sounds');
-        this.addDependency('Delay', 'Ping Glide Sounds');
+        this.addDependency('Shift Offset', 'Ping Glide Sounds');
         this.addDependency('Mining Speed Boost', 'Ping Glide Sounds');
 
         this.addDependency('Include Rough Estimate?', 'Toggle Coin Tracker');
