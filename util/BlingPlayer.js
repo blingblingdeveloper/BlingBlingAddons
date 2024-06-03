@@ -8,9 +8,9 @@ class BlingPlayer { // FIXME: extend Player???
         this.currentlyMining = false;
         this.msbActive = false;
         this.hitBlocks = new Map();
-        this.miningSpeed = parseInt(settings.gemMiningSpeed);
-        this.pristine = settings.pristine;
-        this.miningFortune = settings.miningFortune;
+        this.miningSpeed = parseInt(settings().gemMiningSpeed);
+        this.pristine = settings().pristine;
+        this.miningFortune = settings().miningFortune;
         this.lastMinedBlock = '';
         this.mined = {};
         this.lastMinedTime;
@@ -37,7 +37,7 @@ class BlingPlayer { // FIXME: extend Player???
         });
 
         register("step", () => {
-            if (this.currentlyMining && Date.now() - this.lastMinedTime > settings.resetDelay * 1000) {
+            if (this.currentlyMining && Date.now() - this.lastMinedTime > settings().resetDelay * 1000) {
                 this.stopMining();
             }
         }).setFps(1);

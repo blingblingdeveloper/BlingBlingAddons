@@ -145,12 +145,12 @@ register('tick', () => {
         if (currentWp === 0) {
             nearbyWaypoints = [];
         }
-        if (distance <= 3 || (settings.cactusThing && nearbyWaypoints.includes(currentWp))) {
+        if (distance <= 3 || (settings().cactusThing && nearbyWaypoints.includes(currentWp))) {
 
             currentWp = (currentWp + 1) % route.length;
         }
 
-        if (settings.cactusThing && route.length > 3) {
+        if (settings().cactusThing && route.length > 3) {
             for (let wpIndex = 0; wpIndex < route.length; wpIndex++) {
                 let wpDistance = BlingPlayer.calcDist(route[wpIndex].x + 0.5, route[wpIndex].y, route[wpIndex].z + 0.5);
 
@@ -166,44 +166,44 @@ register('tick', () => {
 
 register('renderWorld', () => {
     if (route.length > 0) {
-        if (settings.waypoint) {
+        if (settings().waypoint) {
             for (let i = 0; i < route.length; i++) {
-                if (settings.waypointExtraLine) {
-                    drawBlockConnection(route[i], route[(i + 1) % route.length], settings.waypointLineColor);
+                if (settings().waypointExtraLine) {
+                    drawBlockConnection(route[i], route[(i + 1) % route.length], settings().waypointLineColor);
                 }
-                if (settings.waypointFill) {
-                    drawBlockFill(route[i], settings.waypointFillColor);
+                if (settings().waypointFill) {
+                    drawBlockFill(route[i], settings().waypointFillColor);
                 }
-                if (settings.waypointOutline) {
-                    drawBlock(route[i], settings.waypointOutlineColor);
+                if (settings().waypointOutline) {
+                    drawBlock(route[i], settings().waypointOutlineColor);
                 }
-                drawText(route[i].options.name, route[i], settings.waypointTextColor);
+                drawText(route[i].options.name, route[i], settings().waypointTextColor);
             }
         } else {
             const nextWp = (currentWp + 1 + route.length) % route.length;
             const previousWp = (currentWp - 1 + route.length) % route.length;
-            if (settings.waypointExtraLine) {
-                drawBlockConnection(route[previousWp], route[currentWp], settings.waypointLineColor);
-                drawBlockConnection(route[currentWp], route[nextWp], settings.waypointLineColor);
+            if (settings().waypointExtraLine) {
+                drawBlockConnection(route[previousWp], route[currentWp], settings().waypointLineColor);
+                drawBlockConnection(route[currentWp], route[nextWp], settings().waypointLineColor);
             }
-            if (settings.waypointFill) {
-                drawBlockFill(route[nextWp], settings.orderedColorAfter);
-                drawBlockFill(route[currentWp], settings.waypointFillColor);
-                drawBlockFill(route[previousWp], settings.orderedColorBefore);
+            if (settings().waypointFill) {
+                drawBlockFill(route[nextWp], settings().orderedColorAfter);
+                drawBlockFill(route[currentWp], settings().waypointFillColor);
+                drawBlockFill(route[previousWp], settings().orderedColorBefore);
             }
-            if (settings.waypointOutline) {
-                drawBlock(route[nextWp], settings.orderedColorAfter);
-                drawBlock(route[currentWp], settings.waypointOutlineColor);
-                drawBlock(route[previousWp], settings.orderedColorBefore);
-            }
-
-            if (settings.orderedLine) {
-                drawTrace(route[currentWp], settings.orderedLineColor);
+            if (settings().waypointOutline) {
+                drawBlock(route[nextWp], settings().orderedColorAfter);
+                drawBlock(route[currentWp], settings().waypointOutlineColor);
+                drawBlock(route[previousWp], settings().orderedColorBefore);
             }
 
-            drawText(route[nextWp].options.name, route[nextWp], settings.waypointTextColor);
-            drawText(route[currentWp].options.name, route[currentWp], settings.waypointTextColor);
-            drawText(route[previousWp].options.name, route[previousWp], settings.waypointTextColor);
+            if (settings().orderedLine) {
+                drawTrace(route[currentWp], settings().orderedLineColor);
+            }
+
+            drawText(route[nextWp].options.name, route[nextWp], settings().waypointTextColor);
+            drawText(route[currentWp].options.name, route[currentWp], settings().waypointTextColor);
+            drawText(route[previousWp].options.name, route[previousWp], settings().waypointTextColor);
         }
     }
 })

@@ -56,7 +56,7 @@ register("tick", () => {
 });
 
 register("chat", () => {
-    msbTicks = settings.blueCheese ? 500 : 400;
+    msbTicks = settings().blueCheese ? 500 : 400;
 }).setChatCriteria(/&r&a&r&6Mining Speed Boost &r&ais now available!&r/g);
 
 register("chat", () => {
@@ -65,7 +65,7 @@ register("chat", () => {
         count += maxMined[gem]['boost'];
     });
     if (count == 0) {
-        msbTicks = settings.blueCheese ? 500 : 400;
+        msbTicks = settings().blueCheese ? 500 : 400;
     }
 }).setChatCriteria(/&r&aYou used your &r&6Mining Speed Boost &r&aPickaxe Ability!&r/g);
 

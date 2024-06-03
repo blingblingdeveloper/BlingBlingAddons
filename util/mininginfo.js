@@ -15,7 +15,7 @@ const blockStrength = {
 
 function getGemCost(gem, tier) {
     let npc = 3 * Math.pow(80, tier);
-    if (settings.forceNPC) {
+    if (settings().forceNPC) {
         return npc;
     }
     let type;
@@ -42,7 +42,7 @@ function getGemCost(gem, tier) {
 }
 
 function updateGemCosts() {
-    if (settings.forceNPC) {
+    if (settings().forceNPC) {
         return true;
     }
     return request({
@@ -69,7 +69,7 @@ function updateGemCosts() {
                 tier = 4;
             }
             let npc = 3 * Math.pow(80, tier);
-            if (settings.sellOffer) {
+            if (settings().sellOffer) {
                 gemCosts[i] = Math.max(npc, res.products[i].quick_status.buyPrice);
             }
             else {
@@ -78,7 +78,7 @@ function updateGemCosts() {
         });
         resolve(true);
     }).catch((err, reject) => {
-        if (settings.debug)
+        if (settings().debug)
             console.log("Coin tracker: " + err);
         reject(false);
     });

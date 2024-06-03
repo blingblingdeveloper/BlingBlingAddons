@@ -12,7 +12,7 @@ let checkedChunks = new Set();
 let mapCreated = false;
 let missingRoute = [];
 
-// TODO: Settings.strucCheckGem
+// TODO: settings().strucCheckGem
 register('command', () => {
     loadRoute();
     resetVars();
@@ -41,7 +41,7 @@ register("command", () => {
 
             let searchStart = new Map();
             // Find the vein start
-            filterShape(waypointPos, genSphere(settings.strucCheckInitialRadius)).forEach(newblock => {
+            filterShape(waypointPos, genSphere(settings().strucCheckInitialRadius)).forEach(newblock => {
                 if (!searchStart.has(getcoords(newblock))) {
                     searchStart.set(getcoords(newblock), newblock);
                 }
@@ -97,7 +97,7 @@ register("worldLoad", () => {
 });
 
 register("step", () => {
-    if (settings.strucCheckAuto && isRouteReady()) {
+    if (settings().strucCheckAuto && isRouteReady()) {
         if (!mapCreated) {
             createChunkMapping();
         }
@@ -110,32 +110,32 @@ register("step", () => {
 register("renderWorld", () => {
     if (!mapCreated) {
         route.forEach(waypoint => {
-            if (settings.strucCheckSetup && waypoint.options.vein) {
+            if (settings().strucCheckSetup && waypoint.options.vein) {
                 waypoint.options.vein.forEach(block => {
                     if (BlingPlayer.calcEyeDist(waypoint.x, waypoint.y, waypoint.z) > 30) {
                         return;
                     }
-                    drawBlock(block, settings.strucCheckSetupColor, false);
+                    drawBlock(block, settings().strucCheckSetupColor, false);
                 });
             }
 
-            drawText(waypoint.options.name, waypoint, settings.waypointTextColor);
+            drawText(waypoint.options.name, waypoint, settings().waypointTextColor);
         });
     }
 
-    if (settings.strucCheckMissing && mapCreated) {
+    if (settings().strucCheckMissing && mapCreated) {
         missingRoute.forEach(waypoint => {
             if (waypoint.options.chunks.size > 0) {
                 drawText(`Unchecked vein!`, waypoint, Color.RED);
-                if (settings.strucCheckTrace) {
-                    drawTrace(waypoint, settings.strucCheckTraceColor);
+                if (settings().strucCheckTrace) {
+                    drawTrace(waypoint, settings().strucCheckTraceColor);
                 }
             } else if (waypoint.options.vein.size > 0) {
                 waypoint.options.vein.forEach(block => {
                     if (BlingPlayer.calcEyeDist(waypoint.x, waypoint.y, waypoint.z) > 30) {
                         return;
                     }
-                    drawBlock(block, settings.strucCheckMissingColor, true);
+                    drawBlock(block, settings().strucCheckMissingColor, true);
                 });
                 drawText(`Missing blocks: ${waypoint.options.vein.size}, Vein ${waypoint.options.name}`, waypoint, Color.RED);
             }

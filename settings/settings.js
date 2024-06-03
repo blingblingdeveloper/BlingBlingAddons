@@ -588,4 +588,4 @@ setting
     .setSize(70, 70)
     .apply()
 
-export default setting.settings;
+export default () => setting.settings;
