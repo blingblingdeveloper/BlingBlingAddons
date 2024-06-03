@@ -1,5 +1,5 @@
 import request from "requestV2";
-import Settings from '../settings';
+import settings from '../settings/settings';
 
 const gemCosts = {};
 
@@ -15,7 +15,7 @@ const blockStrength = {
 
 function getGemCost(gem, tier) {
     let npc = 3 * Math.pow(80, tier);
-    if (Settings.forceNPC) {
+    if (settings.forceNPC) {
         return npc;
     }
     let type;
@@ -42,7 +42,7 @@ function getGemCost(gem, tier) {
 }
 
 function updateGemCosts() {
-    if (Settings.forceNPC) {
+    if (settings.forceNPC) {
         return true;
     }
     return request({
@@ -69,7 +69,7 @@ function updateGemCosts() {
                 tier = 4;
             }
             let npc = 3 * Math.pow(80, tier);
-            if (Settings.sellOffer) {
+            if (settings.sellOffer) {
                 gemCosts[i] = Math.max(npc, res.products[i].quick_status.buyPrice);
             }
             else {
@@ -78,7 +78,7 @@ function updateGemCosts() {
         });
         resolve(true);
     }).catch((err, reject) => {
-        if (Settings.debug)
+        if (settings.debug)
             console.log("Coin tracker: " + err);
         reject(false);
     });

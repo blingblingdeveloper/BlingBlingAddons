@@ -1,4 +1,4 @@
-import Settings from "../settings";
+import settings from "../settings/settings";
 import BlingPlayer from "./BlingPlayer";
 import { rgbToColorInt } from "./helperFunctions";
 // i do not take credit for this code below in any way. I just needed to change a line for the purposes of this module.
@@ -6,7 +6,7 @@ import { rgbToColorInt } from "./helperFunctions";
 // here is a link to their module RenderLib: https://chattriggers.com/modules/v/Renderlib
 
 function drawWireBox(x, y, z, w, h, l, lWidth = 2.0, red, green, blue, alpha, phase) {
-    if (Settings.renderLimitEnabled && BlingPlayer.calcEyeDist(x,y,z) > Settings.renderLimit) {
+    if (settings.renderLimitEnabled && BlingPlayer.calcEyeDist(x,y,z) > settings.renderLimit*16) {
         return;
     }
     setupDraw(lWidth, phase);
@@ -76,7 +76,7 @@ function drawWireBox(x, y, z, w, h, l, lWidth = 2.0, red, green, blue, alpha, ph
 
 
 function drawFillBox(x, y, z, w, h, l, red, green, blue, alpha, phase) {
-    if (Settings.renderLimitEnabled && BlingPlayer.calcEyeDist(x,y,z) > Settings.renderLimit) {
+    if (settings.renderLimitEnabled && BlingPlayer.calcEyeDist(x,y,z) > settings.renderLimit * 16) {
         return;
     }
     setupDraw(2.0, phase);
@@ -182,18 +182,23 @@ function drawBlockConnection(pos1, pos2, color) {
         pos2.x + 0.5,
         pos2.y + 0.5,
         pos2.z + 0.5,
-        color.getRed(),
-        color.getGreen(),
-        color.getBlue(),
-        color.getAlpha(),
-        Settings.lineThickness,
+        color[0],
+        color[1],
+        color[2],
+        color[3],
+        settings.lineThickness,
         false
     )
 }
 
 function drawText(text, pos, color) {
-    let labelColor = rgbToColorInt(color.getRed(), color.getGreen(), color.getBlue());
-    let labelScale = Math.min(BlingPlayer.calcEyeDist(pos.x, pos.y, pos.z), 50) / 200;
+    let labelColor = rgbToColorInt(color[0], color[1], color[2]);
+    let labelScale;
+    if(settings.dynamicTextSize){
+        labelScale=Math.min(BlingPlayer.calcEyeDist(pos.x, pos.y, pos.z), 50) / 200;
+    } else{
+        labelScale=settings.waypointTextSize/200
+    }
     Tessellator.drawString(
         text,
         pos.x + .5,
@@ -206,17 +211,17 @@ function drawText(text, pos, color) {
     );
 }
 
-function drawBlock(block, color, phase) {
+function drawBlock(block, color, phase=true) {
     drawWireBox(
         Math.floor(block.x) + .5,
         Math.floor(block.y) - .005,
         Math.floor(block.z) + .5,
         1.01, 1.01, 1.01,
-        Settings.blockOutlineThickness,
-        color.getRed() / 255,
-        color.getGreen() / 255,
-        color.getBlue() / 255,
-        color.getAlpha() / 255,
+        settings.blockOutlineThickness,
+        color[0] / 255,
+        color[1] / 255,
+        color[2] / 255,
+        color[3] / 255,
         phase
     );
 }
@@ -227,10 +232,10 @@ function drawBlockFill(block, color, phase) {
         Math.floor(block.y) - .005,
         Math.floor(block.z) + .5,
         1.01, 1.01, 1.01,
-        color.getRed() / 255,
-        color.getGreen() / 255,
-        color.getBlue() / 255,
-        Settings.blockFillOpacity / 255,
+        color[0] / 255,
+        color[1] / 255,
+        color[2] / 255,
+        settings.blockFillOpacity / 255,
         phase
     );
 }
@@ -243,11 +248,11 @@ function drawTrace(block, color) {
         block.x + 0.5,
         block.y + 0.5,
         block.z + 0.5,
-        color.getRed() / 255,
-        color.getBlue() / 255,
-        color.getGreen() / 255,
-        color.getAlpha() / 255,
-        Settings.traceThickness,
+        color[0] / 255,
+        color[1] / 255,
+        color[2] / 255,
+        color[3] / 255,
+        settings.traceThickness,
         true
     );
 }

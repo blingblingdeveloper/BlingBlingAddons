@@ -1,10 +1,5 @@
-import Settings from '../settings';
-
-register('command', () => Settings.openGUI()).setName('bling').setAliases(['b']); // FIXME: move this somewhere better
-
 register('command', () => {
     ChatLib.chat(ChatLib.getCenteredText("&4--------------[ §d[BlingBling Addons] &4]--------------"))
-    // ChatLib.chat(ChatLib.addTextFormattingCodes("&4-----------------[&dTerm: " + ChatLib.addTextFormattingCodes("§f definition") + "&4]-----------------"))
     ChatLib.chat("Ignore [] brackets for the following examples. They are just meant to easily show things.")
     ChatLib.chat(ChatLib.getCenteredText("&6Waypoints")) //this is category
     ChatLib.chat("&d/load: &floads waypoints from clipboard, automatically converts from DilloPro if needed")
@@ -34,4 +29,4 @@ register('command', () => {
     ChatLib.chat("&d/miningtest: &fresets mining tracker")
     ChatLib.chat("&d/bahelp: &fyou're here!")
     ChatLib.chat(ChatLib.getCenteredText("&4----------------------------------------------"))
-}).setName('bahelp').setAliases(['bahelp']);
+}).setName('bahelp');

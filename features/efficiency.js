@@ -1,4 +1,4 @@
-import Settings from "../settings";
+import settings from "../settings/settings";
 import BlingPlayer from '../util/BlingPlayer';
 import { getTicks, blockStrength, getTotalMined } from "../util/mininginfo";
 
@@ -56,7 +56,7 @@ register("tick", () => {
 });
 
 register("chat", () => {
-    msbTicks = Settings.blueCheese ? 500 : 400;
+    msbTicks = settings.blueCheese ? 500 : 400;
 }).setChatCriteria(/&r&a&r&6Mining Speed Boost &r&ais now available!&r/g);
 
 register("chat", () => {
@@ -65,7 +65,7 @@ register("chat", () => {
         count += maxMined[gem]['boost'];
     });
     if (count == 0) {
-        msbTicks = Settings.blueCheese ? 500 : 400;
+        msbTicks = settings.blueCheese ? 500 : 400;
     }
 }).setChatCriteria(/&r&aYou used your &r&6Mining Speed Boost &r&aPickaxe Ability!&r/g);
 

@@ -1,4 +1,4 @@
-import Settings from "../settings";
+import settings from "../settings/settings";
 import { filterBlock, getInternalBlockAt } from "./world";
 import { getcoords } from "./world";
 import { blockStrength, getGemType, updateGemCosts } from "./mininginfo";
@@ -8,9 +8,9 @@ class BlingPlayer { // FIXME: extend Player???
         this.currentlyMining = false;
         this.msbActive = false;
         this.hitBlocks = new Map();
-        this.miningSpeed = parseInt(Settings.gemMiningSpeed);
-        this.pristine = Settings.pristine;
-        this.miningFortune = Settings.miningFortune;
+        this.miningSpeed = parseInt(settings.gemMiningSpeed);
+        this.pristine = settings.pristine;
+        this.miningFortune = settings.miningFortune;
         this.lastMinedBlock = '';
         this.mined = {};
         this.lastMinedTime;
@@ -37,7 +37,7 @@ class BlingPlayer { // FIXME: extend Player???
         });
 
         register("step", () => {
-            if (this.currentlyMining && Date.now() - this.lastMinedTime > Settings.resetDelay * 1000) {
+            if (this.currentlyMining && Date.now() - this.lastMinedTime > settings.resetDelay * 1000) {
                 this.stopMining();
             }
         }).setFps(1);
