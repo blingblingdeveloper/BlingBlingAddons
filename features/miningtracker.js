@@ -5,6 +5,7 @@ import { rgbToColorInt, addCommas, secondsToMessage } from "../util/helperFuncti
 import { getEfficiency } from "./efficiency";
 import { getGemCost } from '../util/mininginfo';
 import BlingPlayer from '../util/BlingPlayer';
+import { addAction } from "../broadcast";
 
 const Color = Java.type("java.awt.Color");
 
@@ -53,14 +54,18 @@ register("guiMouseRelease", (mx, my, b, activeGui) => {
     mouseDown = false;
 });
 
-register("command", () => {
+addAction('movecointracker', () => {
     gui.open();
-}).setName("movecointracker"); //ignore this for manual use, this is just there so settings works.
+});
 
 register("renderOverlay", () => {
     if (settings().coinTracker) {
-        if (!BlingPlayer.isCurrentlyMining() && settings().coinTrackerHide)
-            return;
+        if (!BlingPlayer.isCurrentlyMining()) {
+            updateGui();
+            if (settings().coinTrackerHide) {
+                return;
+            }
+        }
 
         time = secondsToMessage((Date.now() - BlingPlayer.getMiningStartTime()) / 1000);
         if (oldTime != time) {
@@ -77,7 +82,7 @@ register("renderOverlay", () => {
     }
 });
 
-function updateGui() {
+export function updateGui() {
     let lines = [];
     lines[0] = `Uptime: ${!BlingPlayer.isCurrentlyMining() ? "n/a" : time}`;
     lines[1] = `$/hr: ${money == null ? "n/a" : "$" + addCommas(settings().roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour)} ${settings().roughGems ? "(+ rough)" : ""}`;

@@ -1,15 +1,6 @@
-// TODO: number input for mining stats
-// function tweaks (no command needed)
-// color picker no alpha
-// slider decimals
-// padding
-
-// save on close or toggle?
-// dynamic text size tweaks
-
-
 import Settings from 'Amaterasu/core/Settings'
 import DefaultConfig from 'Amaterasu/core/DefaultConfig'
+import { broadcast } from '../broadcast'
 
 const config = new DefaultConfig("blingblingaddons", "settings.json")
 const GUIDE = FileLib.read("blingblingaddons", "settings/guide.md")
@@ -100,7 +91,7 @@ config
     category: "Waypoints",
     configName: "dynamicTextSize",
     title: "Dynamic Text Size",
-    description: "text will get larger the farther away from the player",
+    description: "limits text size close to the player",
     value: true,
     subcategory: "Waypoint Visuals"
 })
@@ -109,8 +100,8 @@ config
     configName: "waypointTextSize",
     title: "Waypoint Text Size",
     description: "size of the text used by waypoints",
-    options: [0, 30],
-    value: 20,
+    options: [1.001, 5],
+    value: 2,
     subcategory: "Waypoint Visuals"
 })
 .addColorPicker({
@@ -196,7 +187,7 @@ config
     configName: "pingGlideDelay",
     title: "Delay",
     description: "your ping, higher = earlier sound",
-    options: [0, 2000],
+    options: [0, 500],
     value: 150,
     subcategory: "Ping Glide",
     shouldShow(data) {
@@ -238,7 +229,7 @@ config
     configName: "showEfficiency",
     title: "Efficiency Tracker",
     description: "include block efficiency on coin tracker",
-    value: false,
+    value: true,
     subcategory: "Coin Tracker",
     shouldShow(data) {
         return data.coinTracker;
@@ -283,7 +274,7 @@ config
     configName: "resetDelay",
     title: "Reset Delay",
     description: "how long to wait before resetting the tracker (seconds)",
-    options: [5, 30],
+    options: [5, 60],
     value: 15,
     subcategory: "Coin Tracker",
     shouldShow(data) {
@@ -420,7 +411,7 @@ config
     configName: "blockHighlightMaxDist",
     title: "Maximum Distance",
     description: "maximum distance an object can be to be highlighted",
-    options: [0, 10],
+    options: [0.001, 10],
     value: 5,
     subcategory: "Block Highlight",
     shouldShow(data) {
@@ -432,7 +423,7 @@ config
     configName: "blockHighlightMinDist",
     title: "Minimum Distance",
     description: "sets the minimum distance required to highlight an object(set it to 0 to exclude it)",
-    options: [0, 10],
+    options: [0.001, 10],
     value: 0,
     subcategory: "Block Highlight",
     shouldShow(data) {
@@ -537,7 +528,7 @@ config
     configName: "blockFillOpacity",
     title: "Block Fill Opacity",
     description: "opacity for block fill",
-    options: [0, 255],
+    options: [0.001, 1],
     value: 50,
     subcategory: "Render"
 })
@@ -575,13 +566,13 @@ config
     description: "move the location of the coin tracker gui",
     subcategory: "Edit",
     onClick() {
-        Client.currentGui.close()
-        ChatLib.command('movecointracker', true)
+        Client.currentGui.close();
+        broadcast('movecointracker');
     }
 })
 
 
-const setting = new Settings("blingblingaddons", config, "settings/ColorScheme.json", "BlingBling Addons").setCommand("bling", ["b"]).addMarkdown("Usage", GUIDE)
+const setting = new Settings("blingblingaddons", config, "settings/ColorScheme.json", "BlingBling Addons").setCommand("bling", ["b"]).addMarkdown("Usage", GUIDE);
 
 setting
     .setPos(15, 15)

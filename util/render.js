@@ -6,7 +6,7 @@ import { rgbToColorInt } from "./helperFunctions";
 // here is a link to their module RenderLib: https://chattriggers.com/modules/v/Renderlib
 
 function drawWireBox(x, y, z, w, h, l, lWidth = 2.0, red, green, blue, alpha, phase) {
-    if (settings().renderLimitEnabled && BlingPlayer.calcEyeDist(x,y,z) > settings().renderLimit*16) {
+    if (settings().renderLimitEnabled && BlingPlayer.calcEyeDist(x, y, z) > settings().renderLimit * 16) {
         return;
     }
     setupDraw(lWidth, phase);
@@ -27,7 +27,7 @@ function drawWireBox(x, y, z, w, h, l, lWidth = 2.0, red, green, blue, alpha, ph
             [w, 0, l],
             [0, 0, l],
         ],
-  
+
         [
             [0, h, 0],
             [w, h, 0],
@@ -44,7 +44,7 @@ function drawWireBox(x, y, z, w, h, l, lWidth = 2.0, red, green, blue, alpha, ph
             [w, h, l],
             [0, h, l],
         ],
-  
+
         [
             [0, 0, 0],
             [0, h, 0],
@@ -62,13 +62,13 @@ function drawWireBox(x, y, z, w, h, l, lWidth = 2.0, red, green, blue, alpha, ph
             [w, h, l],
         ],
     ];
-  
+
     locations.forEach((loc) => {
         Tessellator.begin(3).colorize(red, green, blue, alpha);
-  
+
         Tessellator.pos(x + loc[0][0] - w / 2, y + loc[0][1], z + loc[0][2] - l / 2).tex(0, 0);
         Tessellator.pos(x + loc[1][0] - w / 2, y + loc[1][1], z + loc[1][2] - l / 2).tex(0, 0);
-  
+
         Tessellator.draw();
     });
     endDraw(phase);
@@ -76,7 +76,7 @@ function drawWireBox(x, y, z, w, h, l, lWidth = 2.0, red, green, blue, alpha, ph
 
 
 function drawFillBox(x, y, z, w, h, l, red, green, blue, alpha, phase) {
-    if (settings().renderLimitEnabled && BlingPlayer.calcEyeDist(x,y,z) > settings().renderLimit * 16) {
+    if (settings().renderLimitEnabled && BlingPlayer.calcEyeDist(x, y, z) > settings().renderLimit * 16) {
         return;
     }
     setupDraw(2.0, phase);
@@ -128,7 +128,7 @@ function setupDraw(lWidth, phase) {
     GlStateManager.func_179112_b(770, 771); // blendFunc
     GlStateManager.func_179132_a(false); // depthMask
     GlStateManager.func_179090_x(); // disableTexture2D
-  
+
     if (phase) {
         GlStateManager.func_179097_i() // disableDepth
     }
@@ -139,11 +139,11 @@ function endDraw(phase) {
     GlStateManager.func_179084_k(); // disableBlend
     GlStateManager.func_179132_a(true); // depthMask
     GlStateManager.func_179098_w(); // enableTexture2D
-  
+
     if (phase) {
         GlStateManager.func_179126_j(); // enableDepth
     }
-    
+
     Tessellator.popMatrix();
 }
 
@@ -194,10 +194,11 @@ function drawBlockConnection(pos1, pos2, color) {
 function drawText(text, pos, color) {
     let labelColor = rgbToColorInt(color[0], color[1], color[2]);
     let labelScale;
-    if(settings().dynamicTextSize){
-        labelScale=Math.min(BlingPlayer.calcEyeDist(pos.x, pos.y, pos.z), 50) / 200;
-    } else{
-        labelScale=settings().waypointTextSize/200
+    if (settings().dynamicTextSize) {
+        labelScale = Math.min(BlingPlayer.calcEyeDist(pos.x + .5, pos.y + 1.5, pos.z + .5) / 10, settings().waypointTextSize) / 20;
+    }
+    else {
+        labelScale = settings().waypointTextSize / 20
     }
     Tessellator.drawString(
         text,
@@ -211,7 +212,7 @@ function drawText(text, pos, color) {
     );
 }
 
-function drawBlock(block, color, phase=true) {
+function drawBlock(block, color, phase = true) {
     drawWireBox(
         Math.floor(block.x) + .5,
         Math.floor(block.y) - .005,
@@ -227,7 +228,7 @@ function drawBlock(block, color, phase=true) {
 }
 
 function drawBlockFill(block, color, phase) {
-    drawFillBox (
+    drawFillBox(
         Math.floor(block.x) + .5,
         Math.floor(block.y) - .005,
         Math.floor(block.z) + .5,
@@ -235,7 +236,7 @@ function drawBlockFill(block, color, phase) {
         color[0] / 255,
         color[1] / 255,
         color[2] / 255,
-        settings().blockFillOpacity / 255,
+        settings().blockFillOpacity,
         phase
     );
 }
