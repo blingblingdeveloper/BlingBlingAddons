@@ -3,8 +3,6 @@ import { findVein, genSphere, filterShape, getcoords, filterBlock, getInternalBl
 import { drawBlock, drawTrace, drawText } from '../util/render';
 import BlingPlayer from '../util/BlingPlayer';
 
-const Color = Java.type("java.awt.Color");
-
 let route = [];
 
 let chunkMap = new Map();
@@ -126,7 +124,7 @@ register("renderWorld", () => {
     if (settings().strucCheckMissing && mapCreated) {
         missingRoute.forEach(waypoint => {
             if (waypoint.options.chunks.size > 0) {
-                drawText(`Unchecked vein!`, waypoint, Color.RED);
+                drawText(`Unchecked vein!`, waypoint, [255, 0, 0, 255]);
                 if (settings().strucCheckTrace) {
                     drawTrace(waypoint, settings().strucCheckTraceColor);
                 }
@@ -137,7 +135,7 @@ register("renderWorld", () => {
                     }
                     drawBlock(block, settings().strucCheckMissingColor, true);
                 });
-                drawText(`Missing blocks: ${waypoint.options.vein.size}, Vein ${waypoint.options.name}`, waypoint, Color.RED);
+                drawText(`Missing blocks: ${waypoint.options.vein.size}, Vein ${waypoint.options.name}`, waypoint, [255, 0, 0, 255]);
             }
         });
     }
