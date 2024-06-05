@@ -227,7 +227,7 @@ function drawBlock(block, color, phase = true) {
     );
 }
 
-function drawBlockFill(block, color, phase) {
+function drawBlockFill(block, color, phase = true) {
     drawFillBox(
         Math.floor(block.x) + .5,
         Math.floor(block.y) - .005,

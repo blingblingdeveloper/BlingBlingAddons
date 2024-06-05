@@ -529,7 +529,7 @@ config
     title: "Block Fill Opacity",
     description: "opacity for block fill",
     options: [0.001, 1],
-    value: 50,
+    value: 0.2,
     subcategory: "Render"
 })
 .addSlider({
