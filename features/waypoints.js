@@ -1,6 +1,6 @@
 import settings from "../settings/settings";
 import BlingPlayer from "../util/BlingPlayer";
-import { drawTrace, drawText, drawBlock, drawBlockFill, drawBlockConnection } from "../util/render";
+import { drawTrace, drawText, drawDistText, drawBlock, drawBlockFill, drawBlockConnection } from "../util/render";
 
 const Toolkit = Java.type("java.awt.Toolkit");
 const DataFlavor = Java.type("java.awt.datatransfer.DataFlavor");
@@ -9,9 +9,11 @@ let route = [];
 let currentWp = 0;
 let nearbyWaypoints = [];
 
+let wpKey = new KeyBind("Draw line to first Waypoint", settings().wpKeybind, "BlingBling Addons");
+
 register('command', () => {
     loadRoute();
-}).setName('load').setAliases(['l']);
+}).setName('load');
 
 register('command', () => {
     route = [];
@@ -32,10 +34,6 @@ register('command', () => {
     exportRoute();
     ChatLib.chat(`§d[BlingBling Addons] §f${route.length} y64 waypoints successfully exported to clipboard!`);
 }).setName('y64').setAliases(['y64']);
-
-// register('command', (message) => {
-//   ChatLib.chat(`&bSaved. Yay!`)
-//   }).setName('waypointsave').setAliases(['s']);
 
 function loadRoute() {
     const clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -204,6 +202,11 @@ register('renderWorld', () => {
             drawText(route[nextWp].options.name, route[nextWp], settings().waypointTextColor);
             drawText(route[currentWp].options.name, route[currentWp], settings().waypointTextColor);
             drawText(route[previousWp].options.name, route[previousWp], settings().waypointTextColor);
+        }
+
+        if (wpKey.isKeyDown()) {
+            drawTrace(route[0], settings().orderedLineColor);
+            drawDistText(Math.round(BlingPlayer.calcDist(route[0].x + 0.5, route[0].y, route[0].z + 0.5)) + "m", route[0], settings().waypointTextColor);
         }
     }
 })

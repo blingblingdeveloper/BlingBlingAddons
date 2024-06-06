@@ -212,6 +212,23 @@ function drawText(text, pos, color) {
     );
 }
 
+function drawDistText(text, pos, color) {
+    let labelColor = rgbToColorInt(color[0], color[1], color[2]);
+    let labelScale;
+    labelScale=Math.min(BlingPlayer.calcEyeDist(pos.x, pos.y, pos.z), 50) / 50;
+    
+    Tessellator.drawString(
+        text,
+        pos.x + .5,
+        pos.y + 2.5,
+        pos.z + .5,
+        labelColor,
+        true,
+        labelScale,
+        false
+    );
+}
+
 function drawBlock(block, color, phase = true) {
     drawWireBox(
         Math.floor(block.x) + .5,
@@ -236,7 +253,7 @@ function drawBlockFill(block, color, phase = true) {
         color[0] / 255,
         color[1] / 255,
         color[2] / 255,
-        settings().blockFillOpacity,
+        color[3] / 255,
         phase
     );
 }
@@ -258,4 +275,4 @@ function drawTrace(block, color) {
     );
 }
 
-export { drawWireBox, drawFillBox, drawBlock, drawTrace, drawText, drawBlockFill, drawLine, drawBlockConnection }
+export { drawWireBox, drawFillBox, drawBlock, drawTrace, drawText, drawDistText, drawBlockFill, drawLine, drawBlockConnection }

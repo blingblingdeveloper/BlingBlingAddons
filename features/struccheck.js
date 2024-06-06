@@ -19,6 +19,7 @@ register('command', () => {
 register('command', () => {
     route = [];
     resetVars();
+    ChatLib.chat("§d[BlingBling Addons] §fUnloaded route");
 }).setName('unloadroute').setAliases(['ur']);
 
 register('command', () => {
@@ -121,7 +122,7 @@ register("renderWorld", () => {
         });
     }
 
-    if (settings().strucCheckMissing && mapCreated) {
+    if (mapCreated) {
         missingRoute.forEach(waypoint => {
             if (waypoint.options.chunks.size > 0) {
                 drawText(`Unchecked vein!`, waypoint, [255, 0, 0, 255]);
@@ -129,12 +130,14 @@ register("renderWorld", () => {
                     drawTrace(waypoint, settings().strucCheckTraceColor);
                 }
             } else if (waypoint.options.vein.size > 0) {
-                waypoint.options.vein.forEach(block => {
-                    if (BlingPlayer.calcEyeDist(waypoint.x, waypoint.y, waypoint.z) > 30) {
-                        return;
-                    }
-                    drawBlock(block, settings().strucCheckMissingColor, true);
-                });
+                if (settings().strucCheckMissing) {
+                    waypoint.options.vein.forEach(block => {
+                        if (BlingPlayer.calcEyeDist(waypoint.x, waypoint.y, waypoint.z) > 30) {
+                            return;
+                        }
+                        drawBlock(block, settings().strucCheckMissingColor, true);
+                    });
+                }
                 drawText(`Missing blocks: ${waypoint.options.vein.size}, Vein ${waypoint.options.name}`, waypoint, [255, 0, 0, 255]);
             }
         });
