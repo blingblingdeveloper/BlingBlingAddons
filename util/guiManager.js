@@ -9,5 +9,3 @@ export function registerGui(gui)
 }
 
 export default guis
-
-import "./features/miningtracker"

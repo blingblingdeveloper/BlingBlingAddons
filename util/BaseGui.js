@@ -1,5 +1,5 @@
-import constants from "./features/util/constants";
-import { registerWhen } from "./features/util/helperFunctions";
+import constants from "./constants";
+import { registerWhen } from "./helperFunctions";
 
 /**
  * The base for a gui in the mod.

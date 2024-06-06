@@ -1,289 +1,234 @@
-import {drawCustomEspBox} from "./util/drawCustomEspBox.js"
-import Settings from "../settings"
-
-let blockStatesToFind = [
-    {name: "minecraft:stained_glass", variants: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]},
-    {name: "minecraft:stained_glass_pane", variants: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]},
-]
+import settings from '../settings/settings'
+import { findVein, genSphere, filterShape, getcoords, filterBlock, getInternalBlockAt } from "../util/world";
+import { drawBlock, drawTrace, drawText } from '../util/render';
+import BlingPlayer from '../util/BlingPlayer';
 
 let route = [];
-let missingRoute = [];
-let missing = 0;
 
+let chunkMap = new Map();
+let checkedChunks = new Set();
+let mapCreated = false;
+let missingRoute = [];
+
+// TODO: settings().strucCheckGem
 register('command', () => {
     loadRoute();
+    resetVars();
 }).setName('loadroute').setAliases(['lr']);
 
 register('command', () => {
-    ChatLib.command(`ct copy ${JSON.stringify(route)}`, true)
-}).setName('exportstruc').setAliases(['se']);
-
-// TODO: block type filter in command?
-register("command", () => {
-    if (route.length == 0) {
-        loadRoute();
-    }
-
-    route.forEach(waypoint => {
-        let initialSearchRadius = 3;
-        let waypointBlock = World.getBlockAt(waypoint.x, waypoint.y + 2, waypoint.z);
-
-        let searchStart = new Map();
-
-        // Find the vein start
-        filterShape(waypointBlock, genSphere(initialSearchRadius)).forEach(newblock => {
-            if (!searchStart.has(getcoords(newblock))) {
-                searchStart.set(getcoords(newblock), newblock);
-            }
-        });
-
-        waypoint.options.vein = findVein(searchStart);
-    });
-    ChatLib.chat("Loaded vein guesses");
-}).setName('loadrouteguess').setAliases(['lrg']);
-
-register("command", (message) => {
-    if (isNaN(parseInt(message)) || parseInt(message) > route.length || parseInt(message) < 1) {
-        ChatLib.chat("Invalid input. Please provide a valid number for vein number.");
-        return;
-    }
-    
-    if(filterBlock(Player.lookingAt())) {
-        let searchStart = new Map();
-        searchStart.set(getcoords(Player.lookingAt()), Player.lookingAt());
-        route[parseInt(message) - 1].options.vein = findVein(searchStart);
-    }
-
-    ChatLib.chat("Vein size: "+veinWaypoints.length);
-}).setName('setvein').setAliases(['sv']);
-
-register("command", (message) => {
-    if (isNaN(parseInt(message)) || parseInt(message) > route.length || parseInt(message) < 1) {
-        ChatLib.chat("Invalid input. Please provide a valid number for vein number.");
-        return;
-    }
-    let veinNum = parseInt(message);
-    ChatLib.chat("removing vein "+veinNum);
-    delete route[veinNum - 1].options.vein;
-}).setName('removevein').setAliases(['rv']);
+    route = [];
+    resetVars();
+}).setName('unloadroute').setAliases(['ur']);
 
 register('command', () => {
-    missingRoute = JSON.parse(JSON.stringify(route));;
-    ChatLib.chat("checking rn bro");
+    ChatLib.command(`ct copy ${JSON.stringify(route)}`, true);
+    ChatLib.chat("§d[BlingBling Addons] §fExported route!");
+}).setName('exportstruc').setAliases(['es']);
 
-    missingRoute.forEach(waypoint =>  {
-        missingBlocks = [];
-        waypoint.options.vein.forEach(block => {
-            if (block.blockId != World.getBlockAt(block.x, block.y, block.z).getType().getID()) {
-                missingBlocks.push(block);
-            }
-        });
-        waypoint.options.vein = missingBlocks;
-    });
-
-    if (missingRoute.length == 0){
-        ChatLib.chat("No structure grief!")
-    } else {
-        missing = 0;
-        missingRoute.forEach(waypoint =>  {
-            missing += waypoint.options.vein.length;
-        });
-        ChatLib.chat(`Missing ${missing} blocks`);
+register("command", () => {
+    if (route.length == 0) {
+        if (!loadRoute()) {
+            return;
+        }
     }
-}).setName('checkstruc').setAliases(['cs']);
 
-register("renderWorld", () => {
-    let color = rgbToColorInt(Settings.textColor.getRed(),Settings.textColor.getGreen(),Settings.textColor.getBlue());
-    let color2 = rgbToColorInt(255,0,0); // TODO: use Settings
-
-    // render route blocks (for setting up struc check)
-    if(missing == 0) {
+    new Thread(() => {
         route.forEach(waypoint => {
-            if (waypoint.options.vein) {
-                waypoint.options.vein.forEach(block => {
-                    let distToPlayer = calcPlayerDist(block.x, block.y, block.z);
-        
-                    if(distToPlayer < 30) {
-                        drawCustomEspBox(
-                            Math.floor(block.x)+.5,
-                            Math.floor(block.y),
-                            Math.floor(block.z)+.5,
-                            Settings.blockHighlightThickness, 1, 1,
-                            Settings.blockHighlightColor.getRed()/255,
-                            Settings.blockHighlightColor.getGreen()/255,
-                            Settings.blockHighlightColor.getBlue()/255,
-                            Settings.blockHighlightColor.getAlpha()/255, false
-                        );
-                    }
-                });
-            }
-            
-            let veinNum = waypoint.options.name;
-            let distToPlayer = calcPlayerDist(waypoint.x, waypoint.y, waypoint.z);
-            let distRender = Math.min(distToPlayer, 50);
-            Tessellator.drawString(
-                veinNum,
-                waypoint.x+.5,
-                waypoint.y+1.5,
-                waypoint.z+.5,
-                color,
-                true,
-                distRender/200,
-                false
-            );
-        });
-    }
+            let waypointPos = new Vec3i(waypoint.x, waypoint.y + 2, waypoint.z);
 
-    missingRoute.forEach(waypoint => {
-        if (waypoint.options.vein) {
-            waypoint.options.vein.forEach(block => {
-                let distToPlayer = calcPlayerDist(block.x, block.y, block.z);
-    
-                if(distToPlayer < 30) {
-                    drawCustomEspBox(
-                        Math.floor(block.x)+.5,
-                        Math.floor(block.y),
-                        Math.floor(block.z)+.5,
-                        Settings.blockHighlightThickness, 1, 1,
-                        255,
-                        0,
-                        0,
-                        1, false
-                    );
-    
+            let searchStart = new Map();
+            // Find the vein start
+            filterShape(waypointPos, genSphere(settings().strucCheckInitialRadius)).forEach(newblock => {
+                if (!searchStart.has(getcoords(newblock))) {
+                    searchStart.set(getcoords(newblock), newblock);
                 }
             });
 
-            if (waypoint.options.vein.length > 0) {     
-                let distToPlayer = calcPlayerDist(waypoint.x, waypoint.y, waypoint.z);    
-                Tessellator.drawString(
-                    `Missing blocks: ${waypoint.options.vein.length}, Vein ${waypoint.options.name}`,
-                    waypoint.x+.5,
-                    waypoint.y+1.5,
-                    waypoint.z+.5,
-                    color2,
-                    true,
-                    Math.min(distToPlayer, 50)/200,
-                    false
-                );
-            }
+            waypoint.options.vein = findVein(searchStart);
+        });
+        resetVars();
+        
+        ChatLib.chat("§d[BlingBling Addons] §fLoaded vein guesses");
+    }).start();
+}).setName('loadrouteguess').setAliases(['lrg']);
+
+register("command", (...args) => {
+    try {
+        let veinNum;
+        if (args.length == 2 && args[0] == "add") {
+            veinNum = parseInt(args[1]) - 1;
+        } else {
+            veinNum = parseInt(args[0]) - 1;
         }
-    });
+        if (Player.lookingAt().pos?filterBlock(getInternalBlockAt(Player.lookingAt().pos)):false) {
+            let searchStart = new Map();
+            searchStart.set(getcoords(Player.lookingAt()), getInternalBlockAt(Player.lookingAt().pos));
+            if (args.length == 2 && args[0] == "add") {
+                let vein = new Set(route[veinNum].options.vein.concat(findVein(searchStart)));
+                route[veinNum].options.vein = Array.from(vein);
+            } else {
+                route[veinNum].options.vein = findVein(searchStart);
+            }
+            resetVars();
+        
+            ChatLib.chat("§d[BlingBling Addons] §fVein size: " + route[veinNum].options.vein.length);
+        } else {
+            ChatLib.chat("§d[BlingBling Addons] §fPlease look at a block to set vein");
+        }
+    } catch (e) {
+        console.log(e);
+        ChatLib.chat("§d[BlingBling Addons] §fCouldn't add vein");
+    }
+}).setName('setvein').setAliases(['sv']);
+
+register("command", (message) => {
+    let veinNum = parseInt(message);
+    delete route[veinNum - 1].options.vein;
+    resetVars();
+    
+    ChatLib.chat("§d[BlingBling Addons] §fRemoved vein " + veinNum);
+}).setName('removevein').setAliases(['rv']);
+
+register("worldLoad", () => {
+    resetVars();
 });
 
-// ==== helper functions ====
+register("step", () => {
+    if (settings().strucCheckAuto && isRouteReady()) {
+        if (!mapCreated) {
+            createChunkMapping();
+        }
+        if (chunkMap.size > 0) {
+            checkLoaded();
+        }
+    }
+}).setFps(1);
+
+register("renderWorld", () => {
+    if (!mapCreated) {
+        route.forEach(waypoint => {
+            if (settings().strucCheckSetup && waypoint.options.vein) {
+                waypoint.options.vein.forEach(block => {
+                    if (BlingPlayer.calcEyeDist(waypoint.x, waypoint.y, waypoint.z) > 30) {
+                        return;
+                    }
+                    drawBlock(block, settings().strucCheckSetupColor, false);
+                });
+            }
+
+            drawText(waypoint.options.name, waypoint, settings().waypointTextColor);
+        });
+    }
+
+    if (settings().strucCheckMissing && mapCreated) {
+        missingRoute.forEach(waypoint => {
+            if (waypoint.options.chunks.size > 0) {
+                drawText(`Unchecked vein!`, waypoint, [255, 0, 0, 255]);
+                if (settings().strucCheckTrace) {
+                    drawTrace(waypoint, settings().strucCheckTraceColor);
+                }
+            } else if (waypoint.options.vein.size > 0) {
+                waypoint.options.vein.forEach(block => {
+                    if (BlingPlayer.calcEyeDist(waypoint.x, waypoint.y, waypoint.z) > 30) {
+                        return;
+                    }
+                    drawBlock(block, settings().strucCheckMissingColor, true);
+                });
+                drawText(`Missing blocks: ${waypoint.options.vein.size}, Vein ${waypoint.options.name}`, waypoint, [255, 0, 0, 255]);
+            }
+        });
+    }
+});
 
 function loadRoute() {
-    // TODO: add check for if it's a valid route
     const Toolkit = Java.type("java.awt.Toolkit");
     const DataFlavor = Java.type("java.awt.datatransfer.DataFlavor");
     const clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
     const clipboardData = clipboard.getData(DataFlavor.stringFlavor);
-    route = JSON.parse(clipboardData);
-    ChatLib.chat("loaded!");
-}
-
-function findVein(searchStart) {
-    let veinWaypoints = [];
-    let maxSearchSteps = 15;
-    let searchRadius = 1.75;
-    let blocksToSearch = searchStart;
-    let searchedBlocks = new Map();
-
-    // Use a sphere shape to find the vein's blocks
-    let searchShape = genSphere(searchRadius);
-    for(let currentStep = 1; currentStep <= maxSearchSteps; currentStep++) {
-        let newBlocks = new Map();
-
-        blocksToSearch.forEach(block => {
-            let blockType = [
-                {name: "minecraft:stained_glass", variants: [block.getMetadata()]},
-                {name: "minecraft:stained_glass_pane", variants: [block.getMetadata()]},
-            ];
-            searchedBlocks.set(getcoords(block), block);
-            filterShape(block, searchShape, blockType).forEach(newblock => {
-                if (!(newBlocks.has(getcoords(newblock)) || searchedBlocks.has(getcoords(newblock)))) {
-                    newBlocks.set(getcoords(newblock), newblock);
-                }
-            });
-        });
-        blocksToSearch = newBlocks;
-    }
-    
-    // Put all the blocks in the data structure
-    searchedBlocks.forEach(block => {
-        veinWaypoints.push({
-            x: block.getX(),
-            y: block.getY(),
-            z: block.getZ(),
-            blockId: block.getType().getID() // TODO: use other system?
-        })
-    });
-
-    return veinWaypoints;
-}
-
-function genSphere(radius) {
-    let shape = []
-
-    for(let x = -Math.ceil(radius); x <= Math.ceil(radius); x++)
-    {
-        for(let y = -Math.ceil(radius); y <= Math.ceil(radius); y++)
-        {
-            for(let z = -Math.ceil(radius); z <= Math.ceil(radius); z++)
-            {
-                if(x*x + y*y + z*z <= radius*radius) {
-                    shape.push({"x": x, "y": y, "z": z});
-                }
-            }
-        }
-    }
-
-    return shape;
-}
-
-function filterShape(block, shape, blockType) {
-    let matchingBlocks = [];
-    let toSearch = [];
-
-    shape.forEach(coord => {
-        toSearch.push(World.getBlockAt(block.pos.add(new Vec3i(coord.x, coord.y, coord.z))));
-    });
-
-    for(let i = 0; i < toSearch.length; i++) {
-        if(filterBlock(toSearch[i], blockType)) {
-            matchingBlocks.push(toSearch[i]);
-        }
-    }
-
-    return matchingBlocks;
-}
-
-function filterBlock(lookingAt, blockType) {
-    if(lookingAt == undefined || lookingAt?.getRegistryName() == "minecraft:air" || !lookingAt instanceof Block) {
-        ChatLib.chat("Cannot insert waypoint. Looking at air.");
-        return false;
-    }
-    if(blockType == null) {
-        blockType = blockStatesToFind;
-    }
-
-    if(blockType.some(obj => obj.name === lookingAt.type.getRegistryName() && obj.variants.includes(lookingAt.getMetadata()))) {
+    try {
+        route = JSON.parse(clipboardData);
+        ChatLib.chat("§d[BlingBling Addons] §fLoaded route!");
         return true;
-    } else {
-        // ChatLib.chat("That block doesn't match the whitelist.");
+    } catch (e) {
+        if (!(e instanceof SyntaxError)) {
+            console.log(e);
+        }
+        ChatLib.chat("§d[BlingBling Addons] §fCouldn't load route");
         return false;
     }
 }
 
-function getcoords(block) {
-    return `${block.getX()},${block.getY()},${block.getZ()}`;
+function checkLoaded() {
+    new Thread(() => {
+        const IChunkProvider = World.getWorld().func_72863_F();
+        const ChunkProviderClass = IChunkProvider.class;
+        const chunkListing = ChunkProviderClass.getDeclaredField('field_73237_c');
+        chunkListing.setAccessible(true);
+        const allChunksInWorld = chunkListing.get(IChunkProvider);
+    
+        allChunksInWorld.forEach(chunk => {
+            let chunkName = `${chunk.field_76635_g}, ${chunk.field_76647_h}`;
+            if (!checkedChunks.has(chunkName)) {
+                checkChunk(chunkName);
+            }
+        });
+    }).start();
 }
 
-function rgbToColorInt(red, green, blue) {
-    return (255 << 24) | (red << 16) | (green << 8) | blue;
+function createChunkMapping() {
+    missingRoute = JSON.parse(JSON.stringify(route));
+
+    missingRoute.forEach(waypoint => {
+        waypoint.options.chunks = new Set();
+        waypoint.options.vein = new Set(waypoint.options.vein);
+        waypoint.options.vein.forEach(block => {
+            let chunkCoords = `${Math.floor(block.x / 16)}, ${Math.floor(block.z / 16)}`;
+            if (chunkMap.has(chunkCoords)) {
+                chunkMap.get(chunkCoords).push(block);
+            } else {
+                chunkMap.set(chunkCoords, [block]);
+            }
+            waypoint.options.chunks.add(chunkCoords);
+        });
+    });
+    mapCreated = true;
 }
 
-function calcPlayerDist(x, y, z) {
-    return Math.sqrt((x-(Player.getRenderX()-0.5))**2 + (y-(Player.getRenderY()+Player.getPlayer()["func_70047_e"]()))**2 + (z-(Player.getRenderZ()-0.5))**2);
+function checkChunk(chunkName) {
+    checkedChunks.add(chunkName);
+    if (chunkMap.has(chunkName)) {
+        chunkMap.get(chunkName).forEach(block => {
+            if (filterBlock(getInternalBlockAt(new BlockPos(new Vec3i(block.x, block.y, block.z))), [block])) {
+                missingRoute.forEach(waypoint => {
+                    waypoint.options.vein.delete(block);
+                });
+            }
+        });
+
+        missingRoute.forEach(waypoint => {
+            waypoint.options.chunks.delete(chunkName);
+        });
+        chunkMap.delete(chunkName);
+    }
+}
+
+function isRouteReady() {
+    if (route.length == 0) {
+        return false;
+    }
+
+    for (let waypoint of route) {
+        if (waypoint.options.vein == undefined) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function resetVars() {
+    chunkMap = new Map();
+    checkedChunks = new Set();
+    mapCreated = false;
+    missingRoute = [];
 }
