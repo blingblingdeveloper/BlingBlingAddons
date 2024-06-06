@@ -4,6 +4,7 @@ import { broadcast } from '../util/broadcast'
 
 const config = new DefaultConfig("blingblingaddons", "settings.json")
 const GUIDE = FileLib.read("blingblingaddons", "settings/guide.md")
+const CREDITS = FileLib.read("blingblingaddons", "settings/credits.md")
 
 config
     .addSwitch({
@@ -605,7 +606,10 @@ config
     })
 
 
-const setting = new Settings("blingblingaddons", config, "settings/ColorScheme.json", "BlingBling Addons").setCommand("bling", ["b"]).addMarkdown("Usage", GUIDE);
+const setting = new Settings("blingblingaddons", config, "settings/ColorScheme.json", "BlingBling Addons")
+    .setCommand("blingblingaddons", ["b","bling"])
+    .addMarkdown("§2Usage", GUIDE)
+    .addMarkdown("§7Credits", CREDITS);
 
 setting
     .setPos(15, 15)
