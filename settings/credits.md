@@ -1,4 +1,4 @@
-# §7Credits
+# Credits
 
 ## §6Authors
 §dBlingBling Addons §ris written by [blingbling](https://github.com/blingblingdeveloper) and [Celeite](https://github.com/CeleiteCode)  
