@@ -5,7 +5,7 @@ import { rgbToColorInt, addCommas, secondsToMessage } from "../util/helperFuncti
 import { getEfficiency } from "./efficiency";
 import { getGemCost } from '../util/mininginfo';
 import BlingPlayer from '../util/BlingPlayer';
-import { addAction } from "../broadcast";
+import { addAction } from "../util/broadcast";
 
 const Color = Java.type("java.awt.Color");
 
@@ -62,7 +62,7 @@ register("renderOverlay", () => {
     if (settings().coinTracker) {
         if (!BlingPlayer.isCurrentlyMining()) {
             updateGui();
-            if (settings().coinTrackerHide) {
+            if (settings().coinTrackerHide && !gui.isOpen()) {
                 return;
             }
         }

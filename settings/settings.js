@@ -1,6 +1,6 @@
 import Settings from 'Amaterasu/core/Settings'
 import DefaultConfig from 'Amaterasu/core/DefaultConfig'
-import { broadcast } from '../broadcast'
+import { broadcast } from '../util/broadcast'
 
 const config = new DefaultConfig("blingblingaddons", "settings.json")
 const GUIDE = FileLib.read("blingblingaddons", "settings/guide.md")
