@@ -17,7 +17,7 @@ register('command', () => {
 
 register('command', () => {
     route = [];
-}).setName('unload').setAliases(['unload']);
+}).setName('unload');
 
 register('command', () => {
     exportRoute();
@@ -33,7 +33,7 @@ register('command', () => {
 
     exportRoute();
     ChatLib.chat(`§d[BlingBling Addons] §f${route.length} y64 waypoints successfully exported to clipboard!`);
-}).setName('y64').setAliases(['y64']);
+}).setName('y64');
 
 function loadRoute() {
     const clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -114,12 +114,12 @@ register('command', (message) => {
 register('command', (message) => {
     currentWp = (currentWp + parseInt(message)) % route.length;
     ChatLib.chat(`§d[BlingBling Addons] §fwent forward ${message} waypoints`);
-}).setName('skip').setAliases(['skip']);
+}).setName('skip');
 
 register('command', (message) => {
     currentWp = (currentWp - parseInt(message) + route.length) % route.length; // modulo with length ensures we stay within bounds
     ChatLib.chat(`§d[BlingBling Addons] §fwent back ${message} waypoints`);
-}).setName('unskip').setAliases(['unskip']);
+}).setName('unskip');
 
 register('command', (message) => {
     if (Client.getMinecraft().field_71442_b.func_178889_l().func_77145_d()) { // if creative mode
