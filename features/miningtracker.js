@@ -59,7 +59,7 @@ addAction('movecointracker', () => {
 });
 
 register("renderOverlay", () => {
-    if (settings().coinTracker) {
+    if (settings().coinTracker && !gui.isOpen()) {
         if (!BlingPlayer.isCurrentlyMining()) {
             updateGui();
             if (settings().coinTrackerHide && !gui.isOpen()) {
