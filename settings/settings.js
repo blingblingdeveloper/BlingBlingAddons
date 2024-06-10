@@ -245,18 +245,6 @@ config
     })
     .addSwitch({
         category: "GUI",
-        configName: "showEfficiency",
-        title: "Efficiency Tracker",
-        description: "include block efficiency on coin tracker",
-        value: true,
-        subcategory: "Coin Tracker",
-        shouldShow(data) {
-            return true;
-            return data.coinTracker;
-        }
-    })
-    .addSwitch({
-        category: "GUI",
         configName: "forceNPC",
         title: "Force NPC",
         description: "use npc price for profits",
@@ -290,6 +278,30 @@ config
         shouldShow(data) {
             return true;
             return data.coinTracker && !data.forceNPC;
+        }
+    })
+    .addSwitch({
+        category: "GUI",
+        configName: "showEfficiency",
+        title: "Efficiency Tracker",
+        description: "include block efficiency on coin tracker",
+        value: true,
+        subcategory: "Coin Tracker",
+        shouldShow(data) {
+            return true;
+            return data.coinTracker;
+        }
+    })
+    .addSwitch({
+        category: "GUI",
+        configName: "scEfficiency",
+        title: "Use SkyCrypt Efficiency",
+        description: "use SkyCrypt's (less accurate) efficiency calculation\nthis allows you to direcitly input efficiency into the bot",
+        value: false,
+        subcategory: "Coin Tracker",
+        shouldShow(data) {
+            return true;
+            return data.coinTracker && data.showEfficiency;
         }
     })
     .addSlider({

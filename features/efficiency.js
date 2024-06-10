@@ -37,15 +37,29 @@ register("tick", () => {
         ticks++;
         currentBreakTick++;
         if (msbTicks > 0) {
-            if (currentBreakTick >= getTicks(targetGem, BlingPlayer.getMiningSpeed()*3)) {
-                currentBreakTick -= getTicks(targetGem, BlingPlayer.getMiningSpeed()*3);
-                maxMined[targetGem]['boost']++;
+            if (settings().scEfficiency) {
+                if (currentBreakTick >= getTicks(targetGem, BlingPlayer.getMiningSpeed()*3) + 1) {
+                    currentBreakTick -= getTicks(targetGem, BlingPlayer.getMiningSpeed()*3) + 1;
+                    maxMined[targetGem]['boost']++;
+                }
+            } else {
+                if (currentBreakTick >= getTicks(targetGem, BlingPlayer.getMiningSpeed()*3)) {
+                    currentBreakTick -= getTicks(targetGem, BlingPlayer.getMiningSpeed()*3);
+                    maxMined[targetGem]['boost']++;
+                }
             }
             msbTicks--;
         } else {
-            if (currentBreakTick >= getTicks(targetGem, BlingPlayer.getMiningSpeed())) {
-                currentBreakTick -= getTicks(targetGem, BlingPlayer.getMiningSpeed());
-                maxMined[targetGem]['regular']++;
+            if (settings().scEfficiency) {
+                if (currentBreakTick >= getTicks(targetGem, BlingPlayer.getMiningSpeed()) + 1) {
+                    currentBreakTick -= getTicks(targetGem, BlingPlayer.getMiningSpeed()) + 1;
+                    maxMined[targetGem]['regular']++;
+                }
+            } else {
+                if (currentBreakTick >= getTicks(targetGem, BlingPlayer.getMiningSpeed())) {
+                    currentBreakTick -= getTicks(targetGem, BlingPlayer.getMiningSpeed());
+                    maxMined[targetGem]['regular']++;
+                }
             }
         }
 
