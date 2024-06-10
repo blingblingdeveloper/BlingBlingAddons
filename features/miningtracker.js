@@ -1,6 +1,7 @@
 import { makeObjectDraggable } from "Draggable";
 
 import settings from "../settings/settings";
+import constants from "../util/constants";
 import { rgbToColorInt, addCommas, secondsToMessage } from "../util/helperFunctions";
 import { getEfficiency } from "./efficiency";
 import { getGemCost } from '../util/mininginfo';
@@ -73,6 +74,12 @@ register("renderOverlay", () => {
             oldTime = time;
         }
         if (settings().showEfficiency) {
+            if (!constants.onboarding.efficiency) {
+                ChatLib.chat("§d[BlingBling Addons] §fIn order for the efficiency tracker to be accurate you §cMUST§f input your gemstone mining stats");
+                ChatLib.chat("§d[BlingBling Addons] §fRun §d/b§f and go to the §dMining Stats§f tab");
+                constants.onboarding.efficiency = true;
+                constants.save();
+            }
             efficiencyText.setX(text.getX() + 56);
             efficiencyText.setY(text.getY() + 30);
             efficiencyText.draw();

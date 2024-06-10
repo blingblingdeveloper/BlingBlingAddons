@@ -2,7 +2,7 @@ import Settings from 'Amaterasu/core/Settings'
 import DefaultConfig from 'Amaterasu/core/DefaultConfig'
 import { broadcast } from '../util/broadcast'
 
-const config = new DefaultConfig("blingblingaddons", "settings.json")
+const config = new DefaultConfig("blingblingaddons", "config/settings.json")
 const GUIDE = FileLib.read("blingblingaddons", "settings/guide.md")
 const CREDITS = FileLib.read("blingblingaddons", "settings/credits.md")
 
@@ -222,14 +222,6 @@ config
             return true;
             return data.pingGlide;
         }
-    })
-    .addSwitch({
-        category: "Mining Skills",
-        configName: "lobbySwapping",
-        title: "Lobby Swap",
-        value: false,
-        description: "/lobby after mining speed boost is over while in end dimension",
-        subcategory: "Obsidian"
     })
     .addSwitch({
         category: "GUI",
