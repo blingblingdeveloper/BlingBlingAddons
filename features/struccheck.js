@@ -96,15 +96,30 @@ register("worldLoad", () => {
 });
 
 register("step", () => {
-    if (settings().strucCheckAuto && isRouteReady()) {
-        if (!mapCreated) {
-            createChunkMapping();
-        }
-        if (chunkMap.size > 0) {
-            checkLoaded();
-        }
+    if (settings().strucCheckAuto && isRouteReady() && !mapCreated) {
+        createChunkMapping();
     }
 }).setFps(1);
+
+register("tick", () => {
+    if (settings().strucCheckAuto && isRouteReady() && chunkMap.size > 0) {
+        new Thread(() => {
+            const IChunkProvider = World.getWorld().func_72863_F();
+            const ChunkProviderClass = IChunkProvider.class;
+            const chunkListing = ChunkProviderClass.getDeclaredField('field_73237_c');
+            chunkListing.setAccessible(true);
+            const allChunksInWorld = chunkListing.get(IChunkProvider);
+        
+            for (let chunk of allChunksInWorld) {
+                let chunkName = `${chunk.field_76635_g}, ${chunk.field_76647_h}`;
+                if (!checkedChunks.has(chunkName)) {
+                    checkChunk(chunkName);
+                    break;
+                }
+            }
+        }).start();
+    }
+});
 
 register("renderWorld", () => {
     if (!mapCreated) {
@@ -160,23 +175,6 @@ function loadRoute() {
         ChatLib.chat("§d[BlingBling Addons] §fCouldn't load route");
         return false;
     }
-}
-
-function checkLoaded() {
-    new Thread(() => {
-        const IChunkProvider = World.getWorld().func_72863_F();
-        const ChunkProviderClass = IChunkProvider.class;
-        const chunkListing = ChunkProviderClass.getDeclaredField('field_73237_c');
-        chunkListing.setAccessible(true);
-        const allChunksInWorld = chunkListing.get(IChunkProvider);
-    
-        allChunksInWorld.forEach(chunk => {
-            let chunkName = `${chunk.field_76635_g}, ${chunk.field_76647_h}`;
-            if (!checkedChunks.has(chunkName)) {
-                checkChunk(chunkName);
-            }
-        });
-    }).start();
 }
 
 function createChunkMapping() {
