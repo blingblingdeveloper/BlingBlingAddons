@@ -92,7 +92,7 @@ register("renderOverlay", () => {
 export function updateGui() {
     let lines = [];
     lines[0] = `Uptime: ${!BlingPlayer.isCurrentlyMining() ? "n/a" : time}`;
-    lines[1] = `$/hr: ${money == null ? "n/a" : "$" + addCommas(setting.settings.roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour) + (setting.settings.forceNPC ? " (npc)" : "")} ${setting.settings.roughGems ? "(+ rough)" : ""}`;
+    lines[1] = `$/hr: ${money == null ? "n/a" : "$" + addCommas(settings().roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour) + (settings().forceNPC ? " (npc)" : "")} ${settings().roughGems ? "(+ rough)" : ""}`;
     lines[2] = `fl/hr: ${money == null ? "n/a" : Math.round((settings().roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour) / flawless * 10) / 10} ${settings().roughGems ? "(+ rough)" : ""}`;
     if (settings().showEfficiency) {
         lines[3] = `Efficiency:`;
