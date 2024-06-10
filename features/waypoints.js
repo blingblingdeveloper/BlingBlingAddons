@@ -38,20 +38,27 @@ register('command', () => {
 function loadRoute() {
     const clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
     const clipboardData = clipboard.getData(DataFlavor.stringFlavor);
-    route = JSON.parse(clipboardData);
-    if (route[0].weight) {
-        ChatLib.chat(`§d[BlingBling Addons] §fDetected DilloPro route. Converting to ColeWeight...`);
-        route = route.map((obj, index) => {
-            if (!obj.options) {
-                obj.options = {};
-            }
-            obj.options.name = index + 1;
-            return obj;
-        });
-        exportRoute();
+    try {
+        route = JSON.parse(clipboardData);
+        if (route[0].weight) {
+            ChatLib.chat(`§d[BlingBling Addons] §fDetected DilloPro route. Converting to ColeWeight...`);
+            route = route.map((obj, index) => {
+                if (!obj.options) {
+                    obj.options = {};
+                }
+                obj.options.name = index + 1;
+                return obj;
+            });
+            exportRoute();
+        }
+    
+        ChatLib.chat(`§d[BlingBling Addons] §fRoute loaded!`);
+    } catch (e) {
+        if (!(e instanceof SyntaxError)) {
+            console.log(e);
+        }
+        ChatLib.chat("§d[BlingBling Addons] §fCouldn't load route");
     }
-
-    ChatLib.chat(`§d[BlingBling Addons] §fRoute loaded!`);
 }
 
 function exportRoute() {
