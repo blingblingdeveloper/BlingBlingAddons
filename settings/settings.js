@@ -612,7 +612,7 @@ config
 
 const setting = new Settings("blingblingaddons", config, "settings/ColorScheme.json", "BlingBling Addons")
     .setCommand("blingblingaddons", ["b","bling"])
-    .addMarkdown("§2Usage", GUIDE)
+    .addMarkdown("§6Usage", GUIDE)
     .addMarkdown("§7Credits", CREDITS);
 
 setting

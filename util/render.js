@@ -203,7 +203,7 @@ function drawText(text, pos, color) {
     Tessellator.drawString(
         text,
         pos.x + .5,
-        pos.y + 1.5,
+        pos.y + 2, //original celeite code is 1.5, but 2 is for kool kids - bling
         pos.z + .5,
         labelColor,
         true,
