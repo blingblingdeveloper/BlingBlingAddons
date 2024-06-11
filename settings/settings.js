@@ -1,11 +1,15 @@
 import Settings from 'Amaterasu/core/Settings'
 import DefaultConfig from 'Amaterasu/core/DefaultConfig'
 import { broadcast } from '../util/broadcast'
+const File = java.io.File;
 
+const exists = new File(Config.modulesFolder).listFiles().find(module => {
+  return module.getName() === "blingblingaddonsstruccheck-main";
+});
 const config = new DefaultConfig("blingblingaddons", "config/settings.json")
 const GUIDE = FileLib.read("blingblingaddons", "settings/guide.md")
 const CREDITS = FileLib.read("blingblingaddons", "settings/credits.md")
-
+const STRUCTURE = FileLib.read("blingblingaddons", "settings/structure.md")
 config
     .addSwitch({
         category: "Waypoints",
@@ -341,93 +345,7 @@ config
             return data.coinTracker;
         }
     })
-    .addSwitch({
-        category: "Struc Check",
-        configName: "strucCheckAuto",
-        title: "Automatic Structure Checking",
-        description: "check the route automatically\n§6§o(turn of when creating struc check route)",
-        value: false,
-        subcategory: "Struc Check"
-    })
-    .addDropDown({
-        category: "Struc Check",
-        configName: "strucCheckGem",
-        title: "Gemstone Type",
-        description: "set the gemstone types struc check searches\nfor when setting up routes\n§c(CURRENTLY DOES NOTHING)",
-        options: ["Ruby", "Amber", "Amethyst", "Jade", "Sapphire", "Topaz"],
-        value: 1,
-        subcategory: "Struc Check"
-    })
-    .addSlider({
-        category: "Struc Check",
-        configName: "strucCheckInitialRadius",
-        title: "Initial Search Radius",
-        description: "distance from waypoints to look for gemstone blocks\n§6§oprobably don't touch this",
-        options: [1.001, 5],
-        value: 3,
-        subcategory: "Struc Check"
-    })
-    .addSwitch({
-        category: "Struc Check",
-        configName: "strucCheckSetup",
-        title: "Setup Blocks",
-        description: "highlight all blocks when creating struc check routes",
-        value: true,
-        subcategory: "Edit"
-    })
-    .addColorPicker({
-        category: "Struc Check",
-        configName: "strucCheckSetupColor",
-        title: "Setup Blocks Color",
-        description: "the color used when creating struc check routes",
-        value: [255, 255, 255, 255],
-        subcategory: "Edit",
-        shouldShow(data) {
-            return true;
-            return data.strucCheckSetup;
-        }
-    })
-    .addSwitch({
-        category: "Struc Check",
-        configName: "strucCheckMissing",
-        title: "Missing Blocks",
-        description: "highlight all missing blocks",
-        value: true,
-        subcategory: "Edit"
-    })
-    .addColorPicker({
-        category: "Struc Check",
-        configName: "strucCheckMissingColor",
-        title: "Missing Blocks Color",
-        description: "the color used when a vein is incomplete",
-        value: [255, 0, 0, 255],
-        subcategory: "Edit",
-        shouldShow(data) {
-            return true;
-            return data.strucCheckMissing;
-        }
-    })
-    .addSwitch({
-        category: "Struc Check",
-        configName: "strucCheckTrace",
-        title: "Unloaded Trace",
-        description: "draw a trace line to each unloaded vein",
-        value: false,
-        subcategory: "Edit"
-    })
-    .addColorPicker({
-        category: "Struc Check",
-        configName: "strucCheckTraceColor",
-        title: "Unloaded Trace Color",
-        description: "the color for trace line to unloaded veins",
-        value: [255, 255, 255, 255],
-        subcategory: "Edit",
-        shouldShow(data) {
-            return true;
-            return data.strucCheckTrace;
-        }
-    })
-    .addSwitch({
+    config.addSwitch({
         category: "Block Highlight",
         configName: "blockHighlight",
         title: "Block Highlight",
@@ -608,13 +526,106 @@ config
             broadcast('movecointracker');
         }
     })
-
+    if(exists){
+        config.addSwitch({
+            category: "Struc Check",
+            configName: "strucCheckAuto",
+            title: "Automatic Structure Checking",
+            description: "check the route automatically\n§6§o(turn of when creating struc check route)",
+            value: true,
+            subcategory: "Struc Check"
+        })
+        .addDropDown({
+            category: "Struc Check",
+            configName: "strucCheckGem",
+            title: "Gemstone Type",
+            description: "set the gemstone types struc check searches\nfor when setting up routes\n§c(CURRENTLY DOES NOTHING)",
+            options: ["Ruby", "Amber", "Amethyst", "Jade", "Sapphire", "Topaz"],
+            value: 1,
+            subcategory: "Struc Check"
+        })
+        .addSlider({
+            category: "Struc Check",
+            configName: "strucCheckInitialRadius",
+            title: "Initial Search Radius",
+            description: "distance from waypoints to look for gemstone blocks\n§6§oprobably don't touch this",
+            options: [1.001, 5],
+            value: 3,
+            subcategory: "Struc Check"
+        })
+        .addSwitch({
+            category: "Struc Check",
+            configName: "strucCheckSetup",
+            title: "Setup Blocks",
+            description: "highlight all blocks when creating struc check routes",
+            value: true,
+            subcategory: "Edit"
+        })
+        .addColorPicker({
+            category: "Struc Check",
+            configName: "strucCheckSetupColor",
+            title: "Setup Blocks Color",
+            description: "the color used when creating struc check routes",
+            value: [255, 255, 255, 255],
+            subcategory: "Edit",
+            shouldShow(data) {
+                return true;
+                return data.strucCheckSetup;
+            }
+        })
+        .addSwitch({
+            category: "Struc Check",
+            configName: "strucCheckMissing",
+            title: "Missing Blocks",
+            description: "highlight all missing blocks",
+            value: true,
+            subcategory: "Edit"
+        })
+        .addColorPicker({
+            category: "Struc Check",
+            configName: "strucCheckMissingColor",
+            title: "Missing Blocks Color",
+            description: "the color used when a vein is incomplete",
+            value: [255, 0, 0, 255],
+            subcategory: "Edit",
+            shouldShow(data) {
+                return true;
+                return data.strucCheckMissing;
+            }
+        })
+        .addSwitch({
+            category: "Struc Check",
+            configName: "strucCheckTrace",
+            title: "Unloaded Trace",
+            description: "draw a trace line to each unloaded vein",
+            value: false,
+            subcategory: "Edit"
+        })
+        .addColorPicker({
+            category: "Struc Check",
+            configName: "strucCheckTraceColor",
+            title: "Unloaded Trace Color",
+            description: "the color for trace line to unloaded veins",
+            value: [255, 255, 255, 255],
+            subcategory: "Edit",
+            shouldShow(data) {
+                return true;
+                return data.strucCheckTrace;
+            }
+        })
+    }
 
 const setting = new Settings("blingblingaddons", config, "settings/ColorScheme.json", "BlingBling Addons")
     .setCommand("blingblingaddons", ["b","bling"])
+if(exists){    
+    setting.addMarkdown("§6Usage", GUIDE)
+    .addMarkdown("§7Credits", CREDITS);
+}
+else{
+    setting.addMarkdown("§4Structure check", STRUCTURE)
     .addMarkdown("§6Usage", GUIDE)
     .addMarkdown("§7Credits", CREDITS);
-
+}
 setting
     .setPos(15, 15)
     .setSize(70, 70)

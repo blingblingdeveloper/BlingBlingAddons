@@ -210,10 +210,10 @@ register('renderWorld', () => {
             drawText(route[currentWp].options.name, route[currentWp], settings().waypointTextColor);
             drawText(route[previousWp].options.name, route[previousWp], settings().waypointTextColor);
         }
-
+        wpKey = new KeyBind("Draw line to first Waypoint", settings().wpKeybind, "BlingBling Addons");
         if (wpKey.isKeyDown()) {
-            drawTrace(route[0], settings().orderedLineColor);
-            drawDistText(Math.round(BlingPlayer.calcDist(route[0].x + 0.5, route[0].y, route[0].z + 0.5)) + "m", route[0], settings().waypointTextColor);
+            drawTrace(route[currentWp], settings().orderedLineColor);
+            drawDistText(Math.round(BlingPlayer.calcDist(route[currentWp].x + 0.5, route[currentWp].y, route[currentWp].z + 0.5)) + "m", route[currentWp], settings().waypointTextColor);
         }
     }
 })
