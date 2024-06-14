@@ -39,10 +39,7 @@ function loadRoute() {
     try {
         route = JSON.parse(clipboardData);
 
-        if (!route.every(waypoint => {
-            console.log(waypoint.options?.hasOwnProperty("name"))
-            return waypoint.options?.hasOwnProperty("name");
-        })) {
+        if (!route.every(waypoint => {return waypoint.options?.hasOwnProperty("name")})) {
             ChatLib.chat(`§d[BlingBling Addons] §fDetected DilloPro route. Converting to ColeWeight...`);
             route = route.map((obj, index) => {
                 if (!obj.options) {
