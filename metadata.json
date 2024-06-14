@@ -4,5 +4,5 @@
   "creator": "blingbling, Celeite",
   "version": "0.99",
   "entry": "index.js",
-  "requires": ["RenderLib","Draggable", "PogData", "Elementa", "requestV2", "Amaterasu"]
+  "requires": ["Draggable", "PogData", "Elementa", "requestV2", "Amaterasu"]
 }
