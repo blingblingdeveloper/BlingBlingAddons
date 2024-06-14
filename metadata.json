@@ -2,7 +2,7 @@
   "name": "blingblingaddons",
   "description": "the BEST mod",
   "creator": "blingbling, Celeite",
-  "version": "0.99",
+  "version": "1.0",
   "entry": "index.js",
   "requires": ["Draggable", "PogData", "Elementa", "requestV2", "Amaterasu"]
 }
