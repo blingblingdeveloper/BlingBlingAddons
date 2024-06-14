@@ -35,7 +35,11 @@ config
         configName: "wpKeybind",
         title: "Current Waypoint Line",
         description: "For use with waypoint mode. Hold key to show a trace to first current waypoint.",
-        value: 41
+        value: 41,
+        registerListener(previousValue, newValue) {
+            KeyBind.removeKeyBind(Client.getKeyBindFromDescription("Draw line to current Waypoint"));
+            new KeyBind("Draw line to current Waypoint", newValue, "BlingBling Addons");
+        }
     })
     .addSwitch({
         category: "Waypoints",
@@ -629,3 +633,4 @@ setting
     .apply();
 
 export default () => setting.settings;
+export {setting};
