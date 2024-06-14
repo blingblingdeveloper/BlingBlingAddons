@@ -195,7 +195,7 @@ function drawText(text, pos, color) {
     let labelColor = rgbToColorInt(color[0], color[1], color[2]);
     let labelScale;
     if (settings().dynamicTextSize) {
-        labelScale = Math.min(BlingPlayer.calcEyeDist(pos.x + .5, pos.y + 1.5, pos.z + .5) / 10, settings().waypointTextSize) / 20;
+        labelScale = Math.min(BlingPlayer.calcEyeDist(pos.x + .5, pos.y + 2, pos.z + .5) / 10, settings().waypointTextSize) / 20;
     }
     else {
         labelScale = settings().waypointTextSize / 20

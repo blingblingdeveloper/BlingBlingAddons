@@ -210,7 +210,7 @@ register('renderWorld', () => {
             drawText(route[currentWp].options.name, route[currentWp], settings().waypointTextColor);
             drawText(route[previousWp].options.name, route[previousWp], settings().waypointTextColor);
         }
-        wpKey = new KeyBind("Draw line to first Waypoint", settings().wpKeybind, "BlingBling Addons");
+        wpKey = new KeyBind("Draw line to current Waypoint", settings().wpKeybind, "BlingBling Addons");
         if (wpKey.isKeyDown()) {
             drawTrace(route[currentWp], settings().orderedLineColor);
             drawDistText(Math.round(BlingPlayer.calcDist(route[currentWp].x + 0.5, route[currentWp].y, route[currentWp].z + 0.5)) + "m", route[currentWp], settings().waypointTextColor);
