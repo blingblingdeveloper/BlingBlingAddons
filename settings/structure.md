@@ -1,6 +1,6 @@
 # §dStructure Check
 §4All ChatTriggers modules must comply with Hypixel rules to be §4verified.  
-This feature was separated from the mod for people who do not intend to use it, and to ensure §dBlingBling Addons §f could be verified.  
+This feature was separated from the mod for people who do not intend to use it, and to ensure §dBlingBling Addons§f could be verified.  
   
 If you would like to install structure check, please follow these installation instructions:
 1. Go to the [Structure Check GitHub](https://github.com/CeleiteCode/blingblingaddonsstruccheck/releases/tag/1.0).

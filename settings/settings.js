@@ -538,7 +538,7 @@ config
             category: "Struc Check",
             configName: "strucCheckAuto",
             title: "Automatic Structure Checking",
-            description: "check the route automatically\n§6§o(turn of when creating struc check route)",
+            description: "check the route automatically\n§6§o(turn off when creating struc check route)",
             value: true,
             subcategory: "Struc Check"
         })

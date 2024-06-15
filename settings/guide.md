@@ -15,6 +15,11 @@
 
 > Pro Tip: You can switch between ordered and regular waypoints in the settings menu!
 
+## §6Ping Glide
+§dPing Glide§f plays a sound when a block will be considered "broken" server-side. This means you can begin mining the next block before your client shows the current block as broken.  
+Set §6Delay§f to your ping, and begin mining the next block when you hear the sound.  
+To enter sounds, §cuse 1.8.9 sounds§f, which can be found [here](https://www.minecraftforum.net/forums/mapping-and-modding-java-edition/mapping-and-modding-tutorials/2213619-1-8-all-playsound-sound-arguments).
+
 ## §6Structure Check
 
 §d/lrg: §floads a regular route from clipboard and automatically detects nearby veins for struc check format  
