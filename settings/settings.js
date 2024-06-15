@@ -3,13 +3,15 @@ import DefaultConfig from 'Amaterasu/core/DefaultConfig'
 import { broadcast } from '../util/broadcast'
 const File = java.io.File;
 
-const exists = new File(Config.modulesFolder).listFiles().find(module => {
-  return module.getName() === "blingblingaddonsstruccheck-main";
+const strucCheckExists = new File(Config.modulesFolder).listFiles().find(module => {
+  return module.getName() === "blingblingaddonsstruccheck";
 });
+
 const config = new DefaultConfig("blingblingaddons", "config/settings.json")
 const GUIDE = FileLib.read("blingblingaddons", "settings/guide.md")
 const CREDITS = FileLib.read("blingblingaddons", "settings/credits.md")
 const STRUCTURE = FileLib.read("blingblingaddons", "settings/structure.md")
+
 config
     .addSwitch({
         category: "Waypoints",
@@ -31,9 +33,13 @@ config
         category: "Waypoints",
         subcategory: "Waypoints",
         configName: "wpKeybind",
-        title: "Draw marker to first waypoint.",
-        description: "For use with waypoint mode. Hold key to go to first waypoint.",
-        value: 41
+        title: "Current Waypoint Line",
+        description: "For use with waypoint mode. Hold key to show a trace to first current waypoint.",
+        value: 41,
+        registerListener(previousValue, newValue) {
+            KeyBind.removeKeyBind(Client.getKeyBindFromDescription("Draw line to current Waypoint"));
+            new KeyBind("Draw line to current Waypoint", newValue, "BlingBling Addons");
+        }
     })
     .addSwitch({
         category: "Waypoints",
@@ -526,12 +532,13 @@ config
             broadcast('movecointracker');
         }
     })
-    if(exists){
+
+    if(strucCheckExists){
         config.addSwitch({
             category: "Struc Check",
             configName: "strucCheckAuto",
             title: "Automatic Structure Checking",
-            description: "check the route automatically\n§6§o(turn of when creating struc check route)",
+            description: "check the route automatically\n§6§o(turn off when creating struc check route)",
             value: true,
             subcategory: "Struc Check"
         })
@@ -617,18 +624,13 @@ config
 
 const setting = new Settings("blingblingaddons", config, "settings/ColorScheme.json", "BlingBling Addons")
     .setCommand("blingblingaddons", ["b","bling"])
-if(exists){    
-    setting.addMarkdown("§6Usage", GUIDE)
-    .addMarkdown("§7Credits", CREDITS);
-}
-else{
+if(!strucCheckExists){    
     setting.addMarkdown("§4Structure check", STRUCTURE)
-    .addMarkdown("§6Usage", GUIDE)
-    .addMarkdown("§7Credits", CREDITS);
 }
 setting
-    .setPos(15, 15)
-    .setSize(70, 70)
-    .apply()
+    .addMarkdown("§6Usage", GUIDE)
+    .addMarkdown("§7Credits", CREDITS)
+    .apply();
 
 export default () => setting.settings;
+export {setting};

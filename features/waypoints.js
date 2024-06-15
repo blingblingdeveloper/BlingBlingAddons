@@ -9,8 +9,6 @@ let route = [];
 let currentWp = 0;
 let nearbyWaypoints = [];
 
-let wpKey = new KeyBind("Draw line to first Waypoint", settings().wpKeybind, "BlingBling Addons");
-
 register('command', () => {
     loadRoute();
 }).setName('load');
@@ -40,7 +38,8 @@ function loadRoute() {
     const clipboardData = clipboard.getData(DataFlavor.stringFlavor);
     try {
         route = JSON.parse(clipboardData);
-        if (route[0].weight) {
+
+        if (!route.every(waypoint => {return waypoint.options?.hasOwnProperty("name")})) {
             ChatLib.chat(`§d[BlingBling Addons] §fDetected DilloPro route. Converting to ColeWeight...`);
             route = route.map((obj, index) => {
                 if (!obj.options) {
@@ -51,7 +50,6 @@ function loadRoute() {
             });
             exportRoute();
         }
-    
         ChatLib.chat(`§d[BlingBling Addons] §fRoute loaded!`);
     } catch (e) {
         if (!(e instanceof SyntaxError)) {
@@ -210,8 +208,8 @@ register('renderWorld', () => {
             drawText(route[currentWp].options.name, route[currentWp], settings().waypointTextColor);
             drawText(route[previousWp].options.name, route[previousWp], settings().waypointTextColor);
         }
-        wpKey = new KeyBind("Draw line to first Waypoint", settings().wpKeybind, "BlingBling Addons");
-        if (wpKey.isKeyDown()) {
+        
+        if (Client.getKeyBindFromDescription("Draw line to current Waypoint").isKeyDown()) {
             drawTrace(route[currentWp], settings().orderedLineColor);
             drawDistText(Math.round(BlingPlayer.calcDist(route[currentWp].x + 0.5, route[currentWp].y, route[currentWp].z + 0.5)) + "m", route[currentWp], settings().waypointTextColor);
         }

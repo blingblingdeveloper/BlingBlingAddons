@@ -1,4 +1,4 @@
-import RenderLib from "RenderLib";
+import { drawBlock } from "../util/render";
 
 let castedBlock;
 
@@ -19,7 +19,7 @@ register('renderWorld', () => {
         if (!castedBlock) return;
         if (World.getBlockAt(castedBlock.pos.up(1)).type.getRegistryName() == "minecraft:air" && World.getBlockAt(castedBlock.pos.up(2)).type.getRegistryName() == "minecraft:air") {
             castedBlock.valid = true;
-            RenderLib.drawEspBox(Math.floor(castedBlock.pos.x) + .5, Math.floor(castedBlock.pos.y), Math.floor(castedBlock.pos.z) + .5, 1, 1, 156 / 255, 0 / 255, 0 / 255, 1, true);
+            drawBlock(castedBlock.pos, [156, 0, 0, 255], true);
         }
     } else {
         castedBlock = null;

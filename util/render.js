@@ -1,9 +1,6 @@
 import settings from "../settings/settings";
 import BlingPlayer from "./BlingPlayer";
 import { rgbToColorInt } from "./helperFunctions";
-// i do not take credit for this code below in any way. I just needed to change a line for the purposes of this module.
-// original author of this method is Debuggings/Debug
-// here is a link to their module RenderLib: https://chattriggers.com/modules/v/Renderlib
 
 function drawWireBox(x, y, z, w, h, l, lWidth = 2.0, red, green, blue, alpha, phase) {
     if (settings().renderLimitEnabled && BlingPlayer.calcEyeDist(x, y, z) > settings().renderLimit * 16) {
@@ -195,7 +192,7 @@ function drawText(text, pos, color) {
     let labelColor = rgbToColorInt(color[0], color[1], color[2]);
     let labelScale;
     if (settings().dynamicTextSize) {
-        labelScale = Math.min(BlingPlayer.calcEyeDist(pos.x + .5, pos.y + 1.5, pos.z + .5) / 10, settings().waypointTextSize) / 20;
+        labelScale = Math.min(BlingPlayer.calcEyeDist(pos.x + .5, pos.y + 2, pos.z + .5) / 10, settings().waypointTextSize) / 20;
     }
     else {
         labelScale = settings().waypointTextSize / 20
