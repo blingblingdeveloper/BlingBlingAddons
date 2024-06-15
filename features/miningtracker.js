@@ -60,39 +60,44 @@ addAction('movecointracker', () => {
 });
 
 register("renderOverlay", () => {
-    if (settings().coinTracker && !gui.isOpen()) {
+    if (gui.isOpen()) {
+        drawText();
+    } else if (settings().coinTracker) {
         if (!BlingPlayer.isCurrentlyMining()) {
             updateGui();
-            if (settings().coinTrackerHide && !gui.isOpen()) {
+            if (settings().coinTrackerHide) {
                 return;
             }
         }
 
-        time = secondsToMessage((Date.now() - BlingPlayer.getMiningStartTime()) / 1000);
-        if (oldTime != time) {
-            updateGui();
-            oldTime = time;
-        }
-        if (settings().showEfficiency) {
-            if (!constants.onboarding.efficiency) {
-                ChatLib.chat("§d[BlingBling Addons] §fIn order for the efficiency tracker to be accurate you §cMUST§f input your gemstone mining stats");
-                ChatLib.chat("§d[BlingBling Addons] §fRun §d/b§f and go to the §dMining Stats§f tab");
-                constants.onboarding.efficiency = true;
-                constants.save();
-            }
-            efficiencyText.setX(text.getX() + 56);
-            efficiencyText.setY(text.getY() + 30);
-            efficiencyText.draw();
-        }
-        text.draw();
-
+        drawText();
     }
 });
+
+function drawText() {
+    time = secondsToMessage((Date.now() - BlingPlayer.getMiningStartTime()) / 1000);
+    if (oldTime != time) {
+        updateGui();
+        oldTime = time;
+    }
+    if (settings().showEfficiency) {
+        if (!constants.onboarding.efficiency) {
+            ChatLib.chat("§d[BlingBling Addons] §fIn order for the efficiency tracker to be accurate you §cMUST§f input your gemstone mining stats");
+            ChatLib.chat("§d[BlingBling Addons] §fRun §d/b§f and go to the §dMining Stats§f tab");
+            constants.onboarding.efficiency = true;
+            constants.save();
+        }
+        efficiencyText.setX(text.getX() + 56);
+        efficiencyText.setY(text.getY() + 30);
+        efficiencyText.draw();
+    }
+    text.draw();
+}
 
 export function updateGui() {
     let lines = [];
     lines[0] = `Uptime: ${!BlingPlayer.isCurrentlyMining() ? "n/a" : time}`;
-    lines[1] = `$/hr: ${money == null ? "n/a" : "$" + addCommas(settings().roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour) + (settings().forceNPC ? " (npc)" : "")} ${settings().roughGems ? "(+ rough)" : ""}`;
+    lines[1] = `$/hr: ${money == null ? "n/a" : "$" + addCommas(settings().roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour)}${(settings().forceNPC ? " (npc)" : "")}${settings().roughGems ? " (+ rough)" : ""}`;
     lines[2] = `fl/hr: ${money == null ? "n/a" : Math.round((settings().roughGems ? moneyPerHour + roughmoneyPerHour : moneyPerHour) / flawless * 10) / 10} ${settings().roughGems ? "(+ rough)" : ""}`;
     if (settings().showEfficiency) {
         lines[3] = `Efficiency:`;

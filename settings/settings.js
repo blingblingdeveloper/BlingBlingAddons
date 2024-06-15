@@ -1,10 +1,17 @@
 import Settings from 'Amaterasu/core/Settings'
 import DefaultConfig from 'Amaterasu/core/DefaultConfig'
 import { broadcast } from '../util/broadcast'
+const File = java.io.File;
 
-const config = new DefaultConfig("blingblingaddons", "config/settings.json")
-const GUIDE = FileLib.read("blingblingaddons", "settings/guide.md")
-const CREDITS = FileLib.read("blingblingaddons", "settings/credits.md")
+// if structure check(external file that isnt installed in /ct import) installed
+const strucCheckExists = new File(Config.modulesFolder).listFiles().find(module => {
+  return module.getName() === "BlingBlingAddonsStrucCheck";
+});
+
+const config = new DefaultConfig("BlingBlingAddons", "config/settings.json")
+const GUIDE = FileLib.read("BlingBlingAddons", "settings/guide.md")
+const CREDITS = FileLib.read("BlingBlingAddons", "settings/credits.md")
+const STRUCTURE = FileLib.read("BlingBlingAddons", "settings/structure.md")
 
 config
     .addSwitch({
@@ -27,9 +34,13 @@ config
         category: "Waypoints",
         subcategory: "Waypoints",
         configName: "wpKeybind",
-        title: "Draw marker to first waypoint.",
-        description: "For use with waypoint mode. Hold key to go to first waypoint.",
-        value: 41
+        title: "Current Waypoint Line",
+        description: "For use with waypoint mode. Hold key to show a trace to first current waypoint.",
+        value: 41,
+        registerListener(previousValue, newValue) {
+            KeyBind.removeKeyBind(Client.getKeyBindFromDescription("Draw line to current Waypoint"));
+            new KeyBind("Draw line to current Waypoint", newValue, "BlingBling Addons");
+        }
     })
     .addSwitch({
         category: "Waypoints",
@@ -44,7 +55,7 @@ config
         configName: "waypointOutlineColor",
         title: "Waypoint Outline Color",
         description: "change the outline color",
-        value: [255, 192, 203, 255],
+        value: [ 255, 147, 147, 255],
         subcategory: "Waypoint Visuals",
         shouldShow(data) {
             return true;
@@ -56,7 +67,7 @@ config
         configName: "waypointFill",
         title: "Waypoint Fill",
         description: "toggle waypoint fill",
-        value: true,
+        value: false,
         subcategory: "Waypoint Visuals"
     })
     .addColorPicker({
@@ -104,7 +115,7 @@ config
         configName: "dynamicTextSize",
         title: "Dynamic Text Size",
         description: "limits text size close to the player",
-        value: true,
+        value: false,
         subcategory: "Waypoint Visuals"
     })
     .addSlider({
@@ -113,24 +124,8 @@ config
         title: "Waypoint Text Size",
         description: "size of the text used by waypoints",
         options: [1.001, 5],
-        value: 2,
+        value: 1,
         subcategory: "Waypoint Visuals"
-    })
-    .addColorPicker({
-        category: "Waypoints",
-        configName: "orderedColorBefore",
-        title: "Ordered Previous Color",
-        description: "color of the previous ordered waypoint",
-        value: [0, 0, 0, 255],
-        subcategory: "Ordered Waypoint Visuals"
-    })
-    .addColorPicker({
-        category: "Waypoints",
-        configName: "orderedColorAfter",
-        title: "Ordered Next Color",
-        description: "color of the next ordered waypoint",
-        value: [0, 0, 0, 255],
-        subcategory: "Ordered Waypoint Visuals"
     })
     .addSwitch({
         category: "Waypoints",
@@ -153,7 +148,7 @@ config
         }
     })
     .addSwitch({
-        category: "Mining Skills",
+        category: "Ping Glide",
         configName: "pingGlide",
         title: "Ping Glide Sounds",
         description: "plays a sound when you can start mining the next block",
@@ -161,7 +156,7 @@ config
         subcategory: "Ping Glide"
     })
     .addSwitch({
-        category: "Mining Skills",
+        category: "Ping Glide",
         configName: "disableVanillaSound",
         title: "Disable Vanilla Sounds",
         description: "stop the regular glass break sounds from playing",
@@ -173,7 +168,7 @@ config
         }
     })
     .addTextInput({
-        category: "Mining Skills",
+        category: "Ping Glide",
         configName: "pingGlideSound",
         title: "Sound",
         description: "specify what sound to use (1.8 sounds only)",
@@ -186,7 +181,7 @@ config
         }
     })
     .addSlider({
-        category: "Mining Skills",
+        category: "Ping Glide",
         configName: "pingGlideVolume",
         title: "Volume",
         description: "volume of ping glide sound",
@@ -199,7 +194,7 @@ config
         }
     })
     .addSlider({
-        category: "Mining Skills",
+        category: "Ping Glide",
         configName: "pingGlideDelay",
         title: "Delay",
         description: "your ping, higher = earlier sound",
@@ -212,7 +207,7 @@ config
         }
     })
     .addSwitch({
-        category: "Mining Skills",
+        category: "Ping Glide",
         configName: "pingGlideMsb",
         title: "Mining Speed Boost",
         description: "toggle ping glide sounds during mining speed boost",
@@ -224,7 +219,7 @@ config
         }
     })
     .addSwitch({
-        category: "GUI",
+        category: "Tracker",
         configName: "coinTracker",
         title: "Toggle Coin Tracker",
         description: "show/hide tracker",
@@ -232,11 +227,11 @@ config
         subcategory: "Coin Tracker"
     })
     .addSwitch({
-        category: "GUI",
+        category: "Tracker",
         configName: "roughGems",
         title: "Include Rough Estimate?",
         description: "add rough gemstone profit estimate into $/hr and fl/hr. Trackers use pristine procs in order to track accurate profits. Enabling this will factor in rough gemstones to give a more accurate estimate.",
-        value: false,
+        value: true,
         subcategory: "Coin Tracker",
         shouldShow(data) {
             return true;
@@ -244,7 +239,7 @@ config
         }
     })
     .addSwitch({
-        category: "GUI",
+        category: "Tracker",
         configName: "forceNPC",
         title: "Force NPC",
         description: "use npc price for profits",
@@ -256,7 +251,7 @@ config
         }
     })
     .addSwitch({
-        category: "GUI",
+        category: "Tracker",
         configName: "sellOffer",
         title: "Use Sell Offer?",
         description: "use bazaar sell offer prices for profits",
@@ -268,7 +263,7 @@ config
         }
     })
     .addDropDown({
-        category: "GUI",
+        category: "Tracker",
         configName: "gemstoneType",
         title: "Gemstone Type",
         description: "set the gemstone type to use for bazaar prices",
@@ -281,7 +276,7 @@ config
         }
     })
     .addSwitch({
-        category: "GUI",
+        category: "Tracker",
         configName: "showEfficiency",
         title: "Efficiency Tracker",
         description: "include block efficiency on coin tracker",
@@ -293,11 +288,11 @@ config
         }
     })
     .addSwitch({
-        category: "GUI",
+        category: "Tracker",
         configName: "scEfficiency",
         title: "Use SkyCrypt Efficiency",
-        description: "use SkyCrypt's (less accurate) efficiency calculation\nthis allows you to direcitly input efficiency into the bot",
-        value: false,
+        description: "use SkyCrypt's (less accurate) efficiency calculation this allows you to direcitly input efficiency into the bot",
+        value: true,
         subcategory: "Coin Tracker",
         shouldShow(data) {
             return true;
@@ -305,7 +300,7 @@ config
         }
     })
     .addSlider({
-        category: "GUI",
+        category: "Tracker",
         configName: "resetDelay",
         title: "Reset Delay",
         description: "how long to wait before resetting the tracker (seconds)",
@@ -318,11 +313,11 @@ config
         }
     })
     .addColorPicker({
-        category: "GUI",
+        category: "Tracker",
         configName: "coinTrackerColor",
         title: "Coin Tracker Color",
         description: "set the coin tracker text color",
-        value: [255, 255, 255, 255],
+        value: [243, 185, 255, 255],
         subcategory: "Edit",
         shouldShow(data) {
             return true;
@@ -330,7 +325,7 @@ config
         }
     })
     .addSwitch({
-        category: "GUI",
+        category: "Tracker",
         configName: "coinTrackerHide",
         title: "Auto Hide Coin Tracker",
         description: "automatically hide the coin tracker when not mining",
@@ -341,93 +336,7 @@ config
             return data.coinTracker;
         }
     })
-    .addSwitch({
-        category: "Struc Check",
-        configName: "strucCheckAuto",
-        title: "Automatic Structure Checking",
-        description: "check the route automatically\n§6§o(turn of when creating struc check route)",
-        value: false,
-        subcategory: "Struc Check"
-    })
-    .addDropDown({
-        category: "Struc Check",
-        configName: "strucCheckGem",
-        title: "Gemstone Type",
-        description: "set the gemstone types struc check searches\nfor when setting up routes\n§c(CURRENTLY DOES NOTHING)",
-        options: ["Ruby", "Amber", "Amethyst", "Jade", "Sapphire", "Topaz"],
-        value: 1,
-        subcategory: "Struc Check"
-    })
-    .addSlider({
-        category: "Struc Check",
-        configName: "strucCheckInitialRadius",
-        title: "Initial Search Radius",
-        description: "distance from waypoints to look for gemstone blocks\n§6§oprobably don't touch this",
-        options: [1.001, 5],
-        value: 3,
-        subcategory: "Struc Check"
-    })
-    .addSwitch({
-        category: "Struc Check",
-        configName: "strucCheckSetup",
-        title: "Setup Blocks",
-        description: "highlight all blocks when creating struc check routes",
-        value: true,
-        subcategory: "Edit"
-    })
-    .addColorPicker({
-        category: "Struc Check",
-        configName: "strucCheckSetupColor",
-        title: "Setup Blocks Color",
-        description: "the color used when creating struc check routes",
-        value: [255, 255, 255, 255],
-        subcategory: "Edit",
-        shouldShow(data) {
-            return true;
-            return data.strucCheckSetup;
-        }
-    })
-    .addSwitch({
-        category: "Struc Check",
-        configName: "strucCheckMissing",
-        title: "Missing Blocks",
-        description: "highlight all missing blocks",
-        value: true,
-        subcategory: "Edit"
-    })
-    .addColorPicker({
-        category: "Struc Check",
-        configName: "strucCheckMissingColor",
-        title: "Missing Blocks Color",
-        description: "the color used when a vein is incomplete",
-        value: [255, 0, 0, 255],
-        subcategory: "Edit",
-        shouldShow(data) {
-            return true;
-            return data.strucCheckMissing;
-        }
-    })
-    .addSwitch({
-        category: "Struc Check",
-        configName: "strucCheckTrace",
-        title: "Unloaded Trace",
-        description: "draw a trace line to each unloaded vein",
-        value: false,
-        subcategory: "Edit"
-    })
-    .addColorPicker({
-        category: "Struc Check",
-        configName: "strucCheckTraceColor",
-        title: "Unloaded Trace Color",
-        description: "the color for trace line to unloaded veins",
-        value: [255, 255, 255, 255],
-        subcategory: "Edit",
-        shouldShow(data) {
-            return true;
-            return data.strucCheckTrace;
-        }
-    })
-    .addSwitch({
+    config.addSwitch({
         category: "Block Highlight",
         configName: "blockHighlight",
         title: "Block Highlight",
@@ -519,7 +428,7 @@ config
         configName: "gemMiningSpeed",
         title: "Gemstone Mining Speed",
         description: "enter your gemstone mining speed",
-        value: "9576",
+        value: "0",
         placeHolder: "0",
         subcategory: "i'm dumb, we'll import stats later §d<3"
     })
@@ -528,7 +437,7 @@ config
         configName: "gemFortune",
         title: "Gemstone Fortune",
         description: "enter your gemstone fortune",
-        value: "2497",
+        value: "0",
         placeHolder: "0",
         subcategory: "i'm dumb, we'll import stats later §d<3"
     })
@@ -537,7 +446,7 @@ config
         configName: "pristine",
         title: "Pristine",
         description: "enter your pristine",
-        value: "18.63",
+        value: "0",
         placeHolder: "0",
         subcategory: "i'm dumb, we'll import stats later §d<3"
     })
@@ -546,7 +455,7 @@ config
         configName: "blueCheese",
         title: "Blue Cheese",
         description: "toggle on if you have a Blue Cheese Goblin Omelette",
-        value: false,
+        value: true,
         subcategory: "i'm dumb, we'll import stats later §d<3"
     })
     .addSwitch({
@@ -576,7 +485,7 @@ config
         title: "Block Outline Thickness",
         description: "thickness for block outlines",
         options: [1, 10],
-        value: 3,
+        value: 4,
         subcategory: "Render"
     })
     .addSlider({
@@ -598,7 +507,7 @@ config
         subcategory: "Render"
     })
     .addButton({
-        category: "GUI",
+        category: "Tracker",
         configName: "myButtonAction",
         title: "Move Coin Tracker GUI",
         description: "move the location of the coin tracker gui",
@@ -609,15 +518,104 @@ config
         }
     })
 
+    if(strucCheckExists){
+        config.addSwitch({
+            category: "Struc Check",
+            configName: "strucCheckAuto",
+            title: "Automatic Structure Checking",
+            description: "check the route automatically\n§6§o(turn off when creating struc check route)",
+            value: true,
+            subcategory: "Struc Check"
+        })
+        .addDropDown({
+            category: "Struc Check",
+            configName: "strucCheckGem",
+            title: "Gemstone Type",
+            description: "set the gemstone types struc check searches\nfor when setting up routes\n§c(CURRENTLY DOES NOTHING)",
+            options: ["Ruby", "Amber", "Amethyst", "Jade", "Sapphire", "Topaz"],
+            value: 1,
+            subcategory: "Struc Check"
+        })
+        .addSlider({
+            category: "Struc Check",
+            configName: "strucCheckInitialRadius",
+            title: "Initial Search Radius",
+            description: "distance from waypoints to look for gemstone blocks\n§6§oprobably don't touch this",
+            options: [1.001, 5],
+            value: 3,
+            subcategory: "Struc Check"
+        })
+        .addSwitch({
+            category: "Struc Check",
+            configName: "strucCheckSetup",
+            title: "Setup Blocks",
+            description: "highlight all blocks when creating struc check routes",
+            value: true,
+            subcategory: "Edit"
+        })
+        .addColorPicker({
+            category: "Struc Check",
+            configName: "strucCheckSetupColor",
+            title: "Setup Blocks Color",
+            description: "the color used when creating struc check routes",
+            value: [255, 255, 255, 255],
+            subcategory: "Edit",
+            shouldShow(data) {
+                return true;
+                return data.strucCheckSetup;
+            }
+        })
+        .addSwitch({
+            category: "Struc Check",
+            configName: "strucCheckMissing",
+            title: "Missing Blocks",
+            description: "highlight all missing blocks",
+            value: true,
+            subcategory: "Edit"
+        })
+        .addColorPicker({
+            category: "Struc Check",
+            configName: "strucCheckMissingColor",
+            title: "Missing Blocks Color",
+            description: "the color used when a vein is incomplete",
+            value: [255, 0, 0, 255],
+            subcategory: "Edit",
+            shouldShow(data) {
+                return true;
+                return data.strucCheckMissing;
+            }
+        })
+        .addSwitch({
+            category: "Struc Check",
+            configName: "strucCheckTrace",
+            title: "Unloaded Trace",
+            description: "draw a trace line to each unloaded vein",
+            value: false,
+            subcategory: "Edit"
+        })
+        .addColorPicker({
+            category: "Struc Check",
+            configName: "strucCheckTraceColor",
+            title: "Unloaded Trace Color",
+            description: "the color for trace line to unloaded veins",
+            value: [255, 255, 255, 255],
+            subcategory: "Edit",
+            shouldShow(data) {
+                return true;
+                return data.strucCheckTrace;
+            }
+        })
+    }
 
-const setting = new Settings("blingblingaddons", config, "settings/ColorScheme.json", "BlingBling Addons")
+const setting = new Settings("BlingBlingAddons", config, "settings/ColorScheme.json", "BlingBling Addons")
     .setCommand("blingblingaddons", ["b","bling"])
-    .addMarkdown("§2Usage", GUIDE)
-    .addMarkdown("§7Credits", CREDITS);
-
+if(!strucCheckExists){    
+    setting.addMarkdown("§4Structure check", STRUCTURE)
+}
 setting
-    .setPos(15, 15)
-    .setSize(70, 70)
-    .apply()
+    .addMarkdown("§6Usage", GUIDE)
+    .addMarkdown("§7Credits", CREDITS)
+    .apply();
 
 export default () => setting.settings;
+export {setting};

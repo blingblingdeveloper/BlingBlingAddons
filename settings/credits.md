@@ -9,7 +9,7 @@
 
 
 ## §6Thanks
-[Ninjune](https://github.com/Ninjune) for developing [ColeWeight](https://chattriggers.com/modules/v/Coleweight), which inspired §dBlingBling Addons  
+[Ninjune](https://github.com/Ninjune) for developing [ColeWeight](https://chattriggers.com/modules/v/Coleweight), which inspired §dBlingBling §dAddons  
 The incredible developers of [ChatTriggers](https://chattriggers.com/)  
 [DocDocilElm](https://github.com/DocilElm) for quick help and fixes for [Amaterasu](https://www.chattriggers.com/modules/v/Amaterasu)  
 [L3unamme](https://github.com/ManuCoding) for being the best rubber duck around  

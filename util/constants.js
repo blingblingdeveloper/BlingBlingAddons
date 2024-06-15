@@ -1,6 +1,6 @@
 import PogObject from "PogData"
 
-let PogData = new PogObject("blingblingaddons", {
+let PogData = new PogObject("BlingBlingAddons", {
     "onboarding": {
         "main": false,
         "efficiency": false

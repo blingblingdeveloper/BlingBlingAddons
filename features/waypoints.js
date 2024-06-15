@@ -9,8 +9,6 @@ let route = [];
 let currentWp = 0;
 let nearbyWaypoints = [];
 
-let wpKey = new KeyBind("Draw line to first Waypoint", settings().wpKeybind, "BlingBling Addons");
-
 register('command', () => {
     loadRoute();
 }).setName('load');
@@ -36,11 +34,13 @@ register('command', () => {
 }).setName('y64');
 
 function loadRoute() {
+    currentWp = 0;
     const clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
     const clipboardData = clipboard.getData(DataFlavor.stringFlavor);
     try {
         route = JSON.parse(clipboardData);
-        if (route[0].weight) {
+
+        if (!route.every(waypoint => {return waypoint.options?.hasOwnProperty("name")})) {
             ChatLib.chat(`§d[BlingBling Addons] §fDetected DilloPro route. Converting to ColeWeight...`);
             route = route.map((obj, index) => {
                 if (!obj.options) {
@@ -51,7 +51,6 @@ function loadRoute() {
             });
             exportRoute();
         }
-    
         ChatLib.chat(`§d[BlingBling Addons] §fRoute loaded!`);
     } catch (e) {
         if (!(e instanceof SyntaxError)) {
@@ -111,9 +110,9 @@ register('command', (message) => {
         route[i].options.name++;
     }
     if (y > 63) {
-        ChatLib.chat(`§d[BlingBling Addons] §4Waypoint ${index + 1} added successfully. §c(Outside MF!)`);
+        ChatLib.chat(`§d[BlingBling Addons] §fWaypoint ${index + 1} added successfully. §c(Outside MF!)`);
     } else {
-        ChatLib.chat(`§d[BlingBling Addons] §4Waypoint ${index + 1} added successfully.`);
+        ChatLib.chat(`§d[BlingBling Addons] §fWaypoint ${index + 1} added successfully.`);
     }
 
 }).setName('ba swp').setAliases(['swp', 'ba swp', 'ba insert']);
@@ -192,14 +191,14 @@ register('renderWorld', () => {
                 drawBlockConnection(route[currentWp], route[nextWp], settings().waypointLineColor);
             }
             if (settings().waypointFill) {
-                drawBlockFill(route[nextWp], settings().orderedColorAfter);
+                drawBlockFill(route[nextWp], settings().waypointFillColor);
                 drawBlockFill(route[currentWp], settings().waypointFillColor);
-                drawBlockFill(route[previousWp], settings().orderedColorBefore);
+                drawBlockFill(route[previousWp], settings().waypointFillColor);
             }
             if (settings().waypointOutline) {
-                drawBlock(route[nextWp], settings().orderedColorAfter);
+                drawBlock(route[nextWp], settings().waypointOutlineColor);
                 drawBlock(route[currentWp], settings().waypointOutlineColor);
-                drawBlock(route[previousWp], settings().orderedColorBefore);
+                drawBlock(route[previousWp], settings().waypointOutlineColor);
             }
 
             if (settings().orderedLine) {
@@ -210,10 +209,10 @@ register('renderWorld', () => {
             drawText(route[currentWp].options.name, route[currentWp], settings().waypointTextColor);
             drawText(route[previousWp].options.name, route[previousWp], settings().waypointTextColor);
         }
-
-        if (wpKey.isKeyDown()) {
-            drawTrace(route[0], settings().orderedLineColor);
-            drawDistText(Math.round(BlingPlayer.calcDist(route[0].x + 0.5, route[0].y, route[0].z + 0.5)) + "m", route[0], settings().waypointTextColor);
+        
+        if (Client.getKeyBindFromDescription("Draw line to current Waypoint").isKeyDown()) {
+            drawTrace(route[currentWp], settings().orderedLineColor);
+            drawDistText(Math.round(BlingPlayer.calcDist(route[currentWp].x + 0.5, route[currentWp].y, route[currentWp].z + 0.5)) + "m", route[currentWp], settings().waypointTextColor);
         }
     }
 })

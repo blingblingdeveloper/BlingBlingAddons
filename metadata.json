@@ -1,8 +1,14 @@
 {
-  "name": "BlingBling Addons",
-  "description": "the BEST mod",
-  "creator": "blingbling, Celeite",
-  "version": "0.99",
-  "entry": "index.js",
-  "requires": ["RenderLib","Draggable", "PogData", "Elementa", "requestV2", "Amaterasu"]
+    "name": "BlingBlingAddons",
+    "description": "the BEST mod",
+    "creator": "blingbling, Celeite",
+    "version": "1.0.0",
+    "entry": "index.js",
+    "requires": [
+        "Draggable",
+        "PogData",
+        "Elementa",
+        "requestV2",
+        "Amaterasu"
+    ]
 }
