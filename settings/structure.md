@@ -1,14 +1,14 @@
 # §dStructure Check
-§4All ChatTriggers modules must comply with Hypixel rules to be verified.  
+§4All ChatTriggers modules must comply with Hypixel rules to be §4verified.  
 This feature was separated from the mod for people who do not intend to use it, and to ensure §dBlingBling Addons §f could be verified.  
   
 If you would like to install structure check, please follow these installation instructions:
-1. Go to the [Structure Check GitHub](https://github.com/blingblingdeveloper/blingblingaddonsstruccheck/tree/main).
-2. Code -> Download ZIP
-3. Unzip the file, you should have a folder called §6blingblingaddonsstruccheck-main
+1. Go to the [Structure Check GitHub](https://github.com/CeleiteCode/blingblingaddonsstruccheck/releases/tag/1.0).
+2. Download §6StrucCheck-1.0.zip
+3. Unzip the file, you should have a folder called §6blingblingaddonsstruccheck
 4. Run §6/ct files §fthis should open the ChatTriggers folder
 5. Open the §6modules §ffolder
-6. Drag §6blingblingaddonsstruccheck-main §finto the §6modules §ffolder
+6. Drag §6blingblingaddonsstruccheck §finto the §6modules §ffolder
 7. §6/ct load §fto reload ChatTriggers  
 
 This code is completely open source, however please note that it has §4not §4been §4verified §fby the ChatTriggers team and is §4against §4Hypixel §4rules.

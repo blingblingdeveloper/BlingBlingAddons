@@ -4,7 +4,7 @@ import { broadcast } from '../util/broadcast'
 const File = java.io.File;
 
 const strucCheckExists = new File(Config.modulesFolder).listFiles().find(module => {
-  return module.getName() === "blingblingaddonsstruccheck-main";
+  return module.getName() === "blingblingaddonsstruccheck";
 });
 
 const config = new DefaultConfig("blingblingaddons", "config/settings.json")
