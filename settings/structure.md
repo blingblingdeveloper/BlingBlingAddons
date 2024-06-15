@@ -3,7 +3,7 @@
 This feature was separated from the mod for people who do not intend to use it, and to ensure §dBlingBling Addons§f could be verified.  
   
 If you would like to install structure check, please follow these installation instructions:
-1. Go to the [Structure Check GitHub](https://github.com/CeleiteCode/BlingBlingAddonsStrucCheck/releases/tag/1.0).
+1. Go to the [Structure Check GitHub](https://github.com/CeleiteCode/BlingBlingAddonsStrucCheck/releases/tag/1.0.0).
 2. Download §6StrucCheck-1.0.0.zip
 3. Unzip the file, you should have a folder called §6BlingBlingAddonsStrucCheck
 4. Run §6/ct files §fthis should open the ChatTriggers folder
