@@ -15,20 +15,21 @@ register("worldUnload", () => {
 
 register("step", () => {
     if (isSearching && settings().blockHighlight) {
-        coordinatesArray = [];
-        let playerX = Math.floor(Player.getX());
-        let playerY = Math.floor(Player.getY() + 1);
-        let playerZ = Math.floor(Player.getZ());
+        new Thread(() => {
+            let playerX = Math.floor(Player.getX());
+            let playerY = Math.floor(Player.getY() + 1);
+            let playerZ = Math.floor(Player.getZ());
+            
+            let outerShape = genSphere(settings().blockHighlightMaxDist);
+            let innerShape = genSphere(settings().blockHighlightMinDist);
         
-        let outerShape = genSphere(settings().blockHighlightMaxDist);
-        let innerShape = genSphere(settings().blockHighlightMinDist);
-    
-        let searchShape = outerShape.filter(offset => !innerShape.some(innerOffset => innerOffset.equals(offset)));
-        if (settings().blockHighlightBlock.includes("minecraft:stained_glass")) {
-            coordinatesArray = filterShape(new Vec3i(playerX, playerY, playerZ), searchShape);
-        } else {
-            coordinatesArray = filterShape(new Vec3i(playerX, playerY, playerZ), searchShape, [{name: settings().blockHighlightBlock}]);
-        }
+            let searchShape = outerShape.filter(offset => !innerShape.some(innerOffset => innerOffset.equals(offset)));
+            if (settings().blockHighlightBlock.includes("minecraft:stained_glass")) {
+                coordinatesArray = filterShape(new Vec3i(playerX, playerY, playerZ), searchShape);
+            } else {
+                coordinatesArray = filterShape(new Vec3i(playerX, playerY, playerZ), searchShape, [{name: settings().blockHighlightBlock}]);
+            }
+        }).start();
     }
 }).setFps(1)
 

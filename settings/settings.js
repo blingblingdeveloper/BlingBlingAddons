@@ -291,7 +291,7 @@ config
         category: "Tracker",
         configName: "scEfficiency",
         title: "Use SkyCrypt Efficiency",
-        description: "use SkyCrypt's (less accurate) efficiency calculation\nthis allows you to direcitly input efficiency into the bot",
+        description: "use SkyCrypt's (less accurate) efficiency calculation this allows you to direcitly input efficiency into the bot",
         value: true,
         subcategory: "Coin Tracker",
         shouldShow(data) {
@@ -428,7 +428,7 @@ config
         configName: "gemMiningSpeed",
         title: "Gemstone Mining Speed",
         description: "enter your gemstone mining speed",
-        value: "9576",
+        value: "0",
         placeHolder: "0",
         subcategory: "i'm dumb, we'll import stats later §d<3"
     })
@@ -437,7 +437,7 @@ config
         configName: "gemFortune",
         title: "Gemstone Fortune",
         description: "enter your gemstone fortune",
-        value: "2497",
+        value: "0",
         placeHolder: "0",
         subcategory: "i'm dumb, we'll import stats later §d<3"
     })
@@ -446,7 +446,7 @@ config
         configName: "pristine",
         title: "Pristine",
         description: "enter your pristine",
-        value: "18.63",
+        value: "0",
         placeHolder: "0",
         subcategory: "i'm dumb, we'll import stats later §d<3"
     })

@@ -212,7 +212,12 @@ function drawText(text, pos, color) {
 function drawDistText(text, pos, color) {
     let labelColor = rgbToColorInt(color[0], color[1], color[2]);
     let labelScale;
-    labelScale=Math.min(BlingPlayer.calcEyeDist(pos.x, pos.y, pos.z), 50) / 50;
+    if (settings().dynamicTextSize) {
+        labelScale = Math.min(BlingPlayer.calcEyeDist(pos.x + .5, pos.y + 2.5, pos.z + .5) / 10, settings().waypointTextSize) / 20;
+    }
+    else {
+        labelScale = settings().waypointTextSize / 20
+    }
     
     Tessellator.drawString(
         text,

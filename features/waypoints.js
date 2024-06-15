@@ -34,6 +34,7 @@ register('command', () => {
 }).setName('y64');
 
 function loadRoute() {
+    currentWp = 0;
     const clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
     const clipboardData = clipboard.getData(DataFlavor.stringFlavor);
     try {
