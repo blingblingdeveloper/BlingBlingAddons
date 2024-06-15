@@ -163,7 +163,7 @@ config
         }
     })
     .addSwitch({
-        category: "Mining Skills",
+        category: "Ping Glide",
         configName: "pingGlide",
         title: "Ping Glide Sounds",
         description: "plays a sound when you can start mining the next block",
@@ -171,7 +171,7 @@ config
         subcategory: "Ping Glide"
     })
     .addSwitch({
-        category: "Mining Skills",
+        category: "Ping Glide",
         configName: "disableVanillaSound",
         title: "Disable Vanilla Sounds",
         description: "stop the regular glass break sounds from playing",
@@ -183,7 +183,7 @@ config
         }
     })
     .addTextInput({
-        category: "Mining Skills",
+        category: "Ping Glide",
         configName: "pingGlideSound",
         title: "Sound",
         description: "specify what sound to use (1.8 sounds only)",
@@ -196,7 +196,7 @@ config
         }
     })
     .addSlider({
-        category: "Mining Skills",
+        category: "Ping Glide",
         configName: "pingGlideVolume",
         title: "Volume",
         description: "volume of ping glide sound",
@@ -209,7 +209,7 @@ config
         }
     })
     .addSlider({
-        category: "Mining Skills",
+        category: "Ping Glide",
         configName: "pingGlideDelay",
         title: "Delay",
         description: "your ping, higher = earlier sound",
@@ -222,7 +222,7 @@ config
         }
     })
     .addSwitch({
-        category: "Mining Skills",
+        category: "Ping Glide",
         configName: "pingGlideMsb",
         title: "Mining Speed Boost",
         description: "toggle ping glide sounds during mining speed boost",
@@ -234,7 +234,7 @@ config
         }
     })
     .addSwitch({
-        category: "GUI",
+        category: "Tracker",
         configName: "coinTracker",
         title: "Toggle Coin Tracker",
         description: "show/hide tracker",
@@ -242,7 +242,7 @@ config
         subcategory: "Coin Tracker"
     })
     .addSwitch({
-        category: "GUI",
+        category: "Tracker",
         configName: "roughGems",
         title: "Include Rough Estimate?",
         description: "add rough gemstone profit estimate into $/hr and fl/hr. Trackers use pristine procs in order to track accurate profits. Enabling this will factor in rough gemstones to give a more accurate estimate.",
@@ -254,7 +254,7 @@ config
         }
     })
     .addSwitch({
-        category: "GUI",
+        category: "Tracker",
         configName: "forceNPC",
         title: "Force NPC",
         description: "use npc price for profits",
@@ -266,7 +266,7 @@ config
         }
     })
     .addSwitch({
-        category: "GUI",
+        category: "Tracker",
         configName: "sellOffer",
         title: "Use Sell Offer?",
         description: "use bazaar sell offer prices for profits",
@@ -278,7 +278,7 @@ config
         }
     })
     .addDropDown({
-        category: "GUI",
+        category: "Tracker",
         configName: "gemstoneType",
         title: "Gemstone Type",
         description: "set the gemstone type to use for bazaar prices",
@@ -291,7 +291,7 @@ config
         }
     })
     .addSwitch({
-        category: "GUI",
+        category: "Tracker",
         configName: "showEfficiency",
         title: "Efficiency Tracker",
         description: "include block efficiency on coin tracker",
@@ -303,7 +303,7 @@ config
         }
     })
     .addSwitch({
-        category: "GUI",
+        category: "Tracker",
         configName: "scEfficiency",
         title: "Use SkyCrypt Efficiency",
         description: "use SkyCrypt's (less accurate) efficiency calculation\nthis allows you to direcitly input efficiency into the bot",
@@ -315,7 +315,7 @@ config
         }
     })
     .addSlider({
-        category: "GUI",
+        category: "Tracker",
         configName: "resetDelay",
         title: "Reset Delay",
         description: "how long to wait before resetting the tracker (seconds)",
@@ -328,7 +328,7 @@ config
         }
     })
     .addColorPicker({
-        category: "GUI",
+        category: "Tracker",
         configName: "coinTrackerColor",
         title: "Coin Tracker Color",
         description: "set the coin tracker text color",
@@ -340,7 +340,7 @@ config
         }
     })
     .addSwitch({
-        category: "GUI",
+        category: "Tracker",
         configName: "coinTrackerHide",
         title: "Auto Hide Coin Tracker",
         description: "automatically hide the coin tracker when not mining",
@@ -522,7 +522,7 @@ config
         subcategory: "Render"
     })
     .addButton({
-        category: "GUI",
+        category: "Tracker",
         configName: "myButtonAction",
         title: "Move Coin Tracker GUI",
         description: "move the location of the coin tracker gui",
