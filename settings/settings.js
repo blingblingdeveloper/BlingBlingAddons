@@ -3,6 +3,7 @@ import DefaultConfig from 'Amaterasu/core/DefaultConfig'
 import { broadcast } from '../util/broadcast'
 const File = java.io.File;
 
+// if structure check(external file that isnt installed in /ct import) installed
 const strucCheckExists = new File(Config.modulesFolder).listFiles().find(module => {
   return module.getName() === "BlingBlingAddonsStrucCheck";
 });
