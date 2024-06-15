@@ -109,9 +109,9 @@ register('command', (message) => {
         route[i].options.name++;
     }
     if (y > 63) {
-        ChatLib.chat(`§d[BlingBling Addons] §4Waypoint ${index + 1} added successfully. §c(Outside MF!)`);
+        ChatLib.chat(`§d[BlingBling Addons] §fWaypoint ${index + 1} added successfully. §c(Outside MF!)`);
     } else {
-        ChatLib.chat(`§d[BlingBling Addons] §4Waypoint ${index + 1} added successfully.`);
+        ChatLib.chat(`§d[BlingBling Addons] §fWaypoint ${index + 1} added successfully.`);
     }
 
 }).setName('ba swp').setAliases(['swp', 'ba swp', 'ba insert']);
@@ -190,14 +190,14 @@ register('renderWorld', () => {
                 drawBlockConnection(route[currentWp], route[nextWp], settings().waypointLineColor);
             }
             if (settings().waypointFill) {
-                drawBlockFill(route[nextWp], settings().orderedColorAfter);
+                drawBlockFill(route[nextWp], settings().waypointFillColor);
                 drawBlockFill(route[currentWp], settings().waypointFillColor);
-                drawBlockFill(route[previousWp], settings().orderedColorBefore);
+                drawBlockFill(route[previousWp], settings().waypointFillColor);
             }
             if (settings().waypointOutline) {
-                drawBlock(route[nextWp], settings().orderedColorAfter);
+                drawBlock(route[nextWp], settings().waypointOutlineColor);
                 drawBlock(route[currentWp], settings().waypointOutlineColor);
-                drawBlock(route[previousWp], settings().orderedColorBefore);
+                drawBlock(route[previousWp], settings().waypointOutlineColor);
             }
 
             if (settings().orderedLine) {

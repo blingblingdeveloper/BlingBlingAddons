@@ -54,7 +54,7 @@ config
         configName: "waypointOutlineColor",
         title: "Waypoint Outline Color",
         description: "change the outline color",
-        value: [255, 192, 203, 255],
+        value: [ 255, 147, 147, 255],
         subcategory: "Waypoint Visuals",
         shouldShow(data) {
             return true;
@@ -66,7 +66,7 @@ config
         configName: "waypointFill",
         title: "Waypoint Fill",
         description: "toggle waypoint fill",
-        value: true,
+        value: false,
         subcategory: "Waypoint Visuals"
     })
     .addColorPicker({
@@ -114,7 +114,7 @@ config
         configName: "dynamicTextSize",
         title: "Dynamic Text Size",
         description: "limits text size close to the player",
-        value: true,
+        value: false,
         subcategory: "Waypoint Visuals"
     })
     .addSlider({
@@ -123,24 +123,8 @@ config
         title: "Waypoint Text Size",
         description: "size of the text used by waypoints",
         options: [1.001, 5],
-        value: 2,
+        value: 1,
         subcategory: "Waypoint Visuals"
-    })
-    .addColorPicker({
-        category: "Waypoints",
-        configName: "orderedColorBefore",
-        title: "Ordered Previous Color",
-        description: "color of the previous ordered waypoint",
-        value: [0, 0, 0, 255],
-        subcategory: "Ordered Waypoint Visuals"
-    })
-    .addColorPicker({
-        category: "Waypoints",
-        configName: "orderedColorAfter",
-        title: "Ordered Next Color",
-        description: "color of the next ordered waypoint",
-        value: [0, 0, 0, 255],
-        subcategory: "Ordered Waypoint Visuals"
     })
     .addSwitch({
         category: "Waypoints",
@@ -246,7 +230,7 @@ config
         configName: "roughGems",
         title: "Include Rough Estimate?",
         description: "add rough gemstone profit estimate into $/hr and fl/hr. Trackers use pristine procs in order to track accurate profits. Enabling this will factor in rough gemstones to give a more accurate estimate.",
-        value: false,
+        value: true,
         subcategory: "Coin Tracker",
         shouldShow(data) {
             return true;
@@ -307,7 +291,7 @@ config
         configName: "scEfficiency",
         title: "Use SkyCrypt Efficiency",
         description: "use SkyCrypt's (less accurate) efficiency calculation\nthis allows you to direcitly input efficiency into the bot",
-        value: false,
+        value: true,
         subcategory: "Coin Tracker",
         shouldShow(data) {
             return true;
@@ -332,7 +316,7 @@ config
         configName: "coinTrackerColor",
         title: "Coin Tracker Color",
         description: "set the coin tracker text color",
-        value: [255, 255, 255, 255],
+        value: [243, 185, 255, 255],
         subcategory: "Edit",
         shouldShow(data) {
             return true;
@@ -470,7 +454,7 @@ config
         configName: "blueCheese",
         title: "Blue Cheese",
         description: "toggle on if you have a Blue Cheese Goblin Omelette",
-        value: false,
+        value: true,
         subcategory: "i'm dumb, we'll import stats later §d<3"
     })
     .addSwitch({
@@ -500,7 +484,7 @@ config
         title: "Block Outline Thickness",
         description: "thickness for block outlines",
         options: [1, 10],
-        value: 3,
+        value: 4,
         subcategory: "Render"
     })
     .addSlider({
