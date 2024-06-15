@@ -4,13 +4,13 @@ import { broadcast } from '../util/broadcast'
 const File = java.io.File;
 
 const strucCheckExists = new File(Config.modulesFolder).listFiles().find(module => {
-  return module.getName() === "blingblingaddonsstruccheck";
+  return module.getName() === "BlingBlingAddonsStrucCheck";
 });
 
-const config = new DefaultConfig("blingblingaddons", "config/settings.json")
-const GUIDE = FileLib.read("blingblingaddons", "settings/guide.md")
-const CREDITS = FileLib.read("blingblingaddons", "settings/credits.md")
-const STRUCTURE = FileLib.read("blingblingaddons", "settings/structure.md")
+const config = new DefaultConfig("BlingBlingAddons", "config/settings.json")
+const GUIDE = FileLib.read("BlingBlingAddons", "settings/guide.md")
+const CREDITS = FileLib.read("BlingBlingAddons", "settings/credits.md")
+const STRUCTURE = FileLib.read("BlingBlingAddons", "settings/structure.md")
 
 config
     .addSwitch({
@@ -606,7 +606,7 @@ config
         })
     }
 
-const setting = new Settings("blingblingaddons", config, "settings/ColorScheme.json", "BlingBling Addons")
+const setting = new Settings("BlingBlingAddons", config, "settings/ColorScheme.json", "BlingBling Addons")
     .setCommand("blingblingaddons", ["b","bling"])
 if(!strucCheckExists){    
     setting.addMarkdown("§4Structure check", STRUCTURE)
