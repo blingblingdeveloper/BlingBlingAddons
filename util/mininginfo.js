@@ -108,9 +108,21 @@ function getGemType(glassType) {
         case 10:
         case 'purple':
             return 'Amethyst';
+        case 11:
+        case 'blue':
+            return 'Aquamarine':
+        case 12:
+        case 'brown':
+            return 'Citrine';
+        case 13:
+        case 'green':
+            return 'Peridot';
         case 14:
         case 'red':
             return 'Ruby';
+        case 15:
+        case 'black':
+            return "Onyx";
         default:
             return;
     }
